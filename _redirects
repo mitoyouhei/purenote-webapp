@@ -1,0 +1,10 @@
+# Ignore static assets
+/assets/*      /assets/:splat   200
+/static/*       /static/:splat       200
+/js/*          /js/:splat       200
+/css/*         /css/:splat      200
+/images/*      /images/:splat   200
+# Add other static directories as needed
+
+# Redirect all other requests to index.html
+/*    /index.html   200
