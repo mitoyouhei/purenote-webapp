@@ -1,7 +1,6 @@
-// src/components/Sidebar.js
-import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { HiMiniPlus } from "react-icons/hi2";
 import { addNote, deleteFolder } from "../websocket";
 
 function buildTree(folders) {
@@ -29,13 +28,13 @@ function buildTree(folders) {
   return roots;
 }
 
+const defaultNoteTitle = "Untitled";
+
 const Sidebar = () => {
-  const [folderName, setFolderName] = useState("");
   const folders = useSelector((state) => state.folders);
 
   const handleAddNote = () => {
-    addNote(folderName, null);
-    setFolderName("");
+    addNote(defaultNoteTitle, null);
   };
 
   const handleDeleteFolder = (id) => {
@@ -64,15 +63,8 @@ const Sidebar = () => {
         ))}
       </ul>
       <div className="mt-3">
-        <input
-          type="text"
-          className="form-control"
-          value={folderName}
-          onChange={(e) => setFolderName(e.target.value)}
-          placeholder="New note name"
-        />
         <button className="btn btn-primary mt-2" onClick={handleAddNote}>
-          Add Note
+          <HiMiniPlus />
         </button>
       </div>
     </>

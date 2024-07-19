@@ -1,3 +1,4 @@
+import "./App.css";
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -12,9 +13,9 @@ const App = () => {
 
   return (
     <Router>
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-md-3">
+      <div className="container-fluid position-fixed h-100">
+        <div className="row h-100">
+          <div className="col-md-3 bg-light">
             <nav className="navbar navbar-light bg-light">
               {user.token ? (
                 <span className="navbar-text">

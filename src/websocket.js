@@ -64,6 +64,20 @@ export async function refreshToken(token) {
 
   return newToken;
 }
+export async function getNote(folderId) {
+  const { note, error } = await socket
+    .timeout(5000)
+    .emitWithAck("getNote", folderId);
+
+  if (error) {
+    throw error;
+  }
+
+  return note;
+}
+export async function updateNote(folderId, content) {
+  socket.emit("updateNote", folderId, content);
+}
 
 export async function addFolder(name, parentId) {
   return socket.emit("addFolder", name, parentId);
