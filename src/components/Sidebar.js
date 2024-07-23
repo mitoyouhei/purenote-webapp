@@ -2,31 +2,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { HiMiniPlus } from "react-icons/hi2";
 import { addNote, deleteFolder } from "../websocket";
-
-function buildTree(folders) {
-  const map = new Map();
-  const roots = [];
-
-  // 首先创建一个 map，其中键是 folder 的 id，值是 folder 自身
-  folders.forEach((folder) => {
-    map.set(folder._id, { ...folder, children: [] });
-  });
-
-  folders.forEach((folder) => {
-    if (folder.parentId === null) {
-      // 如果 folder 没有 parentId，则它是一个根节点
-      roots.push(map.get(folder._id));
-    } else {
-      // 否则，将其添加到其父节点的 children 数组中
-      const parent = map.get(folder.parentId);
-      if (parent) {
-        parent.children.push(map.get(folder._id));
-      }
-    }
-  });
-  console.log(roots);
-  return roots;
-}
+import { buildTree } from "../utils";
 
 const defaultNoteTitle = "Untitled";
 
