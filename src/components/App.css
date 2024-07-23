@@ -1,1 +1,12 @@
-.sidebar-container {}
+.input-title {
+    width: 100%;
+}
+
+.input-title,
+.input-title:hover,
+.input-title:focus,
+.input-title:focus-within,
+.input-title:focus-visible {
+    border: 0;
+    outline: 0;
+}

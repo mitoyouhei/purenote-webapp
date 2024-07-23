@@ -78,6 +78,9 @@ export async function getNote(folderId) {
 export async function updateNote(folderId, content) {
   socket.emit("updateNote", folderId, content);
 }
+export async function updateNoteTitle(folderId, title) {
+  socket.emit("updateNoteTitle", folderId, title);
+}
 
 export async function addFolder(name, parentId) {
   return socket.emit("addFolder", name, parentId);

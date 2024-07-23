@@ -34,7 +34,7 @@ const Sidebar = () => {
   const folders = useSelector((state) => state.folders);
 
   const handleAddNote = () => {
-    addNote(defaultNoteTitle, null);
+    addNote("", null);
   };
 
   const handleDeleteFolder = (id) => {
@@ -50,7 +50,7 @@ const Sidebar = () => {
         {root.children.map((folder) => (
           <li key={folder._id} className="list-group-item">
             <Link to={`/note/${folder._id}`} className="btn btn-primary">
-              {folder.name}
+              {folder.name ? folder.name : defaultNoteTitle}
             </Link>
 
             <button
