@@ -1,5 +1,5 @@
 import { store } from "./store";
-import { setUser } from "./slices/user";
+import { setUser, clearUser } from "./slices/user";
 import { setFolders } from "./slices/folders";
 import { addFolderSuccess } from "./actions";
 import { io } from "socket.io-client";
@@ -24,6 +24,13 @@ export function connectSocket() {
     console.log("WebSocket connection established");
   };
 
+  socket.on("error", (error) => {
+    // store.dispatch(setUser(userInfo));
+    console.error("socket error", error);
+    if (error?.errorCode === 401) {
+      store.dispatch(clearUser());
+    }
+  });
   socket.onAny((event, ...args) => {
     console.log(`Received event: ${event}`, args);
   });
@@ -69,6 +76,7 @@ export async function getNote(folderId) {
     .timeout(5000)
     .emitWithAck("getNote", folderId);
 
+  if (error?.errorCode === "noteNotExist") return null;
   if (error) {
     throw error;
   }

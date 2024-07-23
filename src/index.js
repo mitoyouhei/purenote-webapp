@@ -13,44 +13,33 @@ function errorToJSON(error) {
     ...error,
   };
 }
-function globalErrorHandler(error) {
+function globalErrorHandler(error, reference) {
   const json = errorToJSON(error);
-  console.error("🚀 ~ global error log", json);
+  console.warn("🚀 ~ global error log " + reference, json);
+  return false;
 }
 
 window.onerror = function (message, source, lineno, colno, error) {
-  console.log("🚀 ~ onerror ~ Global error caught:", {
-    message,
-    source,
-    lineno,
-    colno,
-    error,
-  });
-
-  globalErrorHandler({
-    message,
-    source,
-    lineno,
-    colno,
-    error,
-  });
-  // 在这里可以进行日志记录或用户提示
-  return true; // 如果返回 true，表示错误已经被处理，浏览器不会再报告错误
+  return globalErrorHandler(
+    {
+      message,
+      source,
+      lineno,
+      colno,
+      error,
+    },
+    "window.onerror"
+  );
 };
 
 window.addEventListener("error", function (event) {
-  console.log("🚀 ~ addEventListener ~ Global error caught:", event);
-  // 在这里可以进行日志记录或用户提示
-  globalErrorHandler(event);
-  return true;
+  return globalErrorHandler(event, "window.addEventListener error");
 });
 window.addEventListener("unhandledrejection", function (event) {
-  console.log(
-    "🚀 ~ addEventListener ~ Unhandled Promise rejection:",
-    event.reason
+  return globalErrorHandler(
+    event.reason,
+    "window.addEventListener unhandledrejection"
   );
-  globalErrorHandler(event.reason);
-  // 在这里可以进行日志记录或用户提示
 });
 
 class ErrorBoundary extends React.Component {
@@ -65,8 +54,10 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    console.log("🚀 ~ Error boundary caught an error:", error, errorInfo);
-    globalErrorHandler({ ...errorToJSON(error), ...errorInfo });
+    return globalErrorHandler(
+      { ...errorToJSON(error), ...errorInfo },
+      "React ErrorBoundary"
+    );
   }
 
   render() {
