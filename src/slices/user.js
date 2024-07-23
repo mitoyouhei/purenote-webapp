@@ -7,7 +7,7 @@ const user = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const user = { ...state, ...action.payload };
+      const user = action.payload;
       localStorage.setItem("user", JSON.stringify(user));
       return user;
     },
@@ -16,8 +16,12 @@ const user = createSlice({
       window.location.reload();
       return {};
     },
+    clearUser: (state, action) => {
+      localStorage.removeItem("user");
+      return {};
+    },
   },
 });
 
-export const { setUser, logout } = user.actions;
+export const { setUser, logout, clearUser } = user.actions;
 export default user;

@@ -1,30 +1,50 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Editor from "./Editor";
 import { useEffect, useState } from "react";
 import { getNote, updateNote, updateNoteTitle } from "../websocket";
 import { setNote } from "../slices/note";
 import { store } from "../store";
 import { useSelector } from "react-redux";
+import { buildTree } from "../utils";
+
 // import TitleEditor from "./TitleEditor";
+
 const defaultNoteTitle = "Untitled";
 const Note = () => {
   const [title, setTitle] = useState("");
   const { id } = useParams();
   const note = useSelector((state) => state.note);
+  const folders = useSelector((state) => state.folders);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
   };
 
   useEffect(() => {
+    const navigateToFirstNote = () => {
+      const roots = buildTree(folders);
+      const root = roots.length > 0 ? roots[0] : { children: [] };
+      if (root?.children?.length > 0) {
+        const first = root.children[0];
+        navigate(`/note/${first._id}`);
+      }
+    };
     const fetchNote = async () => {
       store.dispatch(setNote(null));
       const note = await getNote(id);
       console.log(note);
+      // if (note === null) {
+      //   navigateToFirstNote();
+      // }
       store.dispatch(setNote(note));
     };
     if (id) fetchNote();
-  }, [id]);
+
+    // if (!id) {
+    //   navigateToFirstNote();
+    // }
+  }, [id, folders, navigate]);
   useEffect(() => {
     if (note) setTitle(note.title);
   }, [note]);
@@ -39,7 +59,6 @@ const Note = () => {
     setTitle(e.target.value);
     updateNoteTitle(id, e.target.value);
   }
-
   if (!id) return "no id";
   if (!note) return "loading";
   return (
