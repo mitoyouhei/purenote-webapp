@@ -22,6 +22,22 @@ const Note = () => {
   };
 
   useEffect(() => {
+    const fetchNote = async () => {
+      store.dispatch(setNote(null));
+      const note = await getNote(id);
+      console.log(note);
+      if (note === null) {
+        navigate("/");
+      }
+      store.dispatch(setNote(note));
+    };
+    if (id) fetchNote();
+  }, [id, navigate]);
+  useEffect(() => {
+    if (note) setTitle(note.title);
+  }, [note]);
+
+  useEffect(() => {
     const navigateToFirstNote = () => {
       const roots = buildTree(folders);
       const root = roots.length > 0 ? roots[0] : { children: [] };
@@ -30,24 +46,11 @@ const Note = () => {
         navigate(`/note/${first._id}`);
       }
     };
-    const fetchNote = async () => {
-      store.dispatch(setNote(null));
-      const note = await getNote(id);
-      console.log(note);
-      // if (note === null) {
-      //   navigateToFirstNote();
-      // }
-      store.dispatch(setNote(note));
-    };
-    if (id) fetchNote();
-
-    // if (!id) {
-    //   navigateToFirstNote();
-    // }
+    if (!id) {
+      navigateToFirstNote();
+    }
   }, [id, folders, navigate]);
-  useEffect(() => {
-    if (note) setTitle(note.title);
-  }, [note]);
+
 
   function onChange(editorStateJSON) {
     updateNote(id, JSON.stringify(editorStateJSON));

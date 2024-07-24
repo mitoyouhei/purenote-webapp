@@ -94,9 +94,24 @@ export async function addFolder(name, parentId) {
   return socket.emit("addFolder", name, parentId);
 }
 export async function addNote(name, parentId) {
-  return socket.emit("addNote", name, parentId, "");
+  const { note, error } = await socket
+    .timeout(5000)
+    .emitWithAck("addNote", name, parentId, "");
+
+  if (error) {
+    throw error;
+  }
+
+  return note;
 }
+
 export async function deleteFolder(folderId) {
-  return socket.emit("deleteFolder", folderId);
+  const { error } = await socket
+    .timeout(5000)
+    .emitWithAck("deleteFolder", folderId);
+
+  if (error) {
+    throw error;
+  }
 }
 export default socket;
