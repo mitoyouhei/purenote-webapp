@@ -14,44 +14,44 @@ const App = () => {
   return (
     <Router>
       <div className="container-fluid position-fixed h-100">
-        <div className="row h-100">
-          <div className="col-md-3 bg-light">
-            <nav className="navbar navbar-light bg-light">
-              {user.token ? (
-                <span className="navbar-text">
-                  Logged in as: {user.username}
-                </span>
-              ) : (
-                <Link to="/login" className="btn btn-primary">
-                  Login
-                </Link>
-              )}
-            </nav>
-            <Sidebar />
-          </div>
-          <div className="col-md-9">
-            <Routes>
-              <Route path="/register" element={<Register />} />
-              <Route path="/login" element={<Login />} />
-              <Route
-                path="/"
-                element={
-                  <PrivateRoute>
+        <Routes>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <Note />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/note/:id"
+            element={
+              <PrivateRoute>
+                <div className="row h-100">
+                  <div className="col-md-3 bg-light">
+                    <nav className="navbar navbar-light bg-light">
+                      {user.token ? (
+                        <span className="navbar-text">
+                          Logged in as: {user.username}
+                        </span>
+                      ) : (
+                        <Link to="/login" className="btn btn-primary">
+                          Login
+                        </Link>
+                      )}
+                    </nav>
+                    <Sidebar />
+                  </div>
+                  <div className="col-md-9">
                     <Note />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/note/:id"
-                element={
-                  <PrivateRoute>
-                    <Note />
-                  </PrivateRoute>
-                }
-              />
-            </Routes>
-          </div>
-        </div>
+                  </div>
+                </div>
+              </PrivateRoute>
+            }
+          />
+        </Routes>
       </div>
     </Router>
   );

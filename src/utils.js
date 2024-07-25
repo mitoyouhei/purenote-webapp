@@ -18,6 +18,7 @@ export function buildTree(folders) {
       }
     }
   });
-  console.log(roots);
+  // console.log("🚀 ~ buildTree ~ roots:", roots);
   return roots;
 }
+  

@@ -25,7 +25,7 @@ const Note = () => {
     const fetchNote = async () => {
       store.dispatch(setNote(null));
       const note = await getNote(id);
-      console.log(note);
+      // console.log("🚀 ~ fetchNote ~ note:", note);
       if (note === null) {
         navigate("/");
       }

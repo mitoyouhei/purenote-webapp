@@ -73,7 +73,7 @@ export default function Editor({ onChange, initialEditorStateJSON }) {
           />
           <HistoryPlugin />
           <AutoFocusPlugin />
-          <OnChangePlugin onChange={debounce(onEditorStateChange, 500)} />
+          <OnChangePlugin onChange={debounce(onEditorStateChange, 300)} />
           {/* <TreeViewPlugin /> */}
         </div>
       </div>

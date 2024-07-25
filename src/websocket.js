@@ -94,7 +94,7 @@ export async function addFolder(name, parentId) {
   return socket.emit("addFolder", name, parentId);
 }
 export async function addNote(name, parentId) {
-  const { note, error } = await socket
+  const { note, folder, error } = await socket
     .timeout(5000)
     .emitWithAck("addNote", name, parentId, "");
 
@@ -102,7 +102,7 @@ export async function addNote(name, parentId) {
     throw error;
   }
 
-  return note;
+  return { note, folder };
 }
 
 export async function deleteFolder(folderId) {
