@@ -19,3 +19,9 @@
     flex-direction: row;
     justify-content: space-between;
 }
+.notes-list.list-group>.list-group-item.active-light {
+    color: #000;
+    background-color: #e9ecef;
+    /* Bootstrap 的 bg-light 颜色 */
+    border-color: #f8f9fa;
+}

@@ -18,7 +18,7 @@ const NavItem = ({ folder, isActive }) => {
   const handleDeleteFolder = async (e, id) => {
     e.preventDefault();
     await deleteFolder(id);
-    navigate("/");
+    if (isActive) navigate("/");
   };
   const toggleMenu = (e) => {
     e.preventDefault();
@@ -39,7 +39,7 @@ const NavItem = ({ folder, isActive }) => {
     ) : null;
   return (
     <Link
-      className={`list-group-item list-group-item-action ${
+      className={`list-group-item list-group-item-action my-2 border-1 rounded-1 ${
         isActive ? "active" : ""
       }`}
       to={`/note/${folder._id}`}
@@ -81,12 +81,6 @@ const NavItem = ({ folder, isActive }) => {
         {date.toFormat("MM/dd")}
       </small>
       {/* <small>{date.toFormat("yyyy-MM-dd HH:mm:ss")}</small> */}
-      {/* <button
-        className="btn btn-danger btn-sm float-end"
-        onClick={(e) => handleDeleteFolder(e, folder._id)}
-      >
-        Delete
-      </button> */}
     </Link>
   );
 };
@@ -104,12 +98,11 @@ const Sidebar = () => {
 
   const roots = buildTree(folders);
   const root = roots.length > 0 ? roots[0] : { children: [] };
-  const isOnlyNote = root?.children.length === 1;
   return (
     <>
       <nav className="navbar bg-body-tertiary">
         <div className="container-fluid">
-          <span className="navbar-brand">Notes</span>
+          <span className="navbar-brand">Just Note</span>
           <div className="d-flex">
             <span className="btn" title={user.username}>
               <HiMiniUserCircle />

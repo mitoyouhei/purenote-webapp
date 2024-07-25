@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import Editor from "./Editor";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getNote, updateNote, updateNoteTitle } from "../websocket";
 import { setNote } from "../slices/note";
 import { store } from "../store";
@@ -10,17 +10,38 @@ import Spinner from "./Spinner";
 
 // import TitleEditor from "./TitleEditor";
 
+const TitleInput = ({ id, initTitle }) => {
+  const [title, setTitle] = useState(initTitle ?? "");
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current && !initTitle) {
+      inputRef.current.focus();
+    }
+  }, [initTitle]);
+
+  function onTitleChange(e) {
+    setTitle(e.target.value);
+    updateNoteTitle(id, e.target.value);
+  }
+  return (
+    <input
+      ref={inputRef}
+      className="input-title"
+      type="text"
+      value={title}
+      onChange={onTitleChange}
+      placeholder={defaultNoteTitle}
+    />
+  );
+};
+
 const defaultNoteTitle = "Untitled";
 const Note = () => {
-  const [title, setTitle] = useState("");
   const { id } = useParams();
   const note = useSelector((state) => state.note);
   const folders = useSelector((state) => state.folders);
   const navigate = useNavigate();
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
 
   useEffect(() => {
     const fetchNote = async () => {
@@ -34,9 +55,6 @@ const Note = () => {
     };
     if (id) fetchNote();
   }, [id, navigate]);
-  useEffect(() => {
-    if (note) setTitle(note.title);
-  }, [note]);
 
   useEffect(() => {
     const navigateToFirstNote = () => {
@@ -55,33 +73,20 @@ const Note = () => {
   function onChange(editorStateJSON) {
     updateNote(id, JSON.stringify(editorStateJSON));
   }
-  // function onTitleChange(editorStateJSON) {
-  //   updateNoteTitle(id, JSON.stringify(editorStateJSON));
-  // }
-  function onTitleChange(e) {
-    setTitle(e.target.value);
-    updateNoteTitle(id, e.target.value);
-  }
   if (!note || !id) return <Spinner />;
+
   return (
-    <form key={id} onSubmit={handleSubmit}>
+    <>
       <h1>
-        <input
-          className="input-title"
-          type="text"
-          value={title}
-          onChange={onTitleChange}
-          placeholder={defaultNoteTitle}
-        />
+        <TitleInput id={id} initTitle={note.title} />
       </h1>
 
-      <div className="form-group">
-        <Editor
-          onChange={onChange}
-          initialEditorStateJSON={note.content ? note.content : null}
-        />
-      </div>
-    </form>
+      <Editor
+        onChange={onChange}
+        initialEditorStateJSON={note.content ? note.content : null}
+        autoFocus={!!note.title}
+      />
+    </>
   );
 };
 

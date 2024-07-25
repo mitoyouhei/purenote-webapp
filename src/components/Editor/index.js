@@ -5,6 +5,7 @@ import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { $createParagraphNode, $createTextNode, $getRoot } from "lexical";
 
 import theme from "./theme";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
@@ -13,6 +14,7 @@ import { useEffect } from "react";
 // import TreeViewPlugin from "./plugins/TreeViewPlugin";
 
 const placeholder = "Enter some rich text...";
+const defaultEmptyText = "";
 
 function OnChangePlugin({ onChange }) {
   const [editor] = useLexicalComposerContext();
@@ -36,12 +38,16 @@ function debounce(func, wait) {
     }, wait);
   };
 }
-export default function Editor({ onChange, initialEditorStateJSON }) {
+export default function Editor({
+  onChange,
+  initialEditorStateJSON,
+  autoFocus,
+}) {
   //   const [editorState, setEditorState] = useState(null);
 
   const editorConfig = {
     // editorState,
-    editorState: initialEditorStateJSON,
+    // editorState: initialEditorStateJSON,
     nodes: [],
     // Handling of errors during update
     onError(error) {
@@ -49,12 +55,40 @@ export default function Editor({ onChange, initialEditorStateJSON }) {
     },
     // The editor theme
     theme,
+    editorState: (editor) => {
+      editor.update(() => {
+        const createEmtpyNode = (root) => {
+          const paragraphNode = $createParagraphNode();
+          const textNode = $createTextNode(defaultEmptyText);
+          paragraphNode.append(textNode);
+          root.append(paragraphNode);
+        };
+        if (initialEditorStateJSON) {
+          try {
+            const editorState = editor.parseEditorState(initialEditorStateJSON);
+            const root = editorState.read(() => $getRoot());
+            if (root.getChildren().length === 0) {
+              createEmtpyNode(root);
+            }
+            editor.setEditorState(editorState);
+          } catch (error) {
+            console.error("Failed to load editor state from JSON", error);
+          }
+        } else {
+          const root = $getRoot();
+          if (root.getChildren().length === 0) {
+            createEmtpyNode(root);
+          }
+        }
+      });
+    },
   };
   function onEditorStateChange(editorState) {
     const editorStateJSON = editorState.toJSON();
-    console.log(editorStateJSON);
+    // console.log(JSON.stringify(editorStateJSON));
     onChange(editorStateJSON);
   }
+
   return (
     <LexicalComposer initialConfig={editorConfig}>
       <div className="editor-container form-control">
@@ -73,7 +107,7 @@ export default function Editor({ onChange, initialEditorStateJSON }) {
             ErrorBoundary={LexicalErrorBoundary}
           />
           <HistoryPlugin />
-          <AutoFocusPlugin />
+          {autoFocus ? <AutoFocusPlugin /> : null}
           <OnChangePlugin onChange={debounce(onEditorStateChange, 300)} />
           {/* <TreeViewPlugin /> */}
         </div>
