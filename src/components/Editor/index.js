@@ -22,6 +22,7 @@ function OnChangePlugin({ onChange }) {
       onChange(editorState);
     });
   }, [editor, onChange]);
+
   return null;
 }
 function debounce(func, wait) {

@@ -16,7 +16,7 @@ function errorToJSON(error) {
 function globalErrorHandler(error, reference) {
   const json = errorToJSON(error);
   console.warn("🚀 ~ global error log " + reference, json);
-  return false;
+  return true;
 }
 
 window.onerror = function (message, source, lineno, colno, error) {

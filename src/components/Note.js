@@ -6,6 +6,7 @@ import { setNote } from "../slices/note";
 import { store } from "../store";
 import { useSelector } from "react-redux";
 import { buildTree } from "../utils";
+import Spinner from "./Spinner";
 
 // import TitleEditor from "./TitleEditor";
 
@@ -51,7 +52,6 @@ const Note = () => {
     }
   }, [id, folders, navigate]);
 
-
   function onChange(editorStateJSON) {
     updateNote(id, JSON.stringify(editorStateJSON));
   }
@@ -62,8 +62,7 @@ const Note = () => {
     setTitle(e.target.value);
     updateNoteTitle(id, e.target.value);
   }
-  if (!id) return "no id";
-  if (!note) return "loading";
+  if (!note || !id) return <Spinner />;
   return (
     <form key={id} onSubmit={handleSubmit}>
       <h1>

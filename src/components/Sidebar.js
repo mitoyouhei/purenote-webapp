@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { HiMiniPlus } from "react-icons/hi2";
+import { HiMiniPlus, HiMiniUserCircle } from "react-icons/hi2";
 import { addNote, deleteFolder } from "../websocket";
 import { buildTree } from "../utils";
 
@@ -37,6 +37,7 @@ const NavItem = ({ folder, isActive }) => {
 const Sidebar = () => {
   const folders = useSelector((state) => state.folders);
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
   const { id } = useParams();
 
   const handleAddNote = async () => {
@@ -52,10 +53,17 @@ const Sidebar = () => {
       <nav className="navbar bg-body-tertiary">
         <div className="container-fluid">
           <span className="navbar-brand">Notes</span>
-          <div className="d-flex">sdf</div>
+          <div className="d-flex">
+            <span className="btn" title={user.username}>
+              <HiMiniUserCircle />
+            </span>
+            <span className="btn" onClick={handleAddNote}>
+              <HiMiniPlus />
+            </span>
+          </div>
         </div>
       </nav>
-      <div className="list-group">
+      <div className="notes-list list-group">
         {root.children.map((folder) => (
           <NavItem
             key={folder._id}
@@ -63,11 +71,6 @@ const Sidebar = () => {
             isActive={folder._id === id}
           />
         ))}
-      </div>
-      <div className="mt-3">
-        <button className="btn btn-primary mt-2" onClick={handleAddNote}>
-          <HiMiniPlus />
-        </button>
       </div>
     </>
   );
