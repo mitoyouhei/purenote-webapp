@@ -6,26 +6,48 @@ import Sidebar from "./Sidebar";
 import Register from "./Register";
 import Login from "./Login";
 import PrivateRoute from "./PrivateRoute";
+import { useSelector } from "react-redux";
+import HomePage from "./HomePage";
+import PublicLayout from "./PublicLayout";
+
+const RootLandingPage = () => {
+  const user = useSelector((state) => state.user);
+  return user.token ? (
+    <Note />
+  ) : (
+    <PublicLayout>
+      <HomePage />
+    </PublicLayout>
+  );
+};
+
 
 const App = () => {
   return (
     <Router>
-      <div className="container-fluid position-fixed h-100">
-        <Routes>
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/"
-            element={
-              <PrivateRoute>
-                <Note />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/note/:id"
-            element={
-              <PrivateRoute>
+      <Routes>
+        <Route
+          path="/register"
+          element={
+            <PublicLayout>
+              <Register />
+            </PublicLayout>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <PublicLayout>
+              <Login />
+            </PublicLayout>
+          }
+        />
+        <Route path="/" element={<RootLandingPage />} />
+        <Route
+          path="/note/:id"
+          element={
+            <PrivateRoute>
+              <div className="container-fluid position-fixed h-100">
                 <div className="row h-100">
                   <div className="col-md-3 bg-light">
                     <Sidebar />
@@ -34,11 +56,11 @@ const App = () => {
                     <Note />
                   </div>
                 </div>
-              </PrivateRoute>
-            }
-          />
-        </Routes>
-      </div>
+              </div>
+            </PrivateRoute>
+          }
+        />
+      </Routes>
     </Router>
   );
 };

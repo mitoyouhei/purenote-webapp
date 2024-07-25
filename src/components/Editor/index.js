@@ -38,51 +38,54 @@ function debounce(func, wait) {
     }, wait);
   };
 }
+const createEmptyNode = (root) => {
+  const paragraphNode = $createParagraphNode();
+  const textNode = $createTextNode(defaultEmptyText);
+  paragraphNode.append(textNode);
+  root.append(paragraphNode);
+};
+
+const initializeEditorState = (editor, initialEditorStateJSON) => {
+  try {
+    const editorState = editor.parseEditorState(initialEditorStateJSON);
+    const root = editorState.read(() => $getRoot());
+    if (root.getChildren().length === 0) {
+      createEmptyNode(root);
+    }
+    editor.setEditorState(editorState);
+  } catch (error) {
+    console.error("Failed to load editor state from JSON", error);
+  }
+};
+
+const initializeEmptyEditorState = () => {
+  const root = $getRoot();
+  if (root.getChildren().length === 0) {
+    createEmptyNode(root);
+  }
+};
 export default function Editor({
   onChange,
   initialEditorStateJSON,
   autoFocus,
 }) {
-  //   const [editorState, setEditorState] = useState(null);
-
   const editorConfig = {
-    // editorState,
-    // editorState: initialEditorStateJSON,
     nodes: [],
-    // Handling of errors during update
     onError(error) {
       throw error;
     },
-    // The editor theme
     theme,
     editorState: (editor) => {
       editor.update(() => {
-        const createEmtpyNode = (root) => {
-          const paragraphNode = $createParagraphNode();
-          const textNode = $createTextNode(defaultEmptyText);
-          paragraphNode.append(textNode);
-          root.append(paragraphNode);
-        };
         if (initialEditorStateJSON) {
-          try {
-            const editorState = editor.parseEditorState(initialEditorStateJSON);
-            const root = editorState.read(() => $getRoot());
-            if (root.getChildren().length === 0) {
-              createEmtpyNode(root);
-            }
-            editor.setEditorState(editorState);
-          } catch (error) {
-            console.error("Failed to load editor state from JSON", error);
-          }
+          initializeEditorState(editor, initialEditorStateJSON);
         } else {
-          const root = $getRoot();
-          if (root.getChildren().length === 0) {
-            createEmtpyNode(root);
-          }
+          initializeEmptyEditorState();
         }
       });
     },
   };
+
   function onEditorStateChange(editorState) {
     const editorStateJSON = editorState.toJSON();
     // console.log(JSON.stringify(editorStateJSON));

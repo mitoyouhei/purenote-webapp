@@ -13,15 +13,10 @@ const user = createSlice({
     },
     logout: (state, action) => {
       localStorage.removeItem("user");
-      window.location.reload();
-      return {};
-    },
-    clearUser: (state, action) => {
-      localStorage.removeItem("user");
       return {};
     },
   },
 });
 
-export const { setUser, logout, clearUser } = user.actions;
+export const { setUser, logout } = user.actions;
 export default user;
