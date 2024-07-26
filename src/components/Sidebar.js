@@ -72,7 +72,10 @@ const NavItem = ({ folder, isActive }) => {
           <Dropdown.Toggle as={FolderMenuToggle} />
 
           <Dropdown.Menu>
-            <Dropdown.Item onClick={(e) => handleDeleteFolder(e, folder._id)}>
+            <Dropdown.Item
+              as="div"
+              onClick={(e) => handleDeleteFolder(e, folder._id)}
+            >
               Delete
             </Dropdown.Item>
           </Dropdown.Menu>
@@ -110,15 +113,7 @@ const Sidebar = () => {
             <Dropdown>
               <Dropdown.Toggle as={UserMenuToggle} />
 
-              <Dropdown.Menu
-                align={{
-                  sm: "end",
-                  md: "end",
-                  lg: "end",
-                  xl: "end",
-                  xxl: "end",
-                }}
-              >
+              <Dropdown.Menu align={{ sm: "end" }}>
                 <Dropdown.Header>{user.username}</Dropdown.Header>
                 <Dropdown.Divider />
                 <Dropdown.Item
