@@ -4,7 +4,7 @@ import { HiMiniPlus, HiMiniUserCircle } from "react-icons/hi2";
 import { addNote, deleteFolder } from "../websocket";
 import { buildTree } from "../utils";
 import { DateTime } from "luxon";
-import React, { useState } from "react";
+import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import { connectSocket } from "../websocket";
 import { store } from "../store";
@@ -103,7 +103,9 @@ const Sidebar = () => {
     <>
       <nav className="navbar bg-body-tertiary">
         <div className="container-fluid">
-          <span className="navbar-brand">Just Note</span>
+          <Link className="navbar-brand" to="/">
+            Just Note
+          </Link>
           <div className="d-flex">
             <Dropdown>
               <Dropdown.Toggle as={UserMenuToggle} />

@@ -12,7 +12,8 @@ import PublicLayout from "./PublicLayout";
 
 const RootLandingPage = () => {
   const user = useSelector((state) => state.user);
-  return user.token ? (
+  const client = useSelector((state) => state.client);
+  return user.token && client.socketConnected ? (
     <Note />
   ) : (
     <PublicLayout>

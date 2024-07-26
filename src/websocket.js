@@ -1,8 +1,9 @@
 import { store } from "./store";
 import { setUser, logout } from "./slices/user";
 import { setFolders } from "./slices/folders";
-import { addFolderSuccess } from "./actions";
 import { io } from "socket.io-client";
+import { setSocketConnected } from "./slices/client";
+import { globalErrorHandler } from "./errorHandler";
 
 let socket = null;
 connectSocket();
@@ -34,17 +35,41 @@ export function connectSocket() {
   socket.onAny((event, ...args) => {
     console.log(`Received event: ${event}`, args);
   });
+  socket.on("connect_error", (error) => {
+    // console.log("Connection error:", error);
+    store.dispatch(setSocketConnected(false));
+    globalErrorHandler(error, "socket connect_error");
+  });
+  // socket.onmessage = (event) => {
+  //   console.log("Received message:", event);
+  //   const data = JSON.parse(event.data);
+  //   if (data.status === "success" && data.folder) {
+  //     store.dispatch(addFolderSuccess(data.folder));
+  //   }
+  // };
 
-  socket.onmessage = (event) => {
-    console.log("Received message:", event);
-    const data = JSON.parse(event.data);
-    if (data.status === "success" && data.folder) {
-      store.dispatch(addFolderSuccess(data.folder));
-    }
-  };
+  socket.on("connect", () => {
+    console.log("Connected to the server");
+    store.dispatch(setSocketConnected(true));
+  });
+  socket.on("disconnect", () => {
+    console.log("Disconnected from the server");
+    store.dispatch(setSocketConnected(false));
+  });
+
+  socket.on("reconnect_attempt", () => {
+    console.log("Attempting to reconnect...");
+    store.dispatch(setSocketConnected(false));
+  });
+
+  socket.on("reconnect_failed", () => {
+    console.error("Reconnection failed.");
+    store.dispatch(setSocketConnected(false));
+  });
 
   socket.onclose = () => {
     console.log("WebSocket connection closed");
+    // store.dispatch(setSocketConnected(false));
   };
 }
 
