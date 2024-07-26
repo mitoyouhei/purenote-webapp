@@ -50,10 +50,13 @@ const App = () => {
             <PrivateRoute>
               <div className="container-fluid position-fixed h-100">
                 <div className="row h-100">
-                  <div className="col-md-3 bg-light">
+                  <div
+                    className="col-md-3 bg-light h-100"
+                    style={{ overflow: "auto" }}
+                  >
                     <Sidebar />
                   </div>
-                  <div className="col-md-9">
+                  <div className="col-md-9 h-100" style={{ overflow: "auto" }}>
                     <Note />
                   </div>
                 </div>

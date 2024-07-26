@@ -110,7 +110,15 @@ const Sidebar = () => {
             <Dropdown>
               <Dropdown.Toggle as={UserMenuToggle} />
 
-              <Dropdown.Menu>
+              <Dropdown.Menu
+                align={{
+                  sm: "end",
+                  md: "end",
+                  lg: "end",
+                  xl: "end",
+                  xxl: "end",
+                }}
+              >
                 <Dropdown.Header>{user.username}</Dropdown.Header>
                 <Dropdown.Divider />
                 <Dropdown.Item
@@ -130,7 +138,7 @@ const Sidebar = () => {
           </div>
         </div>
       </nav>
-      <div className="notes-list list-group">
+      <div className="notes-list list-group" style={{ overflow: "visible" }}>
         {root.children.map((folder) => (
           <NavItem
             key={folder._id}
