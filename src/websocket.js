@@ -10,7 +10,7 @@ connectSocket();
 
 export function connectSocket() {
   const token = store.getState().user.token;
-  socket = io("ws://localhost:5002", {
+  socket = io(process.env.REACT_APP_SOCKET_URL, {
     reconnectionDelayMax: 50000,
     // transports: ["websocket"],
     auth: { token },
