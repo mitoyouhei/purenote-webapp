@@ -84,6 +84,17 @@ export async function login(username, password) {
 
   return token;
 }
+export async function register(username, password) {
+  const { token, error } = await socket
+    .timeout(5000)
+    .emitWithAck("register", username, password);
+
+  if (error) {
+    throw error;
+  }
+
+  return token;
+}
 
 export async function refreshToken(token) {
   const { newToken, error } = await socket
