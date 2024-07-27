@@ -9,7 +9,7 @@ const SystemInfo = () => {
   const opacity = process.env.NODE_ENV === "development" ? 0.3 : 0;
   return (
     <div
-      class="position-fixed"
+      className="position-fixed"
       style={{
         bottom: 10,
         right: 10,

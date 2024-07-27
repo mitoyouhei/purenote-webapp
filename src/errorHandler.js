@@ -1,4 +1,12 @@
+import axios from "axios";
 import React from "react";
+
+async function errorLog(error) {
+  await axios.post(
+    `${process.env.REACT_APP_API_END_POINT_URL}/api/logs`,
+    error
+  );
+}
 
 export function errorToJSON(error) {
   return {
@@ -9,9 +17,14 @@ export function errorToJSON(error) {
   };
 }
 export function globalErrorHandler(error, reference) {
-  const json = errorToJSON(error);
-  console.warn("🚀 ~ global error log " + reference, json);
-  return false;
+  try {
+    const json = errorToJSON(error);
+    errorLog(json);
+    console.warn("🚀 ~ global error log " + reference, json);
+  } catch (error) {
+    console.error(error);
+  }
+  return true;
 }
 
 window.onerror = function (message, source, lineno, colno, error) {
