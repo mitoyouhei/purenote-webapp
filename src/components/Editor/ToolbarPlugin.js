@@ -23,7 +23,7 @@ import {
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
   COMMAND_PRIORITY_LOW,
-  FORMAT_ELEMENT_COMMAND,
+  // FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
   REDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
@@ -31,10 +31,10 @@ import {
 } from "lexical";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  FaAlignCenter,
-  FaAlignJustify,
-  FaAlignLeft,
-  FaAlignRight,
+  // FaAlignCenter,
+  // FaAlignJustify,
+  // FaAlignLeft,
+  // FaAlignRight,
   FaArrowRotateLeft,
   FaArrowRotateRight,
   FaBold,
