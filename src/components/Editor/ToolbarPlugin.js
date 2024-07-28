@@ -5,13 +5,24 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+import {
+  $isListNode,
+  INSERT_ORDERED_LIST_COMMAND,
+  INSERT_UNORDERED_LIST_COMMAND,
+  insertList,
+  REMOVE_LIST_COMMAND,
+} from "@lexical/list";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { $createHeadingNode, $isHeadingNode } from "@lexical/rich-text";
+import { $setBlocksType } from "@lexical/selection";
 import { mergeRegister } from "@lexical/utils";
 import {
+  $getNodeByKey,
   $getSelection,
   $isRangeSelection,
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
+  COMMAND_PRIORITY_LOW,
   FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
   REDO_COMMAND,
@@ -28,6 +39,8 @@ import {
   FaArrowRotateRight,
   FaBold,
   FaItalic,
+  FaList,
+  FaParagraph,
   FaStrikethrough,
   FaUnderline,
 } from "react-icons/fa6";
@@ -89,9 +102,62 @@ export default function ToolbarPlugin() {
           return false;
         },
         LowPriority
+      ),
+      editor.registerCommand(
+        INSERT_UNORDERED_LIST_COMMAND,
+        () => {
+          insertList(editor, "bullet");
+          return true;
+        },
+        COMMAND_PRIORITY_LOW
       )
     );
   }, [editor, $updateToolbar]);
+
+  const toggleList = (command) => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        const anchorNode = selection.anchor.getNode();
+        const element = anchorNode.getTopLevelElementOrThrow();
+        const elementKey = element.getKey();
+        const node = $getNodeByKey(elementKey);
+
+        if ($isListNode(node)) {
+          editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
+        } else {
+          editor.dispatchCommand(command, undefined);
+        }
+      }
+    });
+  };
+  const toggleHeading = (level) => {
+    const targetHead = `h${level}`;
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        // $setBlocksType(selection, () => $createHeadingNode(targetHead));
+        if (level === 0) {
+          return $setBlocksType(selection, () =>
+            $createHeadingNode(targetHead)
+          );
+        }
+        const nodes = selection.getNodes();
+        nodes.forEach((node) => {
+          if ($isHeadingNode(node)) {
+            const currentLevel = node.getTag();
+            if (currentLevel === targetHead) {
+              node.replace($createHeadingNode("p"));
+            } else {
+              $setBlocksType(selection, () => $createHeadingNode(targetHead));
+            }
+          } else {
+            $setBlocksType(selection, () => $createHeadingNode(targetHead));
+          }
+        });
+      }
+    });
+  };
 
   return (
     <div className="toolbar" ref={toolbarRef}>
@@ -110,7 +176,7 @@ export default function ToolbarPlugin() {
         onClick={() => {
           editor.dispatchCommand(REDO_COMMAND, undefined);
         }}
-        className="toolbar-item"
+        className="toolbar-item spaced"
         aria-label="Redo"
       >
         <FaArrowRotateRight />
@@ -152,7 +218,7 @@ export default function ToolbarPlugin() {
       >
         <FaStrikethrough />
       </button>
-      <Divider />
+      {/* <Divider />
       <button
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
@@ -184,11 +250,46 @@ export default function ToolbarPlugin() {
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
         }}
-        className="toolbar-item"
+        className="toolbar-item spaced"
         aria-label="Justify Align"
       >
         <FaAlignJustify />
-      </button>{" "}
+      </button> */}
+      <Divider />
+      <button
+        onClick={() => {
+          toggleList(INSERT_UNORDERED_LIST_COMMAND);
+        }}
+        className="toolbar-item spaced"
+        aria-label="Unordered List"
+      >
+        <FaList />
+      </button>
+      <button
+        onClick={() => {
+          toggleList(INSERT_ORDERED_LIST_COMMAND);
+        }}
+        className="toolbar-item spaced"
+        aria-label="Ordered List"
+      >
+        <FaList />
+      </button>
+      <Divider />
+      {[1, 2, 3, 4, 5, 6].map((level) => (
+        <button
+          className={"toolbar-item spaced "}
+          onClick={() => toggleHeading(level)}
+        >
+          H{level}
+        </button>
+      ))}
+
+      <button
+        className={"toolbar-item spaced " + (isItalic ? "active" : "")}
+        onClick={() => toggleHeading(0)}
+      >
+        <FaParagraph />
+      </button>
     </div>
   );
 }

@@ -4,9 +4,9 @@ import { Button, Toast } from "react-bootstrap";
 const SystemInfo = () => {
   const [showA, setShowA] = useState(false);
   const toggleShowA = () => setShowA(!showA);
-  if (process.env.NODE_ENV !== "development") return null;
 
-  const opacity = process.env.NODE_ENV === "development" ? 0.3 : 0;
+  const display =
+    process.env.NODE_ENV === "development" ? "inline-block" : "none";
   return (
     <div
       className="position-fixed"
@@ -35,7 +35,8 @@ const SystemInfo = () => {
           "--bs-btn-padding-y": ".15rem",
           "--bs-btn-padding-x": ".3rem",
           "--bs-btn-font-size": ".65rem",
-          opacity,
+          opacity: 0.3,
+          display,
         }}
       >
         system

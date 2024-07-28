@@ -1,18 +1,27 @@
 import "./index.css";
+import React, { useEffect, useRef, useState } from "react";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
-import { $createParagraphNode, $createTextNode, $getRoot } from "lexical";
+import {
+  $createParagraphNode,
+  $createTextNode,
+  $getRoot,
+  INDENT_CONTENT_COMMAND,
+  OUTDENT_CONTENT_COMMAND,
+} from "lexical";
 
 import theme from "./theme";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { useEffect, useRef, useState } from "react";
 import ToolbarPlugin from "./ToolbarPlugin";
 import { updateNoteTitle } from "../../websocket";
-// import TreeViewPlugin from "./plugins/TreeViewPlugin";
+import { ListItemNode, ListNode } from "@lexical/list";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { globalErrorHandler } from "../../errorHandler";
 
 const placeholder = "Enter some rich text...";
 const defaultEmptyText = "";
@@ -44,6 +53,31 @@ const TitleInput = ({ id, initTitle }) => {
   );
 };
 
+function OnTabPlugin() {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.key === "Tab") {
+        event.preventDefault();
+        if (event.shiftKey) {
+          editor.dispatchCommand(OUTDENT_CONTENT_COMMAND, undefined);
+        } else {
+          editor.dispatchCommand(INDENT_CONTENT_COMMAND, undefined);
+        }
+      }
+    }
+
+    const rootElement = editor.getRootElement();
+    rootElement.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      rootElement.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [editor]);
+
+  return null;
+}
 function OnChangePlugin({ onChange }) {
   const [editor] = useLexicalComposerContext();
 
@@ -100,9 +134,10 @@ export default function Editor({
   initTitle,
 }) {
   const editorConfig = {
-    nodes: [],
+    nodes: [HeadingNode, QuoteNode, ListItemNode, ListNode],
     onError(error) {
-      throw error;
+      globalErrorHandler(error);
+      return <h1>Something went wrong.</h1>;
     },
     theme,
     editorState: (editor) => {
@@ -115,13 +150,11 @@ export default function Editor({
       });
     },
   };
-
   function onEditorStateChange(editorState) {
     const editorStateJSON = editorState.toJSON();
     // console.log(JSON.stringify(editorStateJSON));
     onChange(editorStateJSON);
   }
-
   return (
     <LexicalComposer initialConfig={editorConfig}>
       <div className="editor-container form-control">
@@ -144,6 +177,8 @@ export default function Editor({
             ErrorBoundary={LexicalErrorBoundary}
           />
           <HistoryPlugin />
+          <ListPlugin />
+          <OnTabPlugin />
           {autoFocus ? <AutoFocusPlugin /> : null}
           <OnChangePlugin onChange={debounce(onEditorStateChange, 300)} />
           {/* <TreeViewPlugin /> */}
