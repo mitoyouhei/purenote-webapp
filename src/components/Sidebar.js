@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { HiMiniPlus, HiMiniUserCircle } from "react-icons/hi2";
+import { HiMiniPlus, HiMiniUserCircle, HiTrash } from "react-icons/hi2";
 import { addNote, deleteFolder } from "../websocket";
 import { buildTree } from "../utils";
 import { DateTime } from "luxon";
@@ -49,15 +49,8 @@ const UserMenuToggle = React.forwardRef(({ onClick }, ref) => (
 ));
 
 const NavItem = ({ folder, isActive }) => {
-  const navigate = useNavigate();
-
   const date = DateTime.fromISO(folder.createdAt);
 
-  const handleDeleteFolder = async (e, id) => {
-    e.preventDefault();
-    await deleteFolder(id);
-    if (isActive) navigate("/");
-  };
   return (
     <Link
       className={`list-group-item list-group-item-action my-2 border-1 rounded-1 ${
@@ -68,7 +61,7 @@ const NavItem = ({ folder, isActive }) => {
       <div className="title-row">
         <b>{folder.name ? folder.name : defaultNoteTitle}</b>
 
-        <Dropdown>
+        {/* <Dropdown>
           <Dropdown.Toggle as={FolderMenuToggle} />
 
           <Dropdown.Menu>
@@ -79,7 +72,7 @@ const NavItem = ({ folder, isActive }) => {
               Delete
             </Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown> */}
       </div>
       <small className="fw-lighter" style={{ fontSize: ".675em" }}>
         {date.toFormat("MM/dd")}
@@ -100,14 +93,24 @@ const Sidebar = () => {
     navigate(`/note/${folder._id}`);
   };
 
+  const handleDeleteNote = async (e) => {
+    e.preventDefault();
+    await deleteFolder(id);
+    navigate("/");
+  };
+
   const roots = buildTree(folders);
   const root = roots.length > 0 ? roots[0] : { children: [] };
   return (
     <>
-      <nav className="navbar bg-body-tertiary">
+      <nav className="navbar">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">
-            Just Note
+            <img
+              src="/logo-title.png"
+              alt="Just Note"
+              style={{ width: 100 }}
+            ></img>
           </Link>
           <div className="d-flex">
             <Dropdown>
@@ -129,6 +132,9 @@ const Sidebar = () => {
 
             <span className="btn" onClick={handleAddNote}>
               <HiMiniPlus />
+            </span>
+            <span className="btn" onClick={handleDeleteNote}>
+              <HiTrash />
             </span>
           </div>
         </div>

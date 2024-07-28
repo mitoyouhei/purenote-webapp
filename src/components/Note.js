@@ -84,7 +84,7 @@ const Note = () => {
       <Editor
         onChange={onChange}
         initialEditorStateJSON={note.content ? note.content : null}
-        autoFocus={!!note.title}
+        autoFocus={false}
       />
     </>
   );
