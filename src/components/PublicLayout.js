@@ -7,7 +7,11 @@ const PublicLayout = ({ children }) => {
       <nav className="navbar  bg-body-tertiary">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">
-            Just Note
+            <img
+              src="/logo-name.png"
+              alt="Just Note"
+              style={{ width: 180 }}
+            ></img>
           </Link>
           <div>
             <Link to="/login" className="btn btn-primary me-2">
@@ -19,7 +23,7 @@ const PublicLayout = ({ children }) => {
           </div>
         </div>
       </nav>
-      <div className="container">{children}</div>
+      {children}
     </>
   );
 };

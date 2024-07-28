@@ -21,7 +21,7 @@ const Register = () => {
   };
 
   return (
-    <>
+    <div className="container">
       <h1>Register</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -48,7 +48,7 @@ const Register = () => {
           Register
         </button>
       </form>
-    </>
+    </div>
   );
 };
 
