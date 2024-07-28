@@ -12,35 +12,35 @@ import { logout } from "../slices/user";
 
 const defaultNoteTitle = "Untitled";
 
-const FolderMenuToggle = React.forwardRef(({ onClick }, ref) => (
-  <span
-    ref={ref}
-    onClick={(e) => {
-      e.preventDefault();
-      onClick(e);
-    }}
-    className="badge rounded-pill float-end mt-2"
-  >
-    <svg
-      role="graphics-symbol"
-      viewBox="0 0 13 3"
-      className="dots"
-      style={{
-        width: "14px",
-        height: "100%",
-        display: "block",
-        fill: "rgba(55, 53, 47, 0.45)",
-        flexShrink: "0",
-      }}
-    >
-      <g>
-        <path d="M3,1.5A1.5,1.5,0,1,1,1.5,0,1.5,1.5,0,0,1,3,1.5Z"></path>
-        <path d="M8,1.5A1.5,1.5,0,1,1,6.5,0,1.5,1.5,0,0,1,8,1.5Z"></path>
-        <path d="M13,1.5A1.5,1.5,0,1,1,11.5,0,1.5,1.5,0,0,1,13,1.5Z"></path>
-      </g>
-    </svg>
-  </span>
-));
+// const FolderMenuToggle = React.forwardRef(({ onClick }, ref) => (
+//   <span
+//     ref={ref}
+//     onClick={(e) => {
+//       e.preventDefault();
+//       onClick(e);
+//     }}
+//     className="badge rounded-pill float-end mt-2"
+//   >
+//     <svg
+//       role="graphics-symbol"
+//       viewBox="0 0 13 3"
+//       className="dots"
+//       style={{
+//         width: "14px",
+//         height: "100%",
+//         display: "block",
+//         fill: "rgba(55, 53, 47, 0.45)",
+//         flexShrink: "0",
+//       }}
+//     >
+//       <g>
+//         <path d="M3,1.5A1.5,1.5,0,1,1,1.5,0,1.5,1.5,0,0,1,3,1.5Z"></path>
+//         <path d="M8,1.5A1.5,1.5,0,1,1,6.5,0,1.5,1.5,0,0,1,8,1.5Z"></path>
+//         <path d="M13,1.5A1.5,1.5,0,1,1,11.5,0,1.5,1.5,0,0,1,13,1.5Z"></path>
+//       </g>
+//     </svg>
+//   </span>
+// ));
 
 const UserMenuToggle = React.forwardRef(({ onClick }, ref) => (
   <span className="btn" onClick={onClick}>

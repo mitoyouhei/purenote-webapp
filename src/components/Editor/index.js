@@ -9,12 +9,40 @@ import { $createParagraphNode, $createTextNode, $getRoot } from "lexical";
 
 import theme from "./theme";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { useEffect } from "react";
-// import ToolbarPlugin from "./plugins/ToolbarPlugin";
+import { useEffect, useRef, useState } from "react";
+import ToolbarPlugin from "./ToolbarPlugin";
+import { updateNoteTitle } from "../../websocket";
 // import TreeViewPlugin from "./plugins/TreeViewPlugin";
 
 const placeholder = "Enter some rich text...";
 const defaultEmptyText = "";
+const defaultNoteTitle = "Untitled";
+
+const TitleInput = ({ id, initTitle }) => {
+  const [title, setTitle] = useState(initTitle ?? "");
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current && !initTitle) {
+      inputRef.current.focus();
+    }
+  }, [initTitle]);
+
+  function onTitleChange(e) {
+    setTitle(e.target.value);
+    updateNoteTitle(id, e.target.value);
+  }
+  return (
+    <input
+      ref={inputRef}
+      className="input-title"
+      type="text"
+      value={title}
+      onChange={onTitleChange}
+      placeholder={defaultNoteTitle}
+    />
+  );
+};
 
 function OnChangePlugin({ onChange }) {
   const [editor] = useLexicalComposerContext();
@@ -68,6 +96,8 @@ export default function Editor({
   onChange,
   initialEditorStateJSON,
   autoFocus,
+  id,
+  initTitle,
 }) {
   const editorConfig = {
     nodes: [],
@@ -95,7 +125,11 @@ export default function Editor({
   return (
     <LexicalComposer initialConfig={editorConfig}>
       <div className="editor-container form-control">
-        {/* <ToolbarPlugin /> */}
+        <ToolbarPlugin />
+        <h1>
+          <TitleInput id={id} initTitle={initTitle} />
+        </h1>
+
         <div className="editor-inner">
           <RichTextPlugin
             contentEditable={
