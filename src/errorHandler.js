@@ -23,8 +23,9 @@ export function globalErrorHandler(error, reference) {
     console.warn("🚀 ~ global error log " + reference, json);
   } catch (error) {
     console.error(error);
+  } finally {
+    return false;
   }
-  return true;
 }
 
 window.onerror = function (message, source, lineno, colno, error) {
@@ -57,7 +58,6 @@ export class ErrorBoundary extends React.Component {
   }
 
   static getDerivedStateFromError(error) {
-    // 更新 state 以触发下一次渲染时显示回退 UI
     return { hasError: true };
   }
 
@@ -69,10 +69,35 @@ export class ErrorBoundary extends React.Component {
   }
 
   render() {
-    // if (this.state.hasError) {
-    //   // 你可以自定义回退 UI
-    //   return <h1>Something went wrong.</h1>;
-    // }
+    if (this.state.hasError) {
+      return (
+        <>
+          <nav className="navbar  bg-body-tertiary">
+            <div className="container-fluid">
+              <a className="navbar-brand" href="/">
+                <img
+                  src="/logo-name.png"
+                  alt="Just Note"
+                  style={{ width: 180 }}
+                ></img>
+              </a>
+              <div>
+                <a href="/login" className="btn btn-primary me-2">
+                  Login
+                </a>
+                <a href="/register" className="btn btn-primary me-2">
+                  Register
+                </a>
+              </div>
+            </div>
+          </nav>
+          <div className="container text-center m-5">
+            <h1>Something went wrong.</h1>
+            <p>Please try again or contact support if the problem persists.</p>
+          </div>
+        </>
+      );
+    }
 
     return this.props.children;
   }
