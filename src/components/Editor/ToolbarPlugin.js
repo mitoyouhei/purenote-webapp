@@ -1,10 +1,3 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
 import {
   $isListNode,
   INSERT_ORDERED_LIST_COMMAND,
@@ -13,17 +6,23 @@ import {
   REMOVE_LIST_COMMAND,
 } from "@lexical/list";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $createHeadingNode, $isHeadingNode } from "@lexical/rich-text";
+import {
+  $createHeadingNode,
+  $createQuoteNode,
+  $isHeadingNode,
+  $isQuoteNode,
+} from "@lexical/rich-text";
 import { $setBlocksType } from "@lexical/selection";
 import { mergeRegister } from "@lexical/utils";
 import {
+  $createParagraphNode,
   $getNodeByKey,
   $getSelection,
   $isRangeSelection,
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
   COMMAND_PRIORITY_LOW,
-  // FORMAT_ELEMENT_COMMAND,
+  FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
   REDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
@@ -31,16 +30,18 @@ import {
 } from "lexical";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  // FaAlignCenter,
-  // FaAlignJustify,
-  // FaAlignLeft,
-  // FaAlignRight,
+  FaAlignCenter,
+  FaAlignJustify,
+  FaAlignLeft,
+  FaAlignRight,
   FaArrowRotateLeft,
   FaArrowRotateRight,
   FaBold,
   FaItalic,
   FaList,
-  FaParagraph,
+  FaListOl,
+  FaQuoteLeft,
+  // FaParagraph,
   FaStrikethrough,
   FaUnderline,
 } from "react-icons/fa6";
@@ -61,6 +62,11 @@ export default function ToolbarPlugin() {
   const [isUnderline, setIsUnderline] = useState(false);
   const [isStrikethrough, setIsStrikethrough] = useState(false);
 
+  const [isOl, setIsOl] = useState(false);
+  const [isUl, setIsUl] = useState(false);
+  const [headerIndex, setHeaderIndex] = useState(0);
+  const [isQuote, setIsQuote] = useState(false);
+
   const $updateToolbar = useCallback(() => {
     const selection = $getSelection();
     if ($isRangeSelection(selection)) {
@@ -69,6 +75,18 @@ export default function ToolbarPlugin() {
       setIsItalic(selection.hasFormat("italic"));
       setIsUnderline(selection.hasFormat("underline"));
       setIsStrikethrough(selection.hasFormat("strikethrough"));
+
+      const anchorNode = selection.anchor.getNode();
+      const element = anchorNode.getTopLevelElementOrThrow();
+      const elementKey = element.getKey();
+      const node = $getNodeByKey(elementKey);
+
+      setIsQuote($isQuoteNode(node));
+      setIsOl($isListNode(node) && node.getTag() === "ol");
+      setIsUl($isListNode(node) && node.getTag() === "ul");
+      setHeaderIndex(
+        $isHeadingNode(node) ? parseInt(node.getTag().slice(1)) : 0
+      );
     }
   }, []);
 
@@ -114,6 +132,23 @@ export default function ToolbarPlugin() {
     );
   }, [editor, $updateToolbar]);
 
+  const toggleQuote = (command) => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        const anchorNode = selection.anchor.getNode();
+        const element = anchorNode.getTopLevelElementOrThrow();
+        const elementKey = element.getKey();
+        const node = $getNodeByKey(elementKey);
+
+        if ($isQuoteNode(node)) {
+          return $setBlocksType(selection, () => $createParagraphNode());
+        } else {
+          return $setBlocksType(selection, () => $createQuoteNode());
+        }
+      }
+    });
+  };
   const toggleList = (command) => {
     editor.update(() => {
       const selection = $getSelection();
@@ -124,7 +159,20 @@ export default function ToolbarPlugin() {
         const node = $getNodeByKey(elementKey);
 
         if ($isListNode(node)) {
-          editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
+          if (
+            node.getTag() === "ol" &&
+            INSERT_ORDERED_LIST_COMMAND === command
+          ) {
+            editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
+          } else if (
+            node.getTag() === "ul" &&
+            INSERT_UNORDERED_LIST_COMMAND === command
+          ) {
+            editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
+          } else {
+            editor.dispatchCommand(command, undefined);
+          }
+          // editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
         } else {
           editor.dispatchCommand(command, undefined);
         }
@@ -136,25 +184,17 @@ export default function ToolbarPlugin() {
     editor.update(() => {
       const selection = $getSelection();
       if ($isRangeSelection(selection)) {
-        // $setBlocksType(selection, () => $createHeadingNode(targetHead));
-        if (level === 0) {
+        const anchorNode = selection.anchor.getNode();
+        const element = anchorNode.getTopLevelElementOrThrow();
+        const elementKey = element.getKey();
+        const node = $getNodeByKey(elementKey);
+        if ($isHeadingNode(node) && node.getTag() === targetHead) {
+          return $setBlocksType(selection, () => $createParagraphNode());
+        } else {
           return $setBlocksType(selection, () =>
             $createHeadingNode(targetHead)
           );
         }
-        const nodes = selection.getNodes();
-        nodes.forEach((node) => {
-          if ($isHeadingNode(node)) {
-            const currentLevel = node.getTag();
-            if (currentLevel === targetHead) {
-              node.replace($createHeadingNode("p"));
-            } else {
-              $setBlocksType(selection, () => $createHeadingNode(targetHead));
-            }
-          } else {
-            $setBlocksType(selection, () => $createHeadingNode(targetHead));
-          }
-        });
       }
     });
   };
@@ -218,7 +258,7 @@ export default function ToolbarPlugin() {
       >
         <FaStrikethrough />
       </button>
-      {/* <Divider />
+      <Divider />
       <button
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
@@ -254,13 +294,13 @@ export default function ToolbarPlugin() {
         aria-label="Justify Align"
       >
         <FaAlignJustify />
-      </button> */}
+      </button>
       <Divider />
       <button
         onClick={() => {
           toggleList(INSERT_UNORDERED_LIST_COMMAND);
         }}
-        className="toolbar-item spaced"
+        className={"toolbar-item spaced " + (isUl ? "active" : "")}
         aria-label="Unordered List"
       >
         <FaList />
@@ -269,15 +309,18 @@ export default function ToolbarPlugin() {
         onClick={() => {
           toggleList(INSERT_ORDERED_LIST_COMMAND);
         }}
-        className="toolbar-item spaced"
+        className={"toolbar-item spaced " + (isOl ? "active" : "")}
         aria-label="Ordered List"
       >
-        <FaList />
+        <FaListOl />
       </button>
       <Divider />
       {[1, 2, 3, 4, 5, 6].map((level) => (
         <button
-          className={"toolbar-item spaced "}
+          key={level}
+          className={
+            "toolbar-item spaced " + (headerIndex === level ? "active" : "")
+          }
           onClick={() => toggleHeading(level)}
         >
           H{level}
@@ -285,10 +328,10 @@ export default function ToolbarPlugin() {
       ))}
 
       <button
-        className={"toolbar-item spaced " + (isItalic ? "active" : "")}
-        onClick={() => toggleHeading(0)}
+        className={"toolbar-item spaced " + (isQuote ? "active" : "")}
+        onClick={() => toggleQuote()}
       >
-        <FaParagraph />
+        <FaQuoteLeft />
       </button>
     </div>
   );

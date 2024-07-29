@@ -278,7 +278,7 @@ pre::-webkit-scrollbar-thumb {
 }
 
 .toolbar button.toolbar-item.active {
-    background-color: rgba(223, 232, 250, 0.3);
+    background-color: #eee;
 }
 
 .toolbar button.toolbar-item.active i {
