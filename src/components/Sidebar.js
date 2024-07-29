@@ -49,7 +49,8 @@ const UserMenuToggle = React.forwardRef(({ onClick }, ref) => (
 ));
 
 const NavItem = ({ folder, isActive }) => {
-  const date = DateTime.fromISO(folder.createdAt);
+  // const createdAt = DateTime.fromISO(folder.createdAt);
+  const updatedAt = DateTime.fromISO(folder.updatedAt);
 
   return (
     <Link
@@ -75,7 +76,7 @@ const NavItem = ({ folder, isActive }) => {
         </Dropdown> */}
       </div>
       <small className="fw-lighter" style={{ fontSize: ".675em" }}>
-        {date.toFormat("MM/dd")}
+        {updatedAt.toFormat("MMM/dd HH:mm")}
       </small>
       {/* <small>{date.toFormat("yyyy-MM-dd HH:mm:ss")}</small> */}
     </Link>
