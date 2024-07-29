@@ -57,10 +57,7 @@ const App = () => {
                     >
                       <Sidebar />
                     </div>
-                    <div
-                      className="col-md-9 h-100"
-                      style={{ overflow: "auto" }}
-                    >
+                    <div className="col-md-9 h-100 p-0">
                       <Note />
                     </div>
                   </div>

@@ -1,20 +1,13 @@
 .editor-container {
-    /* margin: 20px;
-    border-radius: 2px; */
-    /* max-width: 600px; */
-    border: 0;
-    color: #000;
-    position: relative;
-    line-height: 20px;
-    font-weight: 400;
+    line-height: 18px;
     text-align: left;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    padding-top: 40px;
 }
 
 .editor-inner {
     background: #fff;
     position: relative;
+    overflow: auto;
 }
 
 .editor-input {
@@ -238,9 +231,9 @@ pre::-webkit-scrollbar-thumb {
     margin-bottom: 1px;
     background: #fff;
     padding: 4px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
     vertical-align: middle;
+    width: 100%;
+        border-bottom: 1px solid #eee;
 }
 
 .toolbar button.toolbar-item {

@@ -200,7 +200,7 @@ export default function ToolbarPlugin() {
   };
 
   return (
-    <div className="toolbar" ref={toolbarRef}>
+    <div className="toolbar position-absolute top-0 z-1" ref={toolbarRef}>
       <button
         disabled={!canUndo}
         onClick={() => {

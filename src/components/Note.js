@@ -49,15 +49,13 @@ const Note = () => {
   if (!note || !id) return <Spinner />;
 
   return (
-    <>
-      <Editor
-        onChange={onChange}
-        initialEditorStateJSON={note.content ? note.content : null}
-        autoFocus={false}
-        id={id}
-        initTitle={note.title}
-      />
-    </>
+    <Editor
+      onChange={onChange}
+      initialEditorStateJSON={note.content ? note.content : null}
+      autoFocus={false}
+      id={id}
+      initTitle={note.title}
+    />
   );
 };
 

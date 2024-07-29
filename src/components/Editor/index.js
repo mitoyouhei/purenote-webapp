@@ -157,13 +157,12 @@ export default function Editor({
   }
   return (
     <LexicalComposer initialConfig={editorConfig}>
-      <div className="editor-container form-control">
+      <div className="editor-container position-relative h-100">
         <ToolbarPlugin />
-        <h1>
-          <TitleInput id={id} initTitle={initTitle} />
-        </h1>
-
-        <div className="editor-inner">
+        <div className="editor-inner h-100">
+          <h1>
+            <TitleInput id={id} initTitle={initTitle} />
+          </h1>
           <RichTextPlugin
             contentEditable={
               <ContentEditable
