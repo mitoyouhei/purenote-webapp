@@ -128,9 +128,10 @@ const initializeEmptyEditorState = () => {
 };
 export default function Editor({
   onChange,
-  initialEditorStateJSON,
+  initialEditorStateJSONString,
   autoFocus,
   id,
+  updatedAt,
   initTitle,
 }) {
   const editorConfig = {
@@ -142,24 +143,45 @@ export default function Editor({
     theme,
     editorState: (editor) => {
       editor.update(() => {
-        if (initialEditorStateJSON) {
-          initializeEditorState(editor, initialEditorStateJSON);
+        if (initialEditorStateJSONString) {
+          initializeEditorState(editor, initialEditorStateJSONString);
         } else {
           initializeEmptyEditorState();
         }
       });
     },
   };
+  const previousEditorStateRef = useRef(
+    JSON.parse(initialEditorStateJSONString)
+  );
+
   function onEditorStateChange(editorState) {
-    const editorStateJSON = editorState.toJSON();
-    // console.log(JSON.stringify(editorStateJSON));
-    onChange(editorStateJSON);
+    editorState.read(() => {
+      const currentContent = editorState.toJSON();
+
+      // check content changed or note
+      if (previousEditorStateRef.current) {
+        const previousContent = previousEditorStateRef.current;
+        if (
+          JSON.stringify(currentContent) === JSON.stringify(previousContent)
+        ) {
+          // content no change, nothing happen
+          return;
+        }
+      }
+      previousEditorStateRef.current = editorState.toJSON();
+      onChange(currentContent);
+    });
   }
   return (
     <LexicalComposer initialConfig={editorConfig}>
-      <div className="editor-container position-relative h-100">
+      <div
+        className="editor-container position-relative h-100"
+        style={{ paddingTop: "40px" }}
+      >
         <ToolbarPlugin />
-        <div className="editor-inner h-100">
+        <div className="editor-status-info p-1 text-center">{updatedAt}</div>
+        <div className="editor-inner h-100 px-5 pt-2">
           <h1>
             <TitleInput id={id} initTitle={initTitle} />
           </h1>

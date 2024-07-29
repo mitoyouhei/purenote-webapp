@@ -1,3 +1,4 @@
+import "./ToolbarPlugin.css";
 import {
   $isListNode,
   INSERT_ORDERED_LIST_COMMAND,
