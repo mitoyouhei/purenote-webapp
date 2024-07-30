@@ -13,8 +13,11 @@ import { setNotes } from "../slices/notes";
 
 const NoteInner = ({ id, note }) => {
   function onChange(editorStateJSON) {
-    store.dispatch(setNotes({ ...note, updatedAt: new Date().toISOString() }));
-    updateNote(id, JSON.stringify(editorStateJSON));
+    const content = JSON.stringify(editorStateJSON);
+    store.dispatch(
+      setNotes({ ...note, content, updatedAt: new Date().toISOString() })
+    );
+    updateNote(id, content);
   }
   const updatedAt = DateTime.fromISO(note.updatedAt);
   return (
