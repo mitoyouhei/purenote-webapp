@@ -40,6 +40,21 @@ const Note = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const handleSaveShortcut = (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+        event.preventDefault();
+        console.log("Save shortcut triggered");
+      }
+    };
+
+    document.addEventListener("keydown", handleSaveShortcut);
+
+    return () => {
+      document.removeEventListener("keydown", handleSaveShortcut);
+    };
+  }, []);
+  
+  useEffect(() => {
     const fetchNote = async () => {
       const fetchedNote = await getNote(id);
 

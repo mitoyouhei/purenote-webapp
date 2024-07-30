@@ -70,7 +70,10 @@ const App = () => {
                     >
                       <Sidebar />
                     </div>
-                    <div className="col-md-9 h-100 p-0">
+                    <div
+                      className="col-md-9 h-100 px-0"
+                      style={{ paddingBottom: "29px" }}
+                    >
                       <Note />
                     </div>
                   </div>
