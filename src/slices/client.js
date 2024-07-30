@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = { socketConnected: false };
+const initialState = { socketConnected: false, errorMessage: null };
 const client = createSlice({
   name: "client",
   initialState,
@@ -11,8 +11,14 @@ const client = createSlice({
         socketConnected: action.payload,
       };
     },
+    setErrorMessage: (state, action) => {
+      return {
+        ...state,
+        errorMessage: action.payload,
+      };
+    },
   },
 });
 
-export const { setSocketConnected } = client.actions;
+export const { setSocketConnected, setErrorMessage } = client.actions;
 export default client;

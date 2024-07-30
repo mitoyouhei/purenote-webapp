@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { login, connectSocket } from "../websocket";
 import { store } from "../store";
 import { setUser } from "../slices/user";
+import { useSelector } from "react-redux";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -11,6 +12,15 @@ const Login = () => {
 
   const inputRef = useRef(null);
   const navigate = useNavigate();
+
+  const user = useSelector((state) => state.user);
+  const client = useSelector((state) => state.client);
+
+  useEffect(() => {
+    if (user.token && client.socketConnected) {
+      navigate("/");
+    }
+  }, [navigate, user, client]);
 
   useEffect(() => {
     if (inputRef.current) {

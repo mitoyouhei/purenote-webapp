@@ -1,5 +1,7 @@
 import axios from "axios";
 import React from "react";
+import { store } from "./store";
+import { setErrorMessage } from "./slices/client";
 
 async function errorLog(error) {
   await axios.post(
@@ -16,9 +18,11 @@ export function errorToJSON(error) {
     ...error,
   };
 }
+
 export function globalErrorHandler(error, reference) {
   try {
     const json = errorToJSON(error);
+    store.dispatch(setErrorMessage(json.message));
     errorLog(json);
     console.warn("🚀 ~ global error log " + reference, json);
   } catch (error) {

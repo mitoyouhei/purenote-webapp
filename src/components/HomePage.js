@@ -5,7 +5,11 @@ const HomePage = () => {
     <>
       <div
         className="text-center"
-        style={{ backgroundColor: "#f5e6c7", padding: 100 }}
+        style={{
+          backgroundColor: "#f5e6c7",
+          padding: 100,
+          boxShadow: "rgb(65 65 65 / 20%) 0px 0px 20px 0px",
+        }}
       >
         <img
           src="/full-logo-w800.png"
@@ -14,10 +18,7 @@ const HomePage = () => {
           style={{ width: 500 }}
         />
       </div>
-      <div
-        className="text-center p-5"
-        style={{ boxShadow: "rgba(0, 0, 0, 0.2) 0px 0px 13px 4px inset" }}
-      >
+      <div className="text-center p-5">
         <h1 className="p-5">
           Writing, Thinking, Creating - No Need for Complexity!
         </h1>
@@ -30,7 +31,11 @@ const HomePage = () => {
 
       <div
         className="text-center"
-        style={{ backgroundColor: "#f5e6c7", padding: 100 }}
+        style={{
+          backgroundColor: "#f5e6c7",
+          padding: 100,
+          boxShadow: "rgb(65 65 65 / 20%) 0px 0px 20px 0px",
+        }}
       >
         <div className="container-fluid">
           <div className="row">
@@ -58,10 +63,7 @@ const HomePage = () => {
         <img src="/app-sample.png" alt="nature" className="img-fluid" />
       </div>
 
-      <div
-        className="text-center p-5"
-        style={{ boxShadow: "rgba(0, 0, 0, 0.2) 0px 0px 13px 4px inset" }}
-      >
+      <div className="text-center p-5">
         <h1 className="p-5">Open Source</h1>
         <p className="mx-auto pb-5" style={{ maxWidth: 700 }}>
           All Just Note code will be open source, inviting developers to

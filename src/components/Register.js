@@ -5,12 +5,21 @@ import { useNavigate } from "react-router-dom";
 import { register, connectSocket } from "../websocket";
 import { store } from "../store";
 import { setUser } from "../slices/user";
+import { useSelector } from "react-redux";
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const inputRef = useRef(null);
+  const user = useSelector((state) => state.user);
+  const client = useSelector((state) => state.client);
+
+  useEffect(() => {
+    if (user.token && client.socketConnected) {
+      navigate("/");
+    }
+  }, [navigate, user, client]);
 
   useEffect(() => {
     if (inputRef.current) {
