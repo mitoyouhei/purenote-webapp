@@ -1,8 +1,6 @@
 // src/components/Login.js
-import React, { useState } from "react";
-// import { useDispatch } from "react-redux";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { loginUser } from "../actions";
 import { login, connectSocket } from "../websocket";
 import { store } from "../store";
 import { setUser } from "../slices/user";
@@ -10,8 +8,15 @@ import { setUser } from "../slices/user";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  // const dispatch = useDispatch();
+
+  const inputRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,12 +31,18 @@ const Login = () => {
   };
 
   return (
-    <div className="container">
+    <div
+      className="container my-5"
+      style={{
+        maxWidth: "500px",
+      }}
+    >
       <h1>Login</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="username">Username</label>
           <input
+            ref={inputRef}
             type="email"
             className="form-control"
             id="username"

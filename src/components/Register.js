@@ -1,5 +1,5 @@
 // src/components/Register.js
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { register, connectSocket } from "../websocket";
@@ -10,6 +10,13 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,12 +28,18 @@ const Register = () => {
   };
 
   return (
-    <div className="container">
+    <div
+      className="container my-5"
+      style={{
+        maxWidth: "500px",
+      }}
+    >
       <h1>Register</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="username">Username</label>
           <input
+            ref={inputRef}
             type="email"
             className="form-control"
             id="username"

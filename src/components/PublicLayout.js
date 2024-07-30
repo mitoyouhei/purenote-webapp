@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const PublicLayout = ({ children }) => {
   return (
     <>
-      <nav className="navbar  bg-body-tertiary">
+      <nav className="navbar" style={{ backgroundColor: "#f5e6c7" }}>
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">
             <img
