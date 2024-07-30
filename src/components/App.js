@@ -46,6 +46,14 @@ const App = () => {
           />
           <Route path="/" element={<RootLandingPage />} />
           <Route
+            path="/homepage"
+            element={
+              <PublicLayout>
+                <HomePage />
+              </PublicLayout>
+            }
+          />
+          <Route
             path="/note/:id"
             element={
               <PrivateRoute>
