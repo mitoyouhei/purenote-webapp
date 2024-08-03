@@ -22,6 +22,9 @@ import { ListItemNode, ListNode } from "@lexical/list";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { globalErrorHandler } from "../../errorHandler";
+import { store } from "../../store";
+import { setNotes } from "../../slices/notes";
+import { useSelector } from "react-redux";
 
 const placeholder = "Enter some rich text...";
 const defaultEmptyText = "";
@@ -30,6 +33,8 @@ const defaultNoteTitle = "Untitled";
 const TitleInput = ({ id, initTitle }) => {
   const [title, setTitle] = useState(initTitle ?? "");
   const inputRef = useRef(null);
+  const notes = useSelector((state) => state.notes);
+  const note = notes[id];
 
   useEffect(() => {
     if (inputRef.current && !initTitle) {
@@ -39,6 +44,14 @@ const TitleInput = ({ id, initTitle }) => {
 
   function onTitleChange(e) {
     setTitle(e.target.value);
+
+    store.dispatch(
+      setNotes({
+        ...note,
+        updatedAt: new Date().toISOString(),
+        title: e.target.value,
+      })
+    );
     updateNoteTitle(id, e.target.value);
   }
   return (
