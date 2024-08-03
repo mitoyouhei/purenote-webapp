@@ -18,11 +18,15 @@ export function errorToJSON(error) {
     ...error,
   };
 }
-
+let errorMessageTimer = null;
 export function globalErrorHandler(error, reference) {
   try {
     const json = errorToJSON(error);
     store.dispatch(setErrorMessage(json.message));
+    clearTimeout(errorMessageTimer);
+    errorMessageTimer = setTimeout(() => {
+      store.dispatch(setErrorMessage(null));
+    }, 10000);
     errorLog(json);
     console.warn("🚀 ~ global error log " + reference, json);
   } catch (error) {
