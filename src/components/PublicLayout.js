@@ -1,12 +1,17 @@
 import React from "react";
+import { Container, Nav, Navbar, Offcanvas } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const PublicLayout = ({ children }) => {
   return (
     <div className="wrapper">
       <div className="content">
-        <nav className="navbar" style={{ backgroundColor: "#f5e6c7" }}>
-          <div className="container-fluid">
+        <Navbar
+          collapseOnSelect
+          expand="sm"
+          style={{ backgroundColor: "#f5e6c7" }}
+        >
+          <Container fluid>
             <Link className="navbar-brand" to="/">
               <img
                 src="/logo-name.png"
@@ -14,16 +19,29 @@ const PublicLayout = ({ children }) => {
                 style={{ width: 180 }}
               ></img>
             </Link>
-            <div>
-              <Link to="/login" className="btn btn-primary me-2">
-                Login
-              </Link>
-              <Link to="/register" className="btn btn-primary me-2">
-                Register
-              </Link>
-            </div>
-          </div>
-        </nav>
+            <Navbar.Toggle />
+            <Navbar.Offcanvas style={{ width: "300px" }} placement="end">
+              <Offcanvas.Header closeButton>
+                <img
+                  src="/logo-name.png"
+                  alt="Just Note"
+                  style={{ width: 180 }}
+                ></img>
+              </Offcanvas.Header>
+              <Offcanvas.Body className="flex-row-reverse">
+                <Nav>
+                  <Link to="/login" className="btn btn-primary me-2">
+                    Login
+                  </Link>
+                  <Link to="/register" className="btn btn-primary me-2">
+                    Register
+                  </Link>
+                </Nav>
+              </Offcanvas.Body>
+            </Navbar.Offcanvas>
+          </Container>
+        </Navbar>
+
         {children}
       </div>
       <footer className="footer text-center text-lg-start border-top">

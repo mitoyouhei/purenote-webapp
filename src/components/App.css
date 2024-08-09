@@ -42,3 +42,6 @@ body {
     margin: 0 10px;
     color: #495057;
 }
+body>.offcanvas .navbar-nav a {
+    margin: 10px;
+}
