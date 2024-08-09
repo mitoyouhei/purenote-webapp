@@ -203,7 +203,7 @@ export default function ToolbarPlugin({ showFolderListNav }) {
   };
 
   return (
-    <div className="toolbar position-fixed top-0 z-1" ref={toolbarRef}>
+    <div className="toolbar position-sticky top-0 z-1" ref={toolbarRef}>
       {showFolderListNav ? (
         <Link
           to="/folders"

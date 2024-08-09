@@ -189,7 +189,7 @@ export default function Editor({
   }
   return (
     <LexicalComposer initialConfig={editorConfig}>
-      <div className="editor-container position-relative h-100" style={{}}>
+      <div className="editor-container position-relative h-100">
         <ToolbarPlugin showFolderListNav={showFolderListNav} />
         <div className="editor-status-info px-5 py-1 text-center">
           {updatedAt}

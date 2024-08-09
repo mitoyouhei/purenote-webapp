@@ -6,6 +6,8 @@
     vertical-align: middle;
     width: 100%;
     border-bottom: 1px solid #eee;
+    flex-wrap: wrap;
+        justify-content: center;
 }
 
 .toolbar .toolbar-item {
