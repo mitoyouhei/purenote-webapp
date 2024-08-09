@@ -46,6 +46,8 @@ import {
   FaStrikethrough,
   FaUnderline,
 } from "react-icons/fa6";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { Link } from "react-router-dom";
 
 const LowPriority = 1;
 
@@ -53,7 +55,7 @@ function Divider() {
   return <div className="divider" />;
 }
 
-export default function ToolbarPlugin() {
+export default function ToolbarPlugin({ showFolderListNav }) {
   const [editor] = useLexicalComposerContext();
   const toolbarRef = useRef(null);
   const [canUndo, setCanUndo] = useState(false);
@@ -201,7 +203,16 @@ export default function ToolbarPlugin() {
   };
 
   return (
-    <div className="toolbar position-absolute top-0 z-1" ref={toolbarRef}>
+    <div className="toolbar position-fixed top-0 z-1" ref={toolbarRef}>
+      {showFolderListNav ? (
+        <Link
+          to="/folders"
+          className="toolbar-item spaced active me-3"
+          aria-label="Redo"
+        >
+          <IoMdArrowRoundBack />
+        </Link>
+      ) : null}
       <button
         disabled={!canUndo}
         onClick={() => {

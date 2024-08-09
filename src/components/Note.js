@@ -11,7 +11,7 @@ import { setNotes } from "../slices/notes";
 
 // import TitleEditor from "./TitleEditor";
 
-const NoteInner = ({ id, note }) => {
+const NoteInner = ({ id, note, showFolderListNav }) => {
   function onChange(editorStateJSON) {
     const content = JSON.stringify(editorStateJSON);
     store.dispatch(
@@ -22,6 +22,7 @@ const NoteInner = ({ id, note }) => {
   const updatedAt = DateTime.fromISO(note.updatedAt);
   return (
     <Editor
+      showFolderListNav={showFolderListNav}
       onChange={onChange}
       initialEditorStateJSONString={note.content ? note.content : null}
       autoFocus={false}
@@ -32,7 +33,7 @@ const NoteInner = ({ id, note }) => {
   );
 };
 
-const Note = () => {
+const Note = ({ showFolderListNav }) => {
   const { id } = useParams();
   const notes = useSelector((state) => state.notes);
   const note = notes[id];
@@ -53,7 +54,7 @@ const Note = () => {
       document.removeEventListener("keydown", handleSaveShortcut);
     };
   }, []);
-  
+
   useEffect(() => {
     const fetchNote = async () => {
       const fetchedNote = await getNote(id);
@@ -81,7 +82,14 @@ const Note = () => {
   }, [id, folders, navigate]);
 
   if (!note || !id) return <Spinner />;
-  return <NoteInner key={id} id={id} note={note} />;
+  return (
+    <NoteInner
+      showFolderListNav={showFolderListNav}
+      key={id}
+      id={id}
+      note={note}
+    />
+  );
 };
 
 export default Note;

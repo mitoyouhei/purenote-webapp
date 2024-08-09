@@ -140,6 +140,7 @@ const initializeEmptyEditorState = () => {
   }
 };
 export default function Editor({
+  showFolderListNav,
   onChange,
   initialEditorStateJSONString,
   autoFocus,
@@ -188,13 +189,12 @@ export default function Editor({
   }
   return (
     <LexicalComposer initialConfig={editorConfig}>
-      <div
-        className="editor-container position-relative h-100"
-        style={{ paddingTop: "40px" }}
-      >
-        <ToolbarPlugin />
-        <div className="editor-status-info p-1 text-center">{updatedAt}</div>
-        <div className="editor-inner h-100 px-5 pt-2">
+      <div className="editor-container position-relative h-100" style={{}}>
+        <ToolbarPlugin showFolderListNav={showFolderListNav} />
+        <div className="editor-status-info px-5 py-1 text-center">
+          {updatedAt}
+        </div>
+        <div className="editor-inner px-5 pt-2">
           <h1>
             <TitleInput id={id} initTitle={initTitle} />
           </h1>

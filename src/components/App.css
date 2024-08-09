@@ -22,6 +22,7 @@ body {
     border: 0;
     outline: 0;
 }
+
 .notes-list.list-group>.list-group-item .title-row {
     display: flex;
     flex-direction: row;
@@ -44,4 +45,14 @@ body {
 }
 body>.offcanvas .navbar-nav a {
     margin: 10px;
+}
+#siderbar-dragger {
+    width: 7px;
+    cursor: ew-resize;
+    background-color: transparent;
+    opacity: 0;
+}
+
+#siderbar-dragger:hover {
+    opacity: 1;
 }

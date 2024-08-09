@@ -11,6 +11,7 @@ import PublicLayout from "./PublicLayout";
 import SystemInfo from "./SystemInfo";
 import NoteApp from "./NoteApp";
 import ErrorToast from "./ErrorToast";
+import Folders from "./Folders";
 
 const RootLandingPage = () => {
   const user = useSelector((state) => state.user);
@@ -60,6 +61,14 @@ const App = () => {
             element={
               <PrivateRoute>
                 <NoteApp />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/folders"
+            element={
+              <PrivateRoute>
+                <Folders />
               </PrivateRoute>
             }
           />
