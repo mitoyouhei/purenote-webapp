@@ -1,6 +1,7 @@
 .editor-container {
     line-height: 18px;
     text-align: left;
+        overflow: auto;
 }
 
 .editor-status-info {
@@ -15,7 +16,7 @@
 }
 
 .editor-input {
-    min-height: 450px;
+    min-height: 1000px;
     resize: none;
     font-size: 15px;
     caret-color: rgb(5, 5, 5);

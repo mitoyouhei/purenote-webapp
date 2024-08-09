@@ -140,7 +140,10 @@ const Sidebar = () => {
           </div>
         </div>
       </nav>
-      <div className="notes-list list-group" style={{ overflow: "visible" }}>
+      <div
+        className="notes-list list-group px-2"
+        style={{ overflow: "visible" }}
+      >
         {root.children.map((folder) => (
           <NavItem
             key={folder._id}

@@ -2,13 +2,16 @@
     display: flex;
     margin-bottom: 1px;
     background: #fff;
-    padding: 4px;
+    
     vertical-align: middle;
     width: 100%;
     border-bottom: 1px solid #eee;
+    flex-wrap: wrap;
+        justify-content: center;
 }
 
-.toolbar button.toolbar-item {
+.toolbar .toolbar-item {
+    margin: 4px;
     border: 0;
     display: flex;
     background: none;
@@ -17,17 +20,18 @@
     cursor: pointer;
     vertical-align: middle;
     line-height: 16px;
+    color: #212529;
 }
 
-.toolbar button.toolbar-item:disabled {
+.toolbar .toolbar-item:disabled {
     cursor: not-allowed;
 }
 
-.toolbar button.toolbar-item.spaced {
+.toolbar .toolbar-item.spaced {
     margin-right: 2px;
 }
 
-.toolbar button.toolbar-item i.format {
+.toolbar .toolbar-item i.format {
     background-size: contain;
     display: inline-block;
     height: 18px;
@@ -38,15 +42,15 @@
     opacity: 0.6;
 }
 
-.toolbar button.toolbar-item:disabled i.format {
+.toolbar .toolbar-item:disabled i.format {
     opacity: 0.2;
 }
 
-.toolbar button.toolbar-item.active {
+.toolbar .toolbar-item.active {
     background-color: #eee;
 }
 
-.toolbar button.toolbar-item.active i {
+.toolbar .toolbar-item.active i {
     opacity: 1;
 }
 
