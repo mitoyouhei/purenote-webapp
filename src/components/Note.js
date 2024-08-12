@@ -4,9 +4,8 @@ import { useEffect } from "react";
 import { getNote, updateNote } from "../websocket";
 import { store } from "../store";
 import { useSelector } from "react-redux";
-import { buildTree } from "../utils";
+import { buildTree, formatDateTime } from "../utils";
 import Spinner from "./Spinner";
-import { DateTime } from "luxon";
 import { setNotes } from "../slices/notes";
 
 // import TitleEditor from "./TitleEditor";
@@ -19,7 +18,6 @@ const NoteInner = ({ id, note, showFolderListNav }) => {
     );
     updateNote(id, content);
   }
-  const updatedAt = DateTime.fromISO(note.updatedAt);
   return (
     <Editor
       showFolderListNav={showFolderListNav}
@@ -28,7 +26,7 @@ const NoteInner = ({ id, note, showFolderListNav }) => {
       autoFocus={false}
       id={id}
       initTitle={note.title}
-      updatedAt={updatedAt.toFormat("HH:mm")}
+      updatedAt={formatDateTime(note.updatedAt)}
     />
   );
 };

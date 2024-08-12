@@ -2,8 +2,7 @@ import { useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { HiMiniPlus, HiMiniUserCircle, HiTrash } from "react-icons/hi2";
 import { addNote, deleteFolder } from "../websocket";
-import { buildTree } from "../utils";
-import { DateTime } from "luxon";
+import { buildTree, formatDateTime } from "../utils";
 import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import { connectSocket } from "../websocket";
@@ -49,9 +48,6 @@ const UserMenuToggle = React.forwardRef(({ onClick }, ref) => (
 ));
 
 const NavItem = ({ folder, isActive }) => {
-  // const createdAt = DateTime.fromISO(folder.createdAt);
-  const updatedAt = DateTime.fromISO(folder.updatedAt);
-
   return (
     <Link
       className={`list-group-item list-group-item-action my-2 border-1 rounded-1 ${
@@ -76,7 +72,7 @@ const NavItem = ({ folder, isActive }) => {
         </Dropdown> */}
       </div>
       <small className="fw-lighter" style={{ fontSize: ".675em" }}>
-        {updatedAt.toFormat("MMM/dd HH:mm")}
+        {formatDateTime(folder.updatedAt)}
       </small>
       {/* <small>{date.toFormat("yyyy-MM-dd HH:mm:ss")}</small> */}
     </Link>
@@ -109,7 +105,7 @@ const Sidebar = () => {
           <Link className="navbar-brand" to="/">
             <img
               src="/logo-title.png"
-              alt="Just Note"
+              alt="Pure Note"
               style={{ width: 100 }}
             ></img>
           </Link>

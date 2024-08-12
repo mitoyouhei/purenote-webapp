@@ -85,7 +85,7 @@ export class ErrorBoundary extends React.Component {
               <a className="navbar-brand" href="/">
                 <img
                   src="/logo-name.png"
-                  alt="Just Note"
+                  alt="Pure Note"
                   style={{ width: 180 }}
                 ></img>
               </a>
