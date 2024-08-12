@@ -192,7 +192,7 @@ export default function Editor({
       <div className="editor-container position-relative h-100">
         <ToolbarPlugin showFolderListNav={showFolderListNav} />
         <div className="editor-status-info px-5 py-1 text-center">
-          {updatedAt}
+          Last updated at: {updatedAt}
         </div>
         <div className="editor-inner px-5 pt-2">
           <h1>

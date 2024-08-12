@@ -15,7 +15,7 @@ const PublicLayout = ({ children }) => {
             <Link className="navbar-brand" to="/">
               <img
                 src="/logo-name.png"
-                alt="Just Note"
+                alt="Pure Note"
                 style={{ width: 180 }}
               ></img>
             </Link>
@@ -24,7 +24,7 @@ const PublicLayout = ({ children }) => {
               <Offcanvas.Header closeButton>
                 <img
                   src="/logo-name.png"
-                  alt="Just Note"
+                  alt="Pure Note"
                   style={{ width: 180 }}
                 ></img>
               </Offcanvas.Header>
@@ -48,7 +48,7 @@ const PublicLayout = ({ children }) => {
         <div className="container p-5">
           <div className="row">
             <div className="col-lg-6 col-md-6">
-              <h5 className="text-uppercase">Just Note</h5>
+              <h5 className="text-uppercase">Pure Note</h5>
               <p>Writing, Thinking, Creating - No Need for Complexity!</p>
             </div>
 
@@ -89,7 +89,7 @@ const PublicLayout = ({ children }) => {
           className="text-center p-3"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
         >
-          © 2024 Just Note. All rights reserved.
+          © 2024 Pure Note. All rights reserved.
         </div>
       </footer>
     </div>

@@ -23,7 +23,7 @@ const HomePage = () => {
           Writing, Thinking, Creating - No Need for Complexity!
         </h1>
         <p className="fs-4 mx-auto pb-5" style={{ maxWidth: 700 }}>
-          Just Note is a note-taking app focused on simplicity and speed. With
+          Pure Note is a note-taking app focused on simplicity and speed. With
           distraction-free writing mode and cloud synchronization, it helps you
           capture your ideas anytime, anywhere.
         </p>
@@ -66,7 +66,7 @@ const HomePage = () => {
       <div className="text-center p-5">
         <h1 className="p-5">Open Source</h1>
         <p className="mx-auto pb-5" style={{ maxWidth: 700 }}>
-          All Just Note code will be open source, inviting developers to
+          All Pure Note code will be open source, inviting developers to
           contribute, inspect, and enhance the application.
         </p>
         <p className="fs-4 mx-auto pb-5" style={{ maxWidth: 700 }}>

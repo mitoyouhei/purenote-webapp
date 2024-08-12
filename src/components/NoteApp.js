@@ -8,7 +8,7 @@ import { IoIosArrowForward } from "react-icons/io";
 
 const NoteApp = () => {
   const client = useSelector((state) => state.client);
-  const disableSidebar = window.innerWidth < 600;
+  const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
   const [sidebarWidth, setSidebarWidth] = useState(
     disableSidebar ? 0 : client.noteSiderbarWidth
   );
