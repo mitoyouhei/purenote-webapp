@@ -17,7 +17,6 @@ import {
 
 import theme from "./theme";
 import ToolbarPlugin from "./ToolbarPlugin";
-import { updateNoteTitle } from "../../websocket";
 import { ListItemNode, ListNode } from "@lexical/list";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
@@ -25,6 +24,7 @@ import { globalErrorHandler } from "../../errorHandler";
 import { store } from "../../store";
 import { setNotes } from "../../slices/notes";
 import { useSelector } from "react-redux";
+import { updateNoteTitle } from "../../firebase/Collection";
 
 const placeholder = "Enter some rich text...";
 const defaultEmptyText = "";
@@ -49,7 +49,7 @@ const TitleInput = ({ id, initTitle }) => {
       setNotes({
         ...note,
         updatedAt: new Date().toISOString(),
-        title: e.target.value,
+        name: e.target.value,
       })
     );
     updateNoteTitle(id, e.target.value);

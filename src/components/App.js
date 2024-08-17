@@ -1,7 +1,6 @@
 import "./App.css";
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Note from "./Note";
 import Register from "./Register";
 import Login from "./Login";
 import PrivateRoute from "./PrivateRoute";
@@ -15,10 +14,12 @@ import Folders from "./Folders";
 
 const RootLandingPage = () => {
   const user = useSelector((state) => state.user);
-  const client = useSelector((state) => state.client);
+
   // TODO - remove Note as the redirect component
-  return user.token && client.socketConnected ? (
-    <Note />
+  return user ? (
+    <PrivateRoute>
+      <NoteApp />
+    </PrivateRoute>
   ) : (
     <PublicLayout>
       <HomePage />

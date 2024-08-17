@@ -6,7 +6,7 @@ import { setSocketConnected } from "./slices/client";
 import { globalErrorHandler } from "./errorHandler";
 
 let socket = null;
-connectSocket();
+// connectSocket();
 
 export function connectSocket() {
   const token = store.getState().user.token;

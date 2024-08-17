@@ -1,12 +1,16 @@
 import { useNavigate, useParams } from "react-router-dom";
 import Editor from "./Editor";
 import { useEffect } from "react";
-import { getNote, updateNote } from "../websocket";
 import { store } from "../store";
 import { useSelector } from "react-redux";
-import { buildTree, formatDateTime } from "../utils";
+import { formatDateTime } from "../utils";
 import Spinner from "./Spinner";
 import { setNotes } from "../slices/notes";
+import {
+  documentSnapshotToJSON,
+  getNote,
+  updateNoteFile,
+} from "../firebase/Collection";
 
 // import TitleEditor from "./TitleEditor";
 
@@ -14,18 +18,24 @@ const NoteInner = ({ id, note, showFolderListNav }) => {
   function onChange(editorStateJSON) {
     const content = JSON.stringify(editorStateJSON);
     store.dispatch(
-      setNotes({ ...note, content, updatedAt: new Date().toISOString() })
+      setNotes({
+        ...note,
+        file: { ...note.file, content },
+        updatedAt: new Date().toISOString(),
+      })
     );
-    updateNote(id, content);
+    updateNoteFile(id, content);
   }
   return (
     <Editor
       showFolderListNav={showFolderListNav}
       onChange={onChange}
-      initialEditorStateJSONString={note.content ? note.content : null}
+      initialEditorStateJSONString={
+        note.file?.content ? note.file.content : null
+      }
       autoFocus={false}
       id={id}
-      initTitle={note.title}
+      initTitle={note.name}
       updatedAt={formatDateTime(note.updatedAt)}
     />
   );
@@ -33,6 +43,7 @@ const NoteInner = ({ id, note, showFolderListNav }) => {
 
 const Note = ({ showFolderListNav }) => {
   const { id } = useParams();
+  if (!id) throw new Error("Note id is required");
   const notes = useSelector((state) => state.notes);
   const note = notes[id];
   const folders = useSelector((state) => state.folders);
@@ -55,23 +66,17 @@ const Note = ({ showFolderListNav }) => {
 
   useEffect(() => {
     const fetchNote = async () => {
-      const fetchedNote = await getNote(id);
-
-      if (fetchedNote === null) {
-        navigate("/");
-      }
-      store.dispatch(setNotes(fetchedNote));
+      const note = await getNote(id);
+      store.dispatch(setNotes(documentSnapshotToJSON(note)));
     };
     if (id) fetchNote();
   }, [id, navigate]);
 
   useEffect(() => {
     const navigateToFirstNote = () => {
-      const roots = buildTree(folders);
-      const root = roots.length > 0 ? roots[0] : { children: [] };
-      if (root?.children?.length > 0) {
-        const first = root.children[0];
-        navigate(`/note/${first._id}`);
+      if (folders.length > 0) {
+        const first = folders[0];
+        navigate(`/note/${first.id}`);
       }
     };
     if (!id) {

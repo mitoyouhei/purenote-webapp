@@ -5,8 +5,10 @@ import { useSelector } from "react-redux";
 import { store } from "../store";
 import { setNoteSiderbarWidth } from "../slices/client";
 import { IoIosArrowForward } from "react-icons/io";
+import { useParams } from "react-router-dom";
 
 const NoteApp = () => {
+  const { id } = useParams();
   const client = useSelector((state) => state.client);
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
   const [sidebarWidth, setSidebarWidth] = useState(
@@ -60,7 +62,7 @@ const NoteApp = () => {
         className="position-fixed  top-0 start-0 h-100 w-100"
         style={{ paddingLeft: sidebarWidth }}
       >
-        <Note showFolderListNav={disableSidebar} />
+        {id && <Note showFolderListNav={disableSidebar} />}
       </div>
 
       <div

@@ -6,7 +6,7 @@ const notes = createSlice({
   initialState,
   reducers: {
     setNotes: (state, action) => {
-      return { ...state, [action.payload.folderId]: action.payload };
+      return { ...state, [action.payload.id]: action.payload };
     },
   },
 });

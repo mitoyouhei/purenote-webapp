@@ -1,8 +1,14 @@
 import React from "react";
 import { Container, Nav, Navbar, Offcanvas } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { store } from "../store";
+import { logout } from "../slices/user";
+import { auth } from "../firebase";
 
 const PublicLayout = ({ children }) => {
+  const user = useSelector((state) => state.user);
   return (
     <div className="wrapper">
       <div className="content">
@@ -30,12 +36,27 @@ const PublicLayout = ({ children }) => {
               </Offcanvas.Header>
               <Offcanvas.Body className="flex-row-reverse">
                 <Nav>
-                  <Link to="/login" className="btn btn-primary me-2">
-                    Login
-                  </Link>
-                  <Link to="/register" className="btn btn-primary me-2">
-                    Register
-                  </Link>
+                  {user ? (
+                    <button
+                      to="/login"
+                      className="btn btn-primary me-2"
+                      onClick={() => {
+                        store.dispatch(logout());
+                        signOut(auth);
+                      }}
+                    >
+                      Logout
+                    </button>
+                  ) : (
+                    <>
+                      <Link to="/login" className="btn btn-primary me-2">
+                        Login
+                      </Link>
+                      <Link to="/register" className="btn btn-primary me-2">
+                        Register
+                      </Link>
+                    </>
+                  )}
                 </Nav>
               </Offcanvas.Body>
             </Navbar.Offcanvas>

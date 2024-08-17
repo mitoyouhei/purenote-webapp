@@ -4,10 +4,14 @@ import { store } from "./store";
 import { setErrorMessage } from "./slices/client";
 
 async function errorLog(error) {
-  await axios.post(
-    `${process.env.REACT_APP_API_END_POINT_URL}/api/logs`,
-    error
-  );
+  try {
+    await axios.post(
+      `${process.env.REACT_APP_API_END_POINT_URL}/api/logs`,
+      error
+    );
+  } catch (error) {
+    console.error("TODO", error);
+  }
 }
 
 export function errorToJSON(error) {
@@ -19,20 +23,24 @@ export function errorToJSON(error) {
   };
 }
 let errorMessageTimer = null;
+export function setGlobalErrorToast(message, dissmisedAfter) {
+  store.dispatch(setErrorMessage(message));
+  if (isNaN(dissmisedAfter)) return;
+  clearTimeout(errorMessageTimer);
+  errorMessageTimer = setTimeout(() => {
+    store.dispatch(setErrorMessage(null));
+  }, dissmisedAfter);
+}
 export function globalErrorHandler(error, reference) {
   try {
     const json = errorToJSON(error);
-    store.dispatch(setErrorMessage(json.message));
-    clearTimeout(errorMessageTimer);
-    errorMessageTimer = setTimeout(() => {
-      store.dispatch(setErrorMessage(null));
-    }, 10000);
+    setGlobalErrorToast(json.message, 5000);
     errorLog(json);
     console.warn("🚀 ~ global error log " + reference, json);
   } catch (error) {
     console.error(error);
   } finally {
-    return false;
+    return true;
   }
 }
 
@@ -66,7 +74,7 @@ export class ErrorBoundary extends React.Component {
   }
 
   static getDerivedStateFromError(error) {
-    return { hasError: true };
+    return { hasError: true, error };
   }
 
   componentDidCatch(error, errorInfo) {
@@ -99,9 +107,12 @@ export class ErrorBoundary extends React.Component {
               </div>
             </div>
           </nav>
-          <div className="container text-center m-5">
+          <div className="container text-center m-5 d-flex flex-column align-items-center">
             <h1>Something went wrong.</h1>
             <p>Please try again or contact support if the problem persists.</p>
+            <div class="alert alert-danger" role="alert">
+              {this.state.error.message}
+            </div>
           </div>
         </>
       );
