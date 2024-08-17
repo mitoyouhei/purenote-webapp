@@ -2,14 +2,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { register, connectSocket } from "../websocket";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { store } from "../store";
 import { setUser } from "../slices/user";
 import { useSelector } from "react-redux";
+import { auth } from "../firebase";
+import { setGlobalErrorToast } from "../errorHandler";
 
 const Register = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const user = useSelector((state) => state.user);
@@ -29,11 +32,28 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = await register(username, password);
-    console.log("register success", token);
-    store.dispatch(setUser({ token }));
-    connectSocket();
-    navigate("/");
+
+    try {
+      if (password !== confirmPassword) {
+        setGlobalErrorToast("Password do not match");
+        return;
+      }
+
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      console.log("regiest success", userCredential.user);
+      store.dispatch(setUser(userCredential.user.toJSON()));
+      navigate("/");
+    } catch (error) {
+      if (error.name === "FirebaseError") {
+        setGlobalErrorToast(error.message.replace("Firebase: ", ""));
+      } else {
+        throw error;
+      }
+    }
   };
 
   return (
@@ -46,14 +66,13 @@ const Register = () => {
       <h1>Register</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="username">Username</label>
+          <label htmlFor="username">Email</label>
           <input
             ref={inputRef}
             type="email"
             className="form-control"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div className="form-group">
@@ -61,9 +80,17 @@ const Register = () => {
           <input
             type="password"
             className="form-control"
-            id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Confirm Password</label>
+          <input
+            type="password"
+            className="form-control"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </div>
         <button type="submit" className="btn btn-primary mt-2">

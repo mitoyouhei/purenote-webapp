@@ -13,12 +13,15 @@ import NoteApp from "./NoteApp";
 import ErrorToast from "./ErrorToast";
 import Folders from "./Folders";
 
+
 const RootLandingPage = () => {
   const user = useSelector((state) => state.user);
-  const client = useSelector((state) => state.client);
+
   // TODO - remove Note as the redirect component
-  return user.token && client.socketConnected ? (
-    <Note />
+  return user ? (
+    <PublicLayout>
+      <Note />
+    </PublicLayout>
   ) : (
     <PublicLayout>
       <HomePage />

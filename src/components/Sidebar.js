@@ -5,9 +5,10 @@ import { addNote, deleteFolder } from "../websocket";
 import { buildTree, formatDateTime } from "../utils";
 import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
-import { connectSocket } from "../websocket";
+import { signOut } from "firebase/auth";
 import { store } from "../store";
 import { logout } from "../slices/user";
+import { auth } from "../firebase";
 
 const defaultNoteTitle = "Untitled";
 
@@ -114,12 +115,12 @@ const Sidebar = () => {
               <Dropdown.Toggle as={UserMenuToggle} />
 
               <Dropdown.Menu align={{ sm: "end" }}>
-                <Dropdown.Header>{user.username}</Dropdown.Header>
+                <Dropdown.Header>{user.email}</Dropdown.Header>
                 <Dropdown.Divider />
                 <Dropdown.Item
                   onClick={() => {
                     store.dispatch(logout());
-                    connectSocket();
+                    signOut(auth);
                   }}
                 >
                   Logout

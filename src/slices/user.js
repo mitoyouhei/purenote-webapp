@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const localStorageUser = localStorage.getItem("user");
-const initialState = localStorageUser ? JSON.parse(localStorageUser) : {};
+const initialState = localStorageUser ? JSON.parse(localStorageUser) : null;
 const user = createSlice({
   name: "user",
   initialState,
@@ -13,7 +13,7 @@ const user = createSlice({
     },
     logout: (state, action) => {
       localStorage.removeItem("user");
-      return {};
+      return null;
     },
   },
 });

@@ -1,13 +1,15 @@
 // src/components/Login.js
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login, connectSocket } from "../websocket";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { store } from "../store";
 import { setUser } from "../slices/user";
 import { useSelector } from "react-redux";
+import { auth } from "../firebase";
+import { setGlobalErrorToast } from "../errorHandler";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const inputRef = useRef(null);
@@ -17,7 +19,7 @@ const Login = () => {
   const client = useSelector((state) => state.client);
 
   useEffect(() => {
-    if (user.token && client.socketConnected) {
+    if (user) {
       navigate("/");
     }
   }, [navigate, user, client]);
@@ -30,14 +32,25 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = await login(username, password);
-    console.log("login success", token);
-    store.dispatch(setUser({ token }));
-    connectSocket();
-    navigate("/");
-    // dispatch(loginUser(username, password)).then(() => {
-    //   navigate("/");
-    // });
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      console.log("login success", userCredential.user);
+      store.dispatch(setUser(userCredential.user.toJSON()));
+      navigate("/");
+    } catch (error) {
+      if (error.code === "auth/invalid-credential") {
+        setGlobalErrorToast("Invalid email or password");
+      } else if (error.name === "FirebaseError") {
+        setGlobalErrorToast(error.message.replace("Firebase: ", ""));
+      } else {
+        throw error;
+      }
+    }
   };
 
   return (
@@ -50,14 +63,14 @@ const Login = () => {
       <h1>Login</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="username">Username</label>
+          <label htmlFor="username">Email</label>
           <input
             ref={inputRef}
             type="email"
             className="form-control"
             id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div className="form-group">
