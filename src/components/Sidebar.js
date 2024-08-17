@@ -1,14 +1,20 @@
 import { useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { HiMiniPlus, HiMiniUserCircle, HiTrash } from "react-icons/hi2";
-import { addNote, deleteFolder } from "../websocket";
-import { buildTree, formatDateTime } from "../utils";
-import React from "react";
+import { formatDateTime } from "../utils";
+import React, { useEffect } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import { signOut } from "firebase/auth";
 import { store } from "../store";
 import { logout } from "../slices/user";
 import { auth } from "../firebase";
+import {
+  createEmptyNote,
+  deleteNote,
+  documentSnapshotToJSON,
+  onMyFilesystemChange,
+} from "../firebase/Collection";
+import { setFolders } from "../slices/folders";
 
 const defaultNoteTitle = "Untitled";
 
@@ -54,7 +60,7 @@ const NavItem = ({ folder, isActive }) => {
       className={`list-group-item list-group-item-action my-2 border-1 rounded-1 ${
         isActive ? "active" : ""
       }`}
-      to={`/note/${folder._id}`}
+      to={`/note/${folder.id}`}
     >
       <div className="title-row">
         <b>{folder.name ? folder.name : defaultNoteTitle}</b>
@@ -86,19 +92,62 @@ const Sidebar = () => {
   const user = useSelector((state) => state.user);
   const { id } = useParams();
 
+  const sortedFolders = folders.map((folder) => {
+    return {
+      ...folder,
+      updatedAt: folder.updatedAt ?? new Date().toISOString(),
+    };
+  });
   const handleAddNote = async () => {
-    const { folder } = await addNote("", null);
-    navigate(`/note/${folder._id}`);
+    const newNote = await createEmptyNote();
+    navigate(`/note/${newNote.id}`);
   };
 
   const handleDeleteNote = async (e) => {
     e.preventDefault();
-    await deleteFolder(id);
-    navigate("/");
+
+    if (sortedFolders.length === 0) {
+      return;
+    }
+    if (sortedFolders.length === 1) {
+      await deleteNote(id);
+      return;
+    }
+
+    const currentNoteIndex = sortedFolders.findIndex(
+      (folder) => folder.id === id
+    );
+    let nextNoteIndex = currentNoteIndex + 1;
+    if (nextNoteIndex >= sortedFolders.length) {
+      nextNoteIndex = 0;
+    }
+
+    const nextNote = sortedFolders[nextNoteIndex];
+
+    navigate(`/note/${nextNote.id}`);
+    await deleteNote(id);
   };
 
-  const roots = buildTree(folders);
-  const root = roots.length > 0 ? roots[0] : { children: [] };
+  useEffect(() => {
+    const unsubscribe = onMyFilesystemChange(async (snapshot) => {
+      const nodes = snapshot.docs.map(documentSnapshotToJSON);
+      store.dispatch(setFolders(nodes));
+      if (nodes.length === 0) {
+        const newNote = await createEmptyNote();
+        navigate(`/note/${newNote.id}`);
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+  sortedFolders.sort((a, b) => {
+    const dateA = new Date(a.updatedAt);
+    const dateB = new Date(b.updatedAt);
+    // return dateA.getTime() - dateB.getTime(); // Ascending order
+    return dateB.getTime() - dateA.getTime(); // Descending order
+  });
+
   return (
     <>
       <nav className="navbar">
@@ -141,11 +190,11 @@ const Sidebar = () => {
         className="notes-list list-group px-2"
         style={{ overflow: "visible" }}
       >
-        {root.children.map((folder) => (
+        {sortedFolders.map((folder) => (
           <NavItem
-            key={folder._id}
+            key={folder.id}
             folder={folder}
-            isActive={folder._id === id}
+            isActive={folder.id === id}
           />
         ))}
       </div>

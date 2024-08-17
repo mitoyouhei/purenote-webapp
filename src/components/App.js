@@ -17,7 +17,9 @@ const RootLandingPage = () => {
 
   // TODO - remove Note as the redirect component
   return user ? (
-    <NoteApp />
+    <PrivateRoute>
+      <NoteApp />
+    </PrivateRoute>
   ) : (
     <PublicLayout>
       <HomePage />
