@@ -1,7 +1,6 @@
 import "./App.css";
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Note from "./Note";
 import Register from "./Register";
 import Login from "./Login";
 import PrivateRoute from "./PrivateRoute";
@@ -13,15 +12,12 @@ import NoteApp from "./NoteApp";
 import ErrorToast from "./ErrorToast";
 import Folders from "./Folders";
 
-
 const RootLandingPage = () => {
   const user = useSelector((state) => state.user);
 
   // TODO - remove Note as the redirect component
   return user ? (
-    <PublicLayout>
-      <Note />
-    </PublicLayout>
+    <NoteApp />
   ) : (
     <PublicLayout>
       <HomePage />

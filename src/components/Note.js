@@ -33,6 +33,7 @@ const NoteInner = ({ id, note, showFolderListNav }) => {
 
 const Note = ({ showFolderListNav }) => {
   const { id } = useParams();
+  if (!id) throw new Error("Note id is required");
   const notes = useSelector((state) => state.notes);
   const note = notes[id];
   const folders = useSelector((state) => state.folders);
