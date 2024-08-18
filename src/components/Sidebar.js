@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { HiMiniPlus, HiMiniUserCircle, HiTrash } from "react-icons/hi2";
 import { formatDateTime } from "../utils";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import { signOut } from "firebase/auth";
 import { store } from "../store";
@@ -15,6 +15,7 @@ import {
   onMyFilesystemChange,
 } from "../firebase/Collection";
 import { setFolders } from "../slices/folders";
+import Setting from "./Setting";
 
 const defaultNoteTitle = "Untitled";
 
@@ -87,6 +88,7 @@ const NavItem = ({ folder, isActive }) => {
 };
 
 const Sidebar = () => {
+  const [showSetting, setShowSetting] = useState(false);
   const folders = useSelector((state) => state.folders);
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
@@ -150,6 +152,7 @@ const Sidebar = () => {
 
   return (
     <>
+      {showSetting ? <Setting onClose={() => setShowSetting(false)} /> : null}
       <nav className="navbar">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">
@@ -166,6 +169,9 @@ const Sidebar = () => {
               <Dropdown.Menu align={{ sm: "end" }}>
                 <Dropdown.Header>{user.email}</Dropdown.Header>
                 <Dropdown.Divider />
+                <Dropdown.Item onClick={() => setShowSetting(true)}>
+                  Setting
+                </Dropdown.Item>
                 <Dropdown.Item
                   onClick={() => {
                     store.dispatch(logout());
