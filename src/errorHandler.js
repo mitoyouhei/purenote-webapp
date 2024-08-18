@@ -110,7 +110,7 @@ export class ErrorBoundary extends React.Component {
           <div className="container text-center m-5 d-flex flex-column align-items-center">
             <h1>Something went wrong.</h1>
             <p>Please try again or contact support if the problem persists.</p>
-            <div class="alert alert-danger" role="alert">
+            <div className="alert alert-danger" role="alert">
               {this.state.error.message}
             </div>
           </div>

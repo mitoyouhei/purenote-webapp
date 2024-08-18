@@ -8,11 +8,13 @@ import { setUser } from "../slices/user";
 import { useSelector } from "react-redux";
 import { auth } from "../firebase";
 import { setGlobalErrorToast } from "../errorHandler";
+import Spinner from "./Spinner";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const user = useSelector((state) => state.user);
@@ -33,6 +35,7 @@ const Register = () => {
     e.preventDefault();
 
     try {
+      setLoading(true);
       if (password !== confirmPassword) {
         setGlobalErrorToast("Password do not match");
         return;
@@ -52,6 +55,8 @@ const Register = () => {
       } else {
         throw error;
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -63,39 +68,43 @@ const Register = () => {
       }}
     >
       <h1>Register</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username">Email</label>
-          <input
-            ref={inputRef}
-            type="email"
-            className="form-control"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            className="form-control"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Confirm Password</label>
-          <input
-            type="password"
-            className="form-control"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </div>
-        <button type="submit" className="btn btn-primary mt-2">
-          Register
-        </button>
-      </form>
+      {loading ? (
+        <Spinner />
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="username">Email</label>
+            <input
+              ref={inputRef}
+              type="email"
+              className="form-control"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              className="form-control"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Confirm Password</label>
+            <input
+              type="password"
+              className="form-control"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+          <button type="submit" className="btn btn-primary mt-2">
+            Register
+          </button>
+        </form>
+      )}
     </div>
   );
 };

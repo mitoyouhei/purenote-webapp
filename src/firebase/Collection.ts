@@ -21,6 +21,7 @@ interface NodeModel {
   file: object | null;
   createdAt: FieldValue;
   updatedAt: FieldValue;
+  deletedAt: FieldValue;
   permission: Permission;
   isDeleted: boolean;
 }
@@ -54,6 +55,7 @@ async function createNode(
     file,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
+    deletedAt: serverTimestamp(),
     permission: {
       admins: [auth.currentUser.uid],
     },
@@ -71,7 +73,7 @@ async function createNode(
  * @returns Promise<void>
  */
 async function deleteNode(nodeId: string): Promise<void> {
-  await updateNode(nodeId, { isDeleted: true });
+  await updateNode(nodeId, { deletedAt: serverTimestamp(), isDeleted: true });
 }
 async function getNode(id: string) {
   const docSnap = await getDoc(doc(firestore, Collection.filesystem, id));

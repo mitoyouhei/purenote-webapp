@@ -6,6 +6,7 @@ import { store } from "../store";
 import { setNoteSiderbarWidth } from "../slices/client";
 import { IoIosArrowForward } from "react-icons/io";
 import { useParams } from "react-router-dom";
+import Welcome from "./Welcome";
 
 const NoteApp = () => {
   const { id } = useParams();
@@ -62,7 +63,7 @@ const NoteApp = () => {
         className="position-fixed  top-0 start-0 h-100 w-100"
         style={{ paddingLeft: sidebarWidth }}
       >
-        {id && <Note showFolderListNav={disableSidebar} />}
+        {id ? <Note showFolderListNav={disableSidebar} /> : <Welcome />}
       </div>
 
       <div

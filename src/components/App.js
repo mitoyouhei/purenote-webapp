@@ -11,6 +11,8 @@ import SystemInfo from "./SystemInfo";
 import NoteApp from "./NoteApp";
 import ErrorToast from "./ErrorToast";
 import Folders from "./Folders";
+import ResetPassword from "./ResetPassword";
+import Logout from "./Logout";
 
 const RootLandingPage = () => {
   const user = useSelector((state) => state.user);
@@ -49,11 +51,20 @@ const App = () => {
             }
           />
           <Route path="/" element={<RootLandingPage />} />
+          <Route path="/logout" element={<Logout />} />
           <Route
             path="/homepage"
             element={
               <PublicLayout>
                 <HomePage />
+              </PublicLayout>
+            }
+          />
+          <Route
+            path="/auth/reset-password"
+            element={
+              <PublicLayout>
+                <ResetPassword />
               </PublicLayout>
             }
           />
