@@ -16,13 +16,12 @@ const Login = () => {
   const navigate = useNavigate();
 
   const user = useSelector((state) => state.user);
-  const client = useSelector((state) => state.client);
 
   useEffect(() => {
     if (user) {
       navigate("/");
     }
-  }, [navigate, user, client]);
+  }, [navigate, user]);
 
   useEffect(() => {
     if (inputRef.current) {

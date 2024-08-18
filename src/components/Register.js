@@ -16,13 +16,12 @@ const Register = () => {
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const user = useSelector((state) => state.user);
-  const client = useSelector((state) => state.client);
 
   useEffect(() => {
-    if (user.token && client.socketConnected) {
+    if (user) {
       navigate("/");
     }
-  }, [navigate, user, client]);
+  }, [navigate, user]);
 
   useEffect(() => {
     if (inputRef.current) {
