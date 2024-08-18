@@ -7,9 +7,11 @@ import { setUser } from "../slices/user";
 import { useSelector } from "react-redux";
 import { auth } from "../firebase";
 import { setGlobalErrorToast } from "../errorHandler";
+import Spinner from "./Spinner";
 
 const Login = () => {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
 
   const inputRef = useRef(null);
@@ -33,6 +35,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
+      setLoading(true);
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
@@ -49,6 +52,8 @@ const Login = () => {
       } else {
         throw error;
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,32 +65,36 @@ const Login = () => {
       }}
     >
       <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username">Email</label>
-          <input
-            ref={inputRef}
-            type="email"
-            className="form-control"
-            id="username"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            className="form-control"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <button type="submit" className="btn btn-primary mt-2">
-          Login
-        </button>
-      </form>
+      {loading ? (
+        <Spinner />
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="username">Email</label>
+            <input
+              ref={inputRef}
+              type="email"
+              className="form-control"
+              id="username"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              className="form-control"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <button type="submit" className="btn btn-primary mt-2">
+            Login
+          </button>
+        </form>
+      )}
     </div>
   );
 };
