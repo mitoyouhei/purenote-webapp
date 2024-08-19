@@ -1,30 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-
-const localStorageNoteSiderbarWidth = localStorage.getItem("noteSiderbarWidth");
+import { RESET_APP } from ".";
 
 const initialState = {
-  socketConnected: false,
   errorMessage: null,
-  noteSiderbarWidth: localStorageNoteSiderbarWidth
-    ? parseInt(localStorageNoteSiderbarWidth)
-    : 300,
+  noteSiderbarWidth: 300,
 };
 const client = createSlice({
   name: "client",
   initialState,
   reducers: {
     setNoteSiderbarWidth: (state, action) => {
-      localStorage.setItem("noteSiderbarWidth", JSON.stringify(action.payload));
       return {
         ...state,
         noteSiderbarWidth: action.payload,
-      };
-    },
-    setSocketConnected: (state, action) => {
-      return {
-        ...state,
-        socketConnected: action.payload,
       };
     },
     setErrorMessage: (state, action) => {
@@ -33,6 +21,9 @@ const client = createSlice({
         errorMessage: action.payload,
       };
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(RESET_APP, () => initialState); // 重置为初始状态
   },
 });
 

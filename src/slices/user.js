@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { RESET_APP } from ".";
 
 const initialState = null;
 const user = createSlice({
@@ -9,11 +10,11 @@ const user = createSlice({
       const user = action.payload;
       return user;
     },
-    clearUser: (state, action) => {
-      return null;
-    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(RESET_APP, () => initialState); // 重置为初始状态
   },
 });
 
-export const { setUser, clearUser } = user.actions;
+export const { setUser } = user.actions;
 export default user;
