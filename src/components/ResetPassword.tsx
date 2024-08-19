@@ -5,12 +5,11 @@ import { auth } from "../firebase";
 import {
   confirmPasswordReset,
   signInWithEmailAndPassword,
-  signOut,
   verifyPasswordResetCode,
 } from "firebase/auth";
 import Spinner from "./Spinner";
-import { store } from "../store";
-import { logout, setUser } from "../slices/user";
+import { logout, store } from "../store";
+import { setUser } from "../slices/user";
 
 function getOobCodeFromURL() {
   const params = new URLSearchParams(window.location.search);
@@ -63,8 +62,7 @@ const ResetPassword = () => {
       await confirmPasswordReset(auth, oobCode ?? "", password);
       alert("Password has been reset successfully.");
 
-      store.dispatch(logout(null));
-      await signOut(auth);
+      await logout();
 
       const userCredential = await signInWithEmailAndPassword(
         auth,

@@ -140,9 +140,11 @@ const Sidebar = () => {
             <span className="btn" onClick={handleAddNote}>
               <HiMiniPlus />
             </span>
-            <span className="btn" onClick={handleDeleteNote}>
-              <HiTrash />
-            </span>
+            {id && (
+              <span className="btn" onClick={handleDeleteNote}>
+                <HiTrash />
+              </span>
+            )}
           </div>
         </div>
       </nav>
