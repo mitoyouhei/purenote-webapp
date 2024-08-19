@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@lexical/list": "^0.16.1",
+    "@lexical/markdown": "^0.17.0",
     "@lexical/react": "^0.16.1",
     "@lexical/rich-text": "^0.16.1",
     "@lexical/selection": "^0.16.1",
@@ -28,6 +29,7 @@
     "react-router-dom": "^6.24.1",
     "react-scripts": "5.0.1",
     "redux": "^5.0.1",
+    "redux-persist": "^6.0.0",
     "socket.io-client": "^4.7.5",
     "typescript": "^5.5.4",
     "web-vitals": "^2.1.4"

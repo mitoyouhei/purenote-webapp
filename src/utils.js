@@ -1,6 +1,16 @@
 import { DateTime } from "luxon";
 
+export function debounce(func, wait) {
+  let timeout;
 
+  return function (...args) {
+    const context = this;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func.apply(context, args);
+    }, wait);
+  };
+}
 export function formatDateTime(dateString) {
   const now = DateTime.local();
   const dateTime = DateTime.fromISO(dateString);
