@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { store } from "../store";
-import { logout } from "../slices/user";
+import { clearUser } from "../slices/user";
 import { auth } from "../firebase";
 
 const PublicLayout = ({ children }) => {
@@ -41,7 +41,7 @@ const PublicLayout = ({ children }) => {
                       to="/login"
                       className="btn btn-primary me-2"
                       onClick={() => {
-                        store.dispatch(logout());
+                        store.dispatch(clearUser());
                         signOut(auth);
                       }}
                     >

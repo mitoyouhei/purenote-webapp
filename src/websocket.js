@@ -1,5 +1,5 @@
 import { store } from "./store";
-import { setUser, logout } from "./slices/user";
+import { setUser, clearUser } from "./slices/user";
 import { setFolders } from "./slices/folders";
 import { io } from "socket.io-client";
 import { setSocketConnected } from "./slices/client";
@@ -29,7 +29,7 @@ export function connectSocket() {
     // store.dispatch(setUser(userInfo));
     console.error("socket error", error);
     if (error?.errorCode === 401) {
-      store.dispatch(logout());
+      store.dispatch(clearUser());
     }
   });
   socket.onAny((event, ...args) => {

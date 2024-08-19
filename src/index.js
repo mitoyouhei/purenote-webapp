@@ -10,7 +10,8 @@ import { store } from "./store";
 import App from "./components/App";
 import { ErrorBoundary } from "./errorHandler";
 import { auth } from "./firebase";
-import { logout, setUser } from "./slices/user";
+import { clearUser, setUser } from "./slices/user";
+import Spinner from "./components/Spinner";
 
 initializeApp();
 
@@ -21,18 +22,20 @@ function initializeApp() {
     if (user) {
       store.dispatch(setUser(user.toJSON()));
     } else {
-      store.dispatch(logout());
+      store.dispatch(clearUser());
     }
+
+    root.render(
+      <React.StrictMode>
+        <ErrorBoundary>
+          <Provider store={store}>
+            <App />
+          </Provider>
+        </ErrorBoundary>
+      </React.StrictMode>
+    );
   });
 
-  root.render(
-    <React.StrictMode>
-      <ErrorBoundary>
-        <Provider store={store}>
-          <App />
-        </Provider>
-      </ErrorBoundary>
-    </React.StrictMode>
-  );
+  root.render(<Spinner />);
 }
 
