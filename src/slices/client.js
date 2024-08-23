@@ -21,12 +21,22 @@ const client = createSlice({
         errorMessage: action.payload,
       };
     },
+    clearErrorMessage: (state, action) => {
+      return {
+        ...state,
+        errorMessage: null,
+      };
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(RESET_APP, () => initialState); // 重置为初始状态
   },
 });
 
-export const { setSocketConnected, setErrorMessage, setNoteSiderbarWidth } =
-  client.actions;
+export const {
+  setSocketConnected,
+  setErrorMessage,
+  setNoteSiderbarWidth,
+  clearErrorMessage,
+} = client.actions;
 export default client;

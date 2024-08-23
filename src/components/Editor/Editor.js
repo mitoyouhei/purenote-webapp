@@ -6,8 +6,8 @@ import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
-// import { TRANSFORMERS } from "@lexical/markdown";
-// import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
+import { TRANSFORMERS } from "@lexical/markdown";
+import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import {
   $createParagraphNode,
   $createTextNode,
@@ -156,10 +156,10 @@ export default function Editor({
         <div className="editor-status-info px-5 py-1 text-center">
           Last updated at: {updatedAt}
         </div>
-        <div className="editor-inner px-5 pt-2">
-          <h1>
-            <TitleInput id={id} initTitle={initTitle} />
-          </h1>
+        <h1 className="mx-5">
+          <TitleInput id={id} initTitle={initTitle} />
+        </h1>
+        <div className="editor-inner mx-5">
           <RichTextPlugin
             contentEditable={
               <ContentEditable
@@ -172,7 +172,7 @@ export default function Editor({
             }
             ErrorBoundary={LexicalErrorBoundary}
           />
-          {/* <MarkdownShortcutPlugin transformers={TRANSFORMERS} /> */}
+          <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
           <HistoryPlugin />
           <ListPlugin />
           <OnTabPlugin />
