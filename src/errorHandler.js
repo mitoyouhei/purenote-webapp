@@ -1,7 +1,7 @@
 import axios from "axios";
 import React from "react";
 import { store } from "./store";
-import { setErrorMessage } from "./slices/client";
+import { clearErrorMessage, setErrorMessage } from "./slices/client";
 
 async function errorLog(error) {
   try {
@@ -28,7 +28,7 @@ export function setGlobalErrorToast(message, dissmisedAfter) {
   if (isNaN(dissmisedAfter)) return;
   clearTimeout(errorMessageTimer);
   errorMessageTimer = setTimeout(() => {
-    store.dispatch(setErrorMessage(null));
+    store.dispatch(clearErrorMessage());
   }, dissmisedAfter);
 }
 export function globalErrorHandler(error, reference) {

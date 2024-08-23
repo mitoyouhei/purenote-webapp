@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { MdOutlineClose, MdRefresh } from "react-icons/md";
 import { store } from "../store";
-import { setErrorMessage } from "../slices/client";
+import { clearErrorMessage, setErrorMessage } from "../slices/client";
 
 const ErrorToast = () => {
   const client = useSelector((state) => state.client);
@@ -29,7 +29,7 @@ const ErrorToast = () => {
             type="button"
             style={{ color: "#fff" }}
             className="btn"
-            onClick={() => store.dispatch(setErrorMessage(null))}
+            onClick={() => store.dispatch(clearErrorMessage())}
           >
             <MdOutlineClose />
           </button>
