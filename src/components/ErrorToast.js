@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { MdOutlineClose, MdRefresh } from "react-icons/md";
 import { store } from "../store";
-import { clearErrorMessage, setErrorMessage } from "../slices/client";
+import { clearErrorMessage } from "../slices/client";
 
 const ErrorToast = () => {
   const client = useSelector((state) => state.client);

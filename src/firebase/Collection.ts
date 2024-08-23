@@ -96,9 +96,7 @@ async function updateNode(nodeId: string, data: object): Promise<void> {
   // Update the name field in the document
   await updateDoc(nodeDocRef, updateData);
 
-  console.log(
-    `Node ${nodeId} updated to ${JSON.stringify(updateData, null, 2)}`
-  );
+  console.log(`Node ${nodeId} updated with data:`, updateData);
 }
 
 export async function createEmptyNote() {

@@ -135,7 +135,7 @@ export default function ToolbarPlugin({ showFolderListNav }) {
     );
   }, [editor, $updateToolbar]);
 
-  const toggleQuote = (command) => {
+  const toggleQuote = () => {
     editor.update(() => {
       const selection = $getSelection();
       if ($isRangeSelection(selection)) {
