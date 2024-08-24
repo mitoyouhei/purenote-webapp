@@ -28,15 +28,14 @@ const RootLandingPage = () => {
     </PublicLayout>
   );
 };
+const handleSaveShortcut = (event) => {
+  if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+    event.preventDefault();
+    console.log("Save shortcut triggered");
+  }
+};
 
 const App = () => {
-  const handleSaveShortcut = (event) => {
-    if ((event.ctrlKey || event.metaKey) && event.key === "s") {
-      event.preventDefault();
-      console.log("Save shortcut triggered");
-    }
-  };
-
   useEffect(() => {
     document.addEventListener("keydown", handleSaveShortcut);
     return () => {
