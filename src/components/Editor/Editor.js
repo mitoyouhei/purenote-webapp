@@ -27,7 +27,7 @@ import { globalErrorHandler } from "../../errorHandler";
 import TitleInput from "./TitleInput";
 import { debounce } from "../../utils";
 
-const placeholder = "Enter some rich text...";
+const placeholder = "Enter your thoughts here...";
 const defaultEmptyText = "";
 
 function OnTabPlugin() {

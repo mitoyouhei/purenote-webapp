@@ -25,6 +25,7 @@
 
 .toolbar .toolbar-item:disabled {
     cursor: not-allowed;
+    opacity: 0.3;
 }
 
 .toolbar .toolbar-item.spaced {

@@ -1,5 +1,5 @@
 import "./App.css";
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Register from "./Register";
 import Login from "./Login";
@@ -30,6 +30,19 @@ const RootLandingPage = () => {
 };
 
 const App = () => {
+  const handleSaveShortcut = (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+      event.preventDefault();
+      console.log("Save shortcut triggered");
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleSaveShortcut);
+    return () => {
+      document.removeEventListener("keydown", handleSaveShortcut);
+    };
+  }, []);
   return (
     <>
       <Router>
