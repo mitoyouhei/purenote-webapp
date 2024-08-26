@@ -13,6 +13,7 @@ import ErrorToast from "./ErrorToast";
 import Folders from "./Folders";
 import ResetPassword from "./ResetPassword";
 import Logout from "./Logout";
+import NotFound from "./NotFound";
 
 const RootLandingPage = () => {
   const user = useSelector((state) => state.user);
@@ -94,6 +95,14 @@ const App = () => {
               <PrivateRoute>
                 <Folders />
               </PrivateRoute>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <PublicLayout>
+                <NotFound />
+              </PublicLayout>
             }
           />
         </Routes>
