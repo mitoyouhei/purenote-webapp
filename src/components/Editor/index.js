@@ -1,4 +1,5 @@
 import "./index.css";
-import Editor from "./Editor";
+import BasicEditor from "./BasicEditor";
 
-export default Editor;
+export { BasicEditor };
+export default BasicEditor;

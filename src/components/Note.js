@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import Editor from "./Editor";
+import { BasicEditor } from "./Editor";
 import { useCallback, useEffect } from "react";
 import { store } from "../store";
 import { useSelector } from "react-redux";
@@ -56,7 +56,7 @@ const Note = ({ showFolderListNav }) => {
 
   if (!note || !id) return <Spinner />;
   return (
-    <Editor
+    <BasicEditor
       showFolderListNav={showFolderListNav}
       onChange={onChange}
       initialEditorStateJSONString={
