@@ -3,13 +3,16 @@ import { store } from "../../store";
 import { setNotes } from "../../slices/notes";
 import { useSelector } from "react-redux";
 import { updateNoteTitle } from "../../firebase/Collection";
+import { debounce } from "../../utils";
 
 const defaultNoteTitle = "Untitled";
 
-const TitleInput = ({ id, initTitle }) => {
+const saveTitle = debounce(updateNoteTitle, 200);
+
+const TitleInput = ({ id, initTitle }: { id: string; initTitle: string }) => {
   const [title, setTitle] = useState(initTitle ?? "");
-  const inputRef = useRef(null);
-  const notes = useSelector((state) => state.notes);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const notes = useSelector((state: any) => state.notes);
   const note = notes[id];
 
   useEffect(() => {
@@ -18,7 +21,7 @@ const TitleInput = ({ id, initTitle }) => {
     }
   }, [initTitle]);
 
-  function onTitleChange(e) {
+  function onTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setTitle(e.target.value);
 
     store.dispatch(
@@ -28,8 +31,9 @@ const TitleInput = ({ id, initTitle }) => {
         name: e.target.value,
       })
     );
-    updateNoteTitle(id, e.target.value);
+    saveTitle(id, e.target.value);
   }
+
   return (
     <input
       ref={inputRef}

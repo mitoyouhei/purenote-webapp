@@ -13,6 +13,7 @@ import {
   updateDoc,
   serverTimestamp,
   FieldValue,
+  setDoc,
 } from "firebase/firestore";
 import { auth, firestore } from ".";
 
@@ -65,6 +66,13 @@ async function createNode(
     collection(firestore, Collection.filesystem),
     newNode
   );
+
+
+  const testDocRef = doc(collection(firestore, "testyjs"), docRef.id);
+  await setDoc(testDocRef, {});
+
+
+
   return docRef;
 }
 /**
