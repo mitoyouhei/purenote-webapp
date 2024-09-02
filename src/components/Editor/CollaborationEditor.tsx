@@ -119,7 +119,7 @@ export default function CollaborationEditor({
     <div className="editor-container position-relative h-100">
       <ToolbarPlugin showFolderListNav={showFolderListNav} />
       <div className="editor-status-info px-5 py-1 text-center position-relative">
-        最后更新时间: {updatedAt}
+        Last updated at: {updatedAt}
         {savingIndicator}
       </div>
 
@@ -146,10 +146,7 @@ export default function CollaborationEditor({
       </div>
     </div>
   ) : (
-    <div className="m-5">
-      <h3 className="text-center">Connecting... </h3>
-      <Spinner />
-    </div>
+    <Spinner />
   );
   return (
     <LexicalComposer initialConfig={editorConfig}>
