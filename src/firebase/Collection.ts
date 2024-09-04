@@ -13,7 +13,6 @@ import {
   updateDoc,
   serverTimestamp,
   FieldValue,
-  setDoc,
 } from "firebase/firestore";
 import { auth, firestore } from ".";
 
@@ -66,13 +65,6 @@ async function createNode(
     collection(firestore, Collection.filesystem),
     newNode
   );
-
-
-  const testDocRef = doc(collection(firestore, "testyjs"), docRef.id);
-  await setDoc(testDocRef, {});
-
-
-
   return docRef;
 }
 /**
@@ -104,7 +96,7 @@ async function updateNode(nodeId: string, data: object): Promise<void> {
   // Update the name field in the document
   await updateDoc(nodeDocRef, updateData);
 
-  console.log(`Node ${nodeId} updated with data:`, updateData);
+  console.log(`Node ${nodeId} updated`);
 }
 
 export async function createEmptyNote() {

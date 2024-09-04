@@ -19,7 +19,7 @@ import { globalErrorHandler } from "../../errorHandler";
 import { OnTabPlugin } from "./plugins/OnTabPlugin";
 
 import * as Y from "yjs";
-import { FireProvider } from "y-fire";
+import { FireProvider } from "../../y-fire";
 import { Provider } from "@lexical/yjs";
 import { firebase } from "../../firebase";
 import { CollaborationPlugin } from "@lexical/react/LexicalCollaborationPlugin";
@@ -105,7 +105,7 @@ export default function CollaborationEditor({
       provider.onReady = () => {
         setCollaborationReady(true);
       };
-      provider.onSaving = (status) => {
+      provider.onSaving = (status: boolean) => {
         setSaving(status);
       };
       return provider as unknown as Provider;
