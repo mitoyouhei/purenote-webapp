@@ -298,6 +298,7 @@ export class FireProvider extends ObservableV2 {
           yield updateDoc(ref, {
             file: {
               content: Bytes.fromUint8Array(Y.encodeStateAsUpdate(this.doc)),
+              type: "collabNote",
             },
             updatedAt: serverTimestamp(),
           });

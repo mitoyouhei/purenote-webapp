@@ -31,11 +31,16 @@ interface Permission {
   editors?: string[]; // Optional if some fields may be missing
   viewers?: string[];
 }
-enum Collection {
+interface File {
+  content: any;
+  type: FileType;
+}
+export enum Collection {
   filesystem = "filesystem",
 }
-enum FileType {
+export enum FileType {
   note = "note",
+  collabNote = "collabNote",
 }
 
 class NotAuthenticatedError extends Error {
@@ -47,7 +52,7 @@ class NotAuthenticatedError extends Error {
 
 async function createNode(
   name: string | null = null,
-  file: object | null = null
+  file: File | null = null
 ) {
   if (!auth.currentUser) throw new NotAuthenticatedError();
   const newNode: NodeModel = {
@@ -99,8 +104,29 @@ async function updateNode(nodeId: string, data: object): Promise<void> {
   console.log(`Node ${nodeId} updated`);
 }
 
+export async function testAddInstance() {
+  // 获取父文档引用
+  const nodeDocRef = doc(
+    firestore,
+    Collection.filesystem,
+    "Yu5XWnJxz5ZHkjB3J5nV"
+  );
+
+  // 获取子集合引用
+  const instancesRef = collection(nodeDocRef, "instances");
+
+  // 向子集合添加文档
+  await addDoc(instancesRef, {
+    content: "some content",
+    timestamp: serverTimestamp(),
+  });
+}
+
 export async function createEmptyNote() {
-  const node = await createNode();
+  const node = await createNode(null, {
+    content: null,
+    type: FileType.collabNote,
+  });
   return node;
 }
 export async function getNote(id: string) {
@@ -118,6 +144,13 @@ export async function updateNoteFile(noteId: string, content: string) {
   const file = {
     content,
     type: FileType.note,
+  };
+  await updateNode(noteId, { file });
+}
+export async function updateCollabNoteFile(noteId: string, content: string) {
+  const file = {
+    content,
+    type: FileType.collabNote,
   };
   await updateNode(noteId, { file });
 }

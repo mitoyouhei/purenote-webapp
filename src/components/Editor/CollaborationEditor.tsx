@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
@@ -26,6 +26,7 @@ import { CollaborationPlugin } from "@lexical/react/LexicalCollaborationPlugin";
 import TitleInput from "./TitleInput";
 import Spinner from "../Spinner";
 import { useSelector } from "react-redux";
+import { Collection, testAddInstance } from "../../firebase/Collection";
 
 const placeholder = "Enter your thoughts here...";
 
@@ -64,9 +65,7 @@ function getDocFromMap(id: string, yjsDocMap: Map<string, Y.Doc>) {
   } else {
     doc.load();
   }
-  doc.on("update", (event) => {
-    console.log("!!!  update", new Date());
-  });
+
   return doc;
 }
 
@@ -98,7 +97,11 @@ export default function CollaborationEditor({
   const [collaborationReady, setCollaborationReady] = useState(false);
   const providerFactory = useCallback(
     (id: string, yjsDocMap: Map<string, Y.Doc>) => {
-      const provider = createFirebaseProvider(id, yjsDocMap, `testyjs/${id}`);
+      const provider = createFirebaseProvider(
+        id,
+        yjsDocMap,
+        `${Collection.filesystem}/${id}`
+      );
       (provider as any).connect = () => {};
       (provider as any).disconnect = () => {};
 
@@ -112,6 +115,11 @@ export default function CollaborationEditor({
     },
     []
   );
+
+  useEffect(() => {
+    testAddInstance();
+  }, []);
+
   const savingIndicator = saving ? (
     <div className="position-absolute top-0 right-0 py-1"> Saving...</div>
   ) : null;

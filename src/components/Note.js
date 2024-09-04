@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { CollaborationEditor } from "./Editor";
+import { BasicEditor, CollaborationEditor } from "./Editor";
 import { useCallback, useEffect } from "react";
 import { store } from "../store";
 import { useSelector } from "react-redux";
@@ -9,6 +9,8 @@ import { setNotes } from "../slices/notes";
 import {
   documentSnapshotToJSON,
   getNote,
+  FileType,
+  updateNoteFile,
   // updateNoteFile,
 } from "../firebase/Collection";
 import { formatDateTime } from "../utils";
@@ -21,20 +23,20 @@ const Note = ({ showFolderListNav }) => {
   const folders = useSelector((state) => state.folders);
   const navigate = useNavigate();
 
-  // const onChange = useCallback(
-  //   (editorStateJSON) => {
-  //     const content = JSON.stringify(editorStateJSON);
-  //     store.dispatch(
-  //       setNotes({
-  //         ...note,
-  //         file: { ...note.file, content },
-  //         updatedAt: new Date().toISOString(),
-  //       })
-  //     );
-  //     updateNoteFile(id, content);
-  //   },
-  //   [id, note]
-  // );
+  const onChange = useCallback(
+    (editorStateJSON) => {
+      const content = JSON.stringify(editorStateJSON);
+      store.dispatch(
+        setNotes({
+          ...note,
+          file: { ...note.file, content },
+          updatedAt: new Date().toISOString(),
+        })
+      );
+      updateNoteFile(id, content);
+    },
+    [id, note]
+  );
 
   const fetchNote = useCallback(async () => {
     const note = await getNote(id);
@@ -56,7 +58,10 @@ const Note = ({ showFolderListNav }) => {
   }, [id, navigateToFirstNote]);
 
   if (!note || !id) return <Spinner />;
-  return (
+
+  const isCollabNote = note.file?.type === FileType.collabNote;
+
+  return isCollabNote ? (
     <CollaborationEditor
       id={id}
       key={id}
@@ -64,21 +69,20 @@ const Note = ({ showFolderListNav }) => {
       initTitle={note.name}
       updatedAt={formatDateTime(note.updatedAt)}
     />
+  ) : (
+    <BasicEditor
+      showFolderListNav={showFolderListNav}
+      onChange={onChange}
+      initialEditorStateJSONString={
+        note.file?.content ? note.file.content : null
+      }
+      autoFocus={false}
+      key={id}
+      id={id}
+      initTitle={note.name}
+      updatedAt={formatDateTime(note.updatedAt)}
+    />
   );
-  // return (
-  //   <BasicEditor
-  //     showFolderListNav={showFolderListNav}
-  //     onChange={onChange}
-  //     initialEditorStateJSONString={
-  //       note.file?.content ? note.file.content : null
-  //     }
-  //     autoFocus={false}
-  //     key={id}
-  //     id={id}
-  //     initTitle={note.name}
-  //     updatedAt={formatDateTime(note.updatedAt)}
-  //   />
-  // );
 };
 
 export default Note;
