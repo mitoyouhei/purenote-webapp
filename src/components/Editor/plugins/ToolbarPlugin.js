@@ -79,17 +79,22 @@ export default function ToolbarPlugin({ showFolderListNav }) {
       setIsUnderline(selection.hasFormat("underline"));
       setIsStrikethrough(selection.hasFormat("strikethrough"));
 
-      const anchorNode = selection.anchor.getNode();
-      const element = anchorNode.getTopLevelElementOrThrow();
-      const elementKey = element.getKey();
-      const node = $getNodeByKey(elementKey);
+      const anchor = selection.anchor;
+      const focus = selection.focus;
+      const nodes = selection.getNodes();
+      if (anchor.key === focus.key && anchor.offset === focus.offset) {
+        return;
+      }
+      nodes.forEach((node) => {
+        setIsQuote($isQuoteNode(node));
+        setIsOl($isListNode(node) && node.getTag() === "ol");
+        setIsUl($isListNode(node) && node.getTag() === "ul");
+        setHeaderIndex(
+          $isHeadingNode(node) ? parseInt(node.getTag().slice(1)) : 0
+        );
+      });
 
-      setIsQuote($isQuoteNode(node));
-      setIsOl($isListNode(node) && node.getTag() === "ol");
-      setIsUl($isListNode(node) && node.getTag() === "ul");
-      setHeaderIndex(
-        $isHeadingNode(node) ? parseInt(node.getTag().slice(1)) : 0
-      );
+
     }
   }, []);
 

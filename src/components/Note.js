@@ -1,16 +1,19 @@
 import { useNavigate, useParams } from "react-router-dom";
-import Editor from "./Editor";
+import { BasicEditor, CollaborationEditor } from "./Editor";
 import { useCallback, useEffect } from "react";
 import { store } from "../store";
 import { useSelector } from "react-redux";
-import { formatDateTime } from "../utils";
+// import { formatDateTime } from "../utils";
 import Spinner from "./Spinner";
 import { setNotes } from "../slices/notes";
 import {
   documentSnapshotToJSON,
   getNote,
+  FileType,
   updateNoteFile,
+  // updateNoteFile,
 } from "../firebase/Collection";
+import { formatDateTime } from "../utils";
 
 const Note = ({ showFolderListNav }) => {
   const { id } = useParams();
@@ -55,8 +58,19 @@ const Note = ({ showFolderListNav }) => {
   }, [id, navigateToFirstNote]);
 
   if (!note || !id) return <Spinner />;
-  return (
-    <Editor
+
+  const isCollabNote = note.file?.type === FileType.collabNote;
+
+  return isCollabNote ? (
+    <CollaborationEditor
+      id={id}
+      key={id}
+      showFolderListNav={showFolderListNav}
+      initTitle={note.name}
+      updatedAt={formatDateTime(note.updatedAt)}
+    />
+  ) : (
+    <BasicEditor
       showFolderListNav={showFolderListNav}
       onChange={onChange}
       initialEditorStateJSONString={

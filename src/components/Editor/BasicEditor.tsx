@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from "react";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import React, { useRef } from "react";
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
+import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
@@ -8,16 +8,10 @@ import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { TRANSFORMERS } from "@lexical/markdown";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
-import {
-  $createParagraphNode,
-  $createTextNode,
-  $getRoot,
-  INDENT_CONTENT_COMMAND,
-  OUTDENT_CONTENT_COMMAND,
-} from "lexical";
 import { CodeNode } from "@lexical/code";
 import { LinkNode } from "@lexical/link";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
+
 import theme from "./theme";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import { ListItemNode, ListNode } from "@lexical/list";
@@ -26,74 +20,26 @@ import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { globalErrorHandler } from "../../errorHandler";
 import TitleInput from "./TitleInput";
 import { debounce } from "../../utils";
+import { OnTabPlugin } from "./plugins/OnTabPlugin";
+import {
+  initializeEditorState,
+  initializeEmptyEditorState,
+} from "./initializeEditorState";
+import { EditorState, LexicalEditor } from "lexical";
 
 const placeholder = "Enter your thoughts here...";
-const defaultEmptyText = "";
 
-function OnTabPlugin() {
-  const [editor] = useLexicalComposerContext();
-
-  useEffect(() => {
-    function handleKeyDown(event) {
-      if (event.key === "Tab") {
-        event.preventDefault();
-        if (event.shiftKey) {
-          editor.dispatchCommand(OUTDENT_CONTENT_COMMAND, undefined);
-        } else {
-          editor.dispatchCommand(INDENT_CONTENT_COMMAND, undefined);
-        }
-      }
-    }
-
-    const rootElement = editor.getRootElement();
-    rootElement.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      rootElement.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [editor]);
-
-  return null;
-}
-function OnChangePlugin({ onChange }) {
-  const [editor] = useLexicalComposerContext();
-
-  useEffect(() => {
-    return editor.registerUpdateListener(({ editorState }) => {
-      onChange(editorState);
-    });
-  }, [editor, onChange]);
-
-  return null;
+interface BasicEditorProps {
+  showFolderListNav: boolean;
+  onChange: (content: object) => void;
+  initialEditorStateJSONString: string;
+  autoFocus: boolean;
+  id: string;
+  updatedAt: string;
+  initTitle: string;
 }
 
-const createEmptyNode = (root) => {
-  const paragraphNode = $createParagraphNode();
-  const textNode = $createTextNode(defaultEmptyText);
-  paragraphNode.append(textNode);
-  root.append(paragraphNode);
-};
-
-const initializeEditorState = (editor, initialEditorStateJSON) => {
-  try {
-    const editorState = editor.parseEditorState(initialEditorStateJSON);
-    const root = editorState.read(() => $getRoot());
-    if (root.getChildren().length === 0) {
-      createEmptyNode(root);
-    }
-    editor.setEditorState(editorState);
-  } catch (error) {
-    console.error("Failed to load editor state from JSON", error);
-  }
-};
-
-const initializeEmptyEditorState = () => {
-  const root = $getRoot();
-  if (root.getChildren().length === 0) {
-    createEmptyNode(root);
-  }
-};
-export default function Editor({
+export default function BasicEditor({
   showFolderListNav,
   onChange,
   initialEditorStateJSONString,
@@ -101,8 +47,9 @@ export default function Editor({
   id,
   updatedAt,
   initTitle,
-}) {
+}: BasicEditorProps) {
   const editorConfig = {
+    namespace: "BasicEditor",
     nodes: [
       HeadingNode,
       QuoteNode,
@@ -112,12 +59,12 @@ export default function Editor({
       CodeNode,
       LinkNode,
     ],
-    onError(error) {
+    onError(error: Error) {
       globalErrorHandler(error);
       return <h1>Something went wrong.</h1>;
     },
     theme,
-    editorState: (editor) => {
+    editorState: (editor: LexicalEditor) => {
       editor.update(() => {
         if (initialEditorStateJSONString) {
           initializeEditorState(editor, initialEditorStateJSONString);
@@ -131,10 +78,9 @@ export default function Editor({
     JSON.parse(initialEditorStateJSONString)
   );
 
-  function onEditorStateChange(editorState) {
+  function onEditorStateChange(editorState: EditorState) {
     editorState.read(() => {
       const currentContent = editorState.toJSON();
-
       // check content changed or note
       if (previousEditorStateRef.current) {
         const previousContent = previousEditorStateRef.current;
@@ -154,7 +100,7 @@ export default function Editor({
       <div className="editor-container position-relative h-100">
         <ToolbarPlugin showFolderListNav={showFolderListNav} />
         <div className="editor-status-info px-5 py-1 text-center">
-          Last updated at: {updatedAt}
+          最后更新时间: {updatedAt}
         </div>
         <h1 className="mx-5">
           <TitleInput id={id} initTitle={initTitle} />
