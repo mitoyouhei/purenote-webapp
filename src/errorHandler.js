@@ -1,18 +1,18 @@
-import axios from "axios";
 import React from "react";
 import { store } from "./store";
 import { clearErrorMessage, setErrorMessage } from "./slices/client";
 
-async function errorLog(error) {
-  try {
-    await axios.post(
-      `${process.env.REACT_APP_API_END_POINT_URL}/api/logs`,
-      error
-    );
-  } catch (error) {
-    console.error("TODO", error);
-  }
-}
+// async function errorLog(error) {
+// TODO: add error logging
+// try {
+//   await axios.post(
+//     `${process.env.REACT_APP_API_END_POINT_URL}/api/logs`,
+//     error
+//   );
+// } catch (error) {
+//   console.error("TODO", error);
+// }
+// }
 
 export function errorToJSON(error) {
   return {
@@ -32,40 +32,43 @@ export function setGlobalErrorToast(message, dissmisedAfter) {
   }, dissmisedAfter);
 }
 export function globalErrorHandler(error, reference) {
-  try {
-    const json = errorToJSON(error);
-    setGlobalErrorToast(json.message, 5000);
-    errorLog(json);
-    console.warn("🚀 ~ global error log " + reference, json);
-  } catch (error) {
-    console.error(error);
-  } finally {
-    return true;
-  }
+  // try {
+  //   const json = errorToJSON(error);
+  //   setGlobalErrorToast(json.message, 5000);
+  //   errorLog(json);
+  // } catch (err) {
+  //   console.error("globalErrorHandler", err);
+  // } finally {
+  //   console.error(error);
+  //   return true;
+  // }
+  throw error;
 }
+// TODO: refector the error flow
+// TODO: currently one error is logged more than once, sometimes more than twice.
+// TODO: and the error info is not logged well in the console. I want to see the error in the console as browser default.
+// window.onerror = function (message, source, lineno, colno, error) {
+//   return globalErrorHandler(
+//     {
+//       message,
+//       source,
+//       lineno,
+//       colno,
+//       error,
+//     },
+//     "window.onerror"
+//   );
+// };
 
-window.onerror = function (message, source, lineno, colno, error) {
-  return globalErrorHandler(
-    {
-      message,
-      source,
-      lineno,
-      colno,
-      error,
-    },
-    "window.onerror"
-  );
-};
-
-window.addEventListener("error", function (event) {
-  return globalErrorHandler(event, "window.addEventListener error");
-});
-window.addEventListener("unhandledrejection", function (event) {
-  return globalErrorHandler(
-    event.reason,
-    "window.addEventListener unhandledrejection"
-  );
-});
+// window.addEventListener("error", function (event) {
+//   return globalErrorHandler(event, "window.addEventListener error");
+// });
+// window.addEventListener("unhandledrejection", function (event) {
+//   return globalErrorHandler(
+//     event.reason,
+//     "window.addEventListener unhandledrejection"
+//   );
+// });
 
 export class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -77,12 +80,12 @@ export class ErrorBoundary extends React.Component {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error, errorInfo) {
-    return globalErrorHandler(
-      { ...errorToJSON(error), ...errorInfo },
-      "React ErrorBoundary"
-    );
-  }
+  // componentDidCatch(error, errorInfo) {
+  //   return globalErrorHandler(
+  //     { ...errorToJSON(error), ...errorInfo },
+  //     "React ErrorBoundary"
+  //   );
+  // }
 
   render() {
     if (this.state.hasError) {

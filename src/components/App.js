@@ -1,5 +1,5 @@
 import "./App.css";
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Register from "./Register";
 import Login from "./Login";
@@ -13,6 +13,7 @@ import ErrorToast from "./ErrorToast";
 import Folders from "./Folders";
 import ResetPassword from "./ResetPassword";
 import Logout from "./Logout";
+import NotFound from "./NotFound";
 
 const RootLandingPage = () => {
   const user = useSelector((state) => state.user);
@@ -28,8 +29,20 @@ const RootLandingPage = () => {
     </PublicLayout>
   );
 };
+const handleSaveShortcut = (event) => {
+  if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+    event.preventDefault();
+    console.log("Save shortcut triggered");
+  }
+};
 
 const App = () => {
+  useEffect(() => {
+    document.addEventListener("keydown", handleSaveShortcut);
+    return () => {
+      document.removeEventListener("keydown", handleSaveShortcut);
+    };
+  }, []);
   return (
     <>
       <Router>
@@ -82,6 +95,14 @@ const App = () => {
               <PrivateRoute>
                 <Folders />
               </PrivateRoute>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <PublicLayout>
+                <NotFound />
+              </PublicLayout>
             }
           />
         </Routes>

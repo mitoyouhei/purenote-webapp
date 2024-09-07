@@ -1,16 +1,17 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Sidebar from "./Sidebar";
 import Note from "./Note";
 import { useSelector } from "react-redux";
 import { store } from "../store";
 import { setNoteSiderbarWidth } from "../slices/client";
 import { IoIosArrowForward } from "react-icons/io";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Welcome from "./Welcome";
 
 const NoteApp = () => {
   const { id } = useParams();
   const client = useSelector((state) => state.client);
+  const navigate = useNavigate();
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
   const [sidebarWidth, setSidebarWidth] = useState(
     disableSidebar ? 0 : client.noteSiderbarWidth
@@ -57,6 +58,9 @@ const NoteApp = () => {
     store.dispatch(setNoteSiderbarWidth(sidebarRef.current));
   }
 
+  useEffect(() => {
+    if (!id && disableSidebar) navigate("/folders");
+  }, [id, disableSidebar, navigate]);
   return (
     <div className="position-fixed h-100">
       <div
