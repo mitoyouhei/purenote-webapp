@@ -75,7 +75,7 @@ const Login = () => {
               ref={inputRef}
               type="email"
               className="form-control"
-              id="username"
+              name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -85,7 +85,7 @@ const Login = () => {
             <input
               type="password"
               className="form-control"
-              id="password"
+              name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />

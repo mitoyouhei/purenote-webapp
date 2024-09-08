@@ -79,6 +79,7 @@ const Register = () => {
               type="email"
               className="form-control"
               value={email}
+              name="email"
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
@@ -87,6 +88,7 @@ const Register = () => {
             <input
               type="password"
               className="form-control"
+              name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -96,6 +98,7 @@ const Register = () => {
             <input
               type="password"
               className="form-control"
+              name="confirmpassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />

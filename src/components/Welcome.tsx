@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { createEmptyNote } from "../firebase/Collection";
 import { useNavigate } from "react-router-dom";
 import Spinner from "./Spinner";
+import { useSelector } from "react-redux";
 
 const Welcome = () => {
   const [loading, setLoading] = useState(false);
+  const user = useSelector((state: any) => state.user);
   const navigate = useNavigate();
   const handleAddNote = async () => {
     setLoading(true);
@@ -14,7 +16,10 @@ const Welcome = () => {
   };
   return (
     <div className="m-5 text-center">
-      <h1 className="m-5">Welcome to Pure Note</h1>
+      <div className="m-5">
+        <h1>Welcome to Pure Note</h1>
+        <p>{user.email}</p>
+      </div>
       <p>
         {loading ? (
           <Spinner />
