@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
@@ -26,7 +26,7 @@ import { CollaborationPlugin } from "@lexical/react/LexicalCollaborationPlugin";
 import TitleInput from "./TitleInput";
 import Spinner from "../Spinner";
 import { useSelector } from "react-redux";
-import { Collection, testAddInstance } from "../../firebase/Collection";
+import { Collection } from "../../firebase/Collection";
 
 const placeholder = "Enter your thoughts here...";
 
@@ -100,7 +100,7 @@ export default function CollaborationEditor({
       const provider = createFirebaseProvider(
         id,
         yjsDocMap,
-        `${Collection.filesystem}/${id}`
+        `${Collection.notes}/${id}`
       );
       (provider as any).connect = () => {};
       (provider as any).disconnect = () => {};
@@ -115,10 +115,6 @@ export default function CollaborationEditor({
     },
     []
   );
-
-  useEffect(() => {
-    testAddInstance();
-  }, []);
 
   const savingIndicator = saving ? (
     <div className="position-absolute top-0 right-0 py-1"> Saving...</div>
