@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 const purenoteUrl = "http://localhost:3002";
+const firebaseTimeout = { timeout: 20000 };
 
 test("has title and logo", async ({ page }) => {
   await page.goto(purenoteUrl);
@@ -31,6 +32,7 @@ test("login", async ({ page, isMobile }) => {
   await page.click('button:has-text("Login")');
 
   const selector = isMobile ? `div.notes-list` : `p:has-text("${email}")`;
+  await page.waitForSelector(selector, firebaseTimeout);
   await expect(page.locator(selector)).toBeVisible();
 });
 
@@ -52,5 +54,6 @@ test("register", async ({ page, isMobile }) => {
   await page.click('button:has-text("Register")');
 
   const selector = isMobile ? `div.notes-list` : `p:has-text("${email}")`;
+  await page.waitForSelector(selector, firebaseTimeout);
   await expect(page.locator(selector)).toBeVisible();
 });
