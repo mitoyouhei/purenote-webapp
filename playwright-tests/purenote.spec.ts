@@ -1,6 +1,9 @@
+import dotenv from "dotenv";
 import { test, expect } from "@playwright/test";
 
-const purenoteUrl = "http://localhost:3002";
+dotenv.config();
+
+const purenoteUrl = process.env.PURENOTE_ROOT_URL || "https://purenote.io";
 const firebaseTimeout = { timeout: 20000 };
 
 test("has title and logo", async ({ page }) => {
