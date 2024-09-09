@@ -1,6 +1,6 @@
 import React from "react";
 
-const NotFound: React.FC = () => {
+export const NotFound: React.FC = () => {
   return (
     <div className="container-sm m-5">
       <div className="row justify-content-center">
@@ -12,5 +12,3 @@ const NotFound: React.FC = () => {
     </div>
   );
 };
-
-export default NotFound;

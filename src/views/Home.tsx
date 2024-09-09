@@ -1,6 +1,6 @@
 import React from "react";
 
-const HomePage = () => {
+export const Home: React.FC = () => {
   return (
     <>
       <div
@@ -72,25 +72,15 @@ const HomePage = () => {
         <p className="fs-4 mx-auto pb-5" style={{ maxWidth: 700 }}>
           Explore our code on
           <a
-            href="https://github.com/waterdrop-lab/justnote-webapp"
+            href="https://github.com/waterdrop-lab/purenote-webapp"
             target="_blank"
             rel="noreferrer"
             className="d-block fs-6"
           >
-            github.com/waterdrop-lab/justnote-webapp
-          </a>
-          <a
-            href="https://github.com/waterdrop-lab/justnote-server"
-            target="_blank"
-            rel="noreferrer"
-            className="d-block fs-6"
-          >
-            github.com/waterdrop-lab/justnote-server
+            github.com/waterdrop-lab/purenote-webapp
           </a>
         </p>
       </div>
     </>
   );
 };
-
-export default HomePage;

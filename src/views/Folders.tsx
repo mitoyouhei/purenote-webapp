@@ -1,6 +1,7 @@
-import Sidebar from "./Sidebar";
+import React from "react";
+import Sidebar from "../components/Sidebar";
 
-const Folders = () => {
+export const Folders: React.FC = () => {
   return (
     <div className="container-sm">
       <div className="row justify-content-center">
@@ -11,5 +12,3 @@ const Folders = () => {
     </div>
   );
 };
-
-export default Folders;
