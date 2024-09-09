@@ -1,19 +1,19 @@
 import "./App.css";
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Register from "./Register";
-import Login from "./Login";
-import PrivateRoute from "./PrivateRoute";
+import Register from "./components/Register";
+import Login from "./components/Login";
+import PrivateRoute from "./components/PrivateRoute";
 import { useSelector } from "react-redux";
-import HomePage from "./HomePage";
-import PublicLayout from "./PublicLayout";
-import SystemInfo from "./SystemInfo";
-import NoteApp from "./NoteApp";
-import ErrorToast from "./ErrorToast";
-import Folders from "./Folders";
-import ResetPassword from "./ResetPassword";
-import Logout from "./Logout";
-import NotFound from "./NotFound";
+import HomePage from "./components/HomePage";
+import PublicLayout from "./components/PublicLayout";
+import SystemInfo from "./components/SystemInfo";
+import NoteApp from "./components/NoteApp";
+import ErrorToast from "./components/ErrorToast";
+import Folders from "./components/Folders";
+import ResetPassword from "./components/ResetPassword";
+import Logout from "./components/Logout";
+import NotFound from "./components/NotFound";
 
 const RootLandingPage = () => {
   const user = useSelector((state) => state.user);

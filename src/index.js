@@ -1,5 +1,4 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-// import "./bootstrap.solar.min.css";
 
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -7,7 +6,7 @@ import { Provider } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 
 import { logout, persistor, store } from "./store";
-import App from "./components/App";
+import App from "./App";
 import { ErrorBoundary } from "./errorHandler";
 import { auth } from "./firebase";
 import { setUser } from "./slices/user";
@@ -41,4 +40,3 @@ function initializeApp() {
 
   root.render(<Spinner />);
 }
-
