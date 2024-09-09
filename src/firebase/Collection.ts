@@ -24,7 +24,7 @@ interface DataMeta {
   isDeleted: boolean;
 }
 
-interface NodeModel extends DataMeta {
+interface NoteModel extends DataMeta {
   name: string | null;
   file: File | null;
 }
@@ -53,12 +53,12 @@ class NotAuthenticatedError extends Error {
   }
 }
 
-async function createNode(
+async function createNote(
   name: string | null = null,
   file: File | null = null
 ) {
   if (!auth.currentUser) throw new NotAuthenticatedError();
-  const newNode: NodeModel = {
+  const newNote: NoteModel = {
     name,
     file,
     createdAt: serverTimestamp(),
@@ -70,20 +70,8 @@ async function createNode(
     isDeleted: false,
   };
 
-  const docRef = await addDoc(collection(firestore, Collection.notes), newNode);
+  const docRef = await addDoc(collection(firestore, Collection.notes), newNote);
   return docRef;
-}
-/**
- * Marks a node as deleted by setting the isDeleted field to true.
- * @param nodeId - The ID of the node to mark as deleted.
- * @returns Promise<void>
- */
-async function deleteNode(nodeId: string): Promise<void> {
-  await updateNode(nodeId, { deletedAt: serverTimestamp(), isDeleted: true });
-}
-async function getNode(id: string) {
-  const docSnap = await getDoc(doc(firestore, Collection.notes, id));
-  return docSnap;
 }
 /**
  * Updates the name of a specified node
@@ -91,54 +79,45 @@ async function getNode(id: string) {
  * @param data - the data to update
  * @returns Promise<void>
  */
-async function updateNode(nodeId: string, data: object): Promise<void> {
+async function updateNote(noteId: string, data: object): Promise<void> {
   // Get a reference to the node document
-  const nodeDocRef = doc(firestore, Collection.notes, nodeId);
+  const noteDocRef = doc(firestore, Collection.notes, noteId);
 
   const updateData = {
     ...data,
     updatedAt: serverTimestamp(), // Set updatedAt to the current server timestamp
   };
   // Update the name field in the document
-  await updateDoc(nodeDocRef, updateData);
+  await updateDoc(noteDocRef, updateData);
 
-  console.log(`Node ${nodeId} updated`);
+  console.log(`Note ${noteId} updated`);
 }
 
 export async function createEmptyNote() {
-  const node = await createNode(null, {
+  const node = await createNote(null, {
     content: null,
     type: FileType.collabNote,
   });
   return node;
 }
-export async function getNote(id: string) {
-  const node = await getNode(id);
-  return node;
+export async function getNote(noteId: string) {
+  return await getDoc(doc(firestore, Collection.notes, noteId));
 }
-export async function deleteNote(id: string) {
-  const node = await deleteNode(id);
-  return node;
+export async function deleteNote(noteId: string) {
+  await updateNote(noteId, { deletedAt: serverTimestamp(), isDeleted: true });
 }
 export async function updateNoteTitle(noteId: string, title: string) {
-  await updateNode(noteId, { name: title });
+  await updateNote(noteId, { name: title });
 }
 export async function updateNoteFile(noteId: string, content: string) {
   const file = {
     content,
     type: FileType.note,
   };
-  await updateNode(noteId, { file });
-}
-export async function updateCollabNoteFile(noteId: string, content: string) {
-  const file = {
-    content,
-    type: FileType.collabNote,
-  };
-  await updateNode(noteId, { file });
+  await updateNote(noteId, { file });
 }
 
-export function onMyFilesystemChange(
+export function onMyNotesChange(
   callback: (snapshot: QuerySnapshot<DocumentData, DocumentData>) => void
 ) {
   if (!auth.currentUser) throw new NotAuthenticatedError();
