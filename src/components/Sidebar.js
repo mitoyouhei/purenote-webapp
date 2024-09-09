@@ -42,6 +42,7 @@ const NavItem = ({ folder, isActive }) => {
 };
 
 const Sidebar = () => {
+  const [folderInitialized, setFolderInitialized] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
   const folders = useSelector((state) => state.folders);
   const navigate = useNavigate();
@@ -67,6 +68,7 @@ const Sidebar = () => {
     }
     if (sortedFolders.length === 1) {
       await deleteNote(id);
+      navigate("/");
       return;
     }
 
@@ -86,17 +88,24 @@ const Sidebar = () => {
 
   useEffect(() => {
     const unsubscribe = onMyFilesystemChange(async (snapshot) => {
-      const nodes = snapshot.docs.map(documentSnapshotToJSON);
+      const nodes = snapshot.docs.map(documentSnapshotToJSON).map((node) => ({
+        id: node.id,
+        name: node.name,
+        createdAt: node.createdAt,
+        updatedAt: node.updatedAt,
+      }));
+
       store.dispatch(setFolders(nodes));
-      if (nodes.length === 0) {
-        const newNote = await createEmptyNote();
-        navigate(`/note/${newNote.id}`);
-      }
+      setFolderInitialized(true);
+      // if (nodes.length === 0) {
+      //   const newNote = await createEmptyNote();
+      //   navigate(`/note/${newNote.id}`);
+      // }
     });
     return () => {
       unsubscribe();
     };
-  }, [navigate]);
+  }, []);
   sortedFolders.sort((a, b) => {
     const dateA = new Date(a.updatedAt);
     const dateB = new Date(b.updatedAt);
@@ -104,7 +113,7 @@ const Sidebar = () => {
     return dateB.getTime() - dateA.getTime(); // Descending order
   });
 
-  if (sortedFolders.length === 0) return <Spinner />;
+  // if (sortedFolders.length === 0) return <Spinner />;
   return (
     <>
       {showSetting ? <Setting onClose={() => setShowSetting(false)} /> : null}
@@ -152,13 +161,17 @@ const Sidebar = () => {
         className="notes-list list-group px-2"
         style={{ overflow: "visible" }}
       >
-        {sortedFolders.map((folder) => (
-          <NavItem
-            key={folder.id}
-            folder={folder}
-            isActive={folder.id === id}
-          />
-        ))}
+        {folderInitialized ? (
+          sortedFolders.map((folder) => (
+            <NavItem
+              key={folder.id}
+              folder={folder}
+              isActive={folder.id === id}
+            />
+          ))
+        ) : (
+          <Spinner />
+        )}
       </div>
     </>
   );

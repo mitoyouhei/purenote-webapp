@@ -16,14 +16,17 @@ import {
 } from "firebase/firestore";
 import { auth, firestore } from ".";
 
-interface NodeModel {
-  name: string | null;
-  file: object | null;
+interface DataMeta {
   createdAt: FieldValue;
   updatedAt: FieldValue;
   deletedAt: FieldValue;
   permission: Permission;
   isDeleted: boolean;
+}
+
+interface NodeModel extends DataMeta {
+  name: string | null;
+  file: File | null;
 }
 
 interface Permission {
@@ -36,7 +39,7 @@ interface File {
   type: FileType;
 }
 export enum Collection {
-  filesystem = "filesystem",
+  notes = "notes",
 }
 export enum FileType {
   note = "note",
@@ -66,10 +69,8 @@ async function createNode(
     },
     isDeleted: false,
   };
-  const docRef = await addDoc(
-    collection(firestore, Collection.filesystem),
-    newNode
-  );
+
+  const docRef = await addDoc(collection(firestore, Collection.notes), newNode);
   return docRef;
 }
 /**
@@ -81,7 +82,7 @@ async function deleteNode(nodeId: string): Promise<void> {
   await updateNode(nodeId, { deletedAt: serverTimestamp(), isDeleted: true });
 }
 async function getNode(id: string) {
-  const docSnap = await getDoc(doc(firestore, Collection.filesystem, id));
+  const docSnap = await getDoc(doc(firestore, Collection.notes, id));
   return docSnap;
 }
 /**
@@ -92,7 +93,7 @@ async function getNode(id: string) {
  */
 async function updateNode(nodeId: string, data: object): Promise<void> {
   // Get a reference to the node document
-  const nodeDocRef = doc(firestore, Collection.filesystem, nodeId);
+  const nodeDocRef = doc(firestore, Collection.notes, nodeId);
 
   const updateData = {
     ...data,
@@ -102,24 +103,6 @@ async function updateNode(nodeId: string, data: object): Promise<void> {
   await updateDoc(nodeDocRef, updateData);
 
   console.log(`Node ${nodeId} updated`);
-}
-
-export async function testAddInstance() {
-  // 获取父文档引用
-  const nodeDocRef = doc(
-    firestore,
-    Collection.filesystem,
-    "Yu5XWnJxz5ZHkjB3J5nV"
-  );
-
-  // 获取子集合引用
-  const instancesRef = collection(nodeDocRef, "instances");
-
-  // 向子集合添加文档
-  await addDoc(instancesRef, {
-    content: "some content",
-    timestamp: serverTimestamp(),
-  });
 }
 
 export async function createEmptyNote() {
@@ -161,7 +144,7 @@ export function onMyFilesystemChange(
   if (!auth.currentUser) throw new NotAuthenticatedError();
 
   const q = query(
-    collection(firestore, Collection.filesystem),
+    collection(firestore, Collection.notes),
     where("permission.admins", "array-contains", auth.currentUser.uid),
     where("isDeleted", "==", false)
   );
