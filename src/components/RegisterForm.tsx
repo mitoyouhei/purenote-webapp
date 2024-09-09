@@ -10,14 +10,14 @@ import { auth } from "../firebase";
 import { setGlobalErrorToast } from "../errorHandler";
 import Spinner from "./Spinner";
 
-const Register = () => {
+export const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const inputRef = useRef(null);
-  const user = useSelector((state) => state.user);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const user = useSelector((state: any) => state.user);
 
   useEffect(() => {
     if (user) {
@@ -31,7 +31,7 @@ const Register = () => {
     }
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -49,7 +49,7 @@ const Register = () => {
       console.log("regiest success", userCredential.user);
       store.dispatch(setUser(userCredential.user.toJSON()));
       navigate("/");
-    } catch (error) {
+    } catch (error: any) {
       if (error.name === "FirebaseError") {
         setGlobalErrorToast(error.message.replace("Firebase: ", ""));
       } else {
@@ -111,5 +111,3 @@ const Register = () => {
     </div>
   );
 };
-
-export default Register;
