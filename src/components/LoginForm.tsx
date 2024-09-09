@@ -1,4 +1,3 @@
-// src/components/Login.js
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -9,15 +8,15 @@ import { auth } from "../firebase";
 import { setGlobalErrorToast } from "../errorHandler";
 import Spinner from "./Spinner";
 
-const Login = () => {
+export const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
 
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state: any) => state.user);
 
   useEffect(() => {
     if (user) {
@@ -31,7 +30,7 @@ const Login = () => {
     }
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -44,7 +43,7 @@ const Login = () => {
       console.log("login success", userCredential.user);
       store.dispatch(setUser(userCredential.user.toJSON()));
       navigate("/");
-    } catch (error) {
+    } catch (error: any) {
       if (error.code === "auth/invalid-credential") {
         setGlobalErrorToast("Invalid email or password");
       } else if (error.name === "FirebaseError") {
@@ -98,5 +97,3 @@ const Login = () => {
     </div>
   );
 };
-
-export default Login;
