@@ -1,19 +1,22 @@
 import "./App.css";
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Register from "./Register";
-import Login from "./Login";
-import PrivateRoute from "./PrivateRoute";
 import { useSelector } from "react-redux";
-import HomePage from "./HomePage";
-import PublicLayout from "./PublicLayout";
-import SystemInfo from "./SystemInfo";
-import NoteApp from "./NoteApp";
-import ErrorToast from "./ErrorToast";
-import Folders from "./Folders";
-import ResetPassword from "./ResetPassword";
-import Logout from "./Logout";
-import NotFound from "./NotFound";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
+import PrivateRoute from "../components/PrivateRoute";
+import PublicLayout from "../components/PublicLayout";
+import SystemInfo from "../components/SystemInfo";
+import ErrorToast from "../components/ErrorToast";
+
+import { Register } from "./Register";
+import { Login } from "./Login";
+import { Home } from "./Home";
+import { ResetPassword } from "./ResetPassword";
+import { Logout } from "./Logout";
+import { Note } from "./Note";
+import { Folders } from "./Folders";
+import { NotFound } from "./NotFound";
+import { Notebooks } from "./Notebooks";
 
 const RootLandingPage = () => {
   const user = useSelector((state) => state.user);
@@ -21,11 +24,11 @@ const RootLandingPage = () => {
   // TODO - remove Note as the redirect component
   return user ? (
     <PrivateRoute>
-      <NoteApp />
+      <Note />
     </PrivateRoute>
   ) : (
     <PublicLayout>
-      <HomePage />
+      <Home />
     </PublicLayout>
   );
 };
@@ -66,10 +69,10 @@ const App = () => {
           <Route path="/" element={<RootLandingPage />} />
           <Route path="/logout" element={<Logout />} />
           <Route
-            path="/homepage"
+            path="/home"
             element={
               <PublicLayout>
-                <HomePage />
+                <Home />
               </PublicLayout>
             }
           />
@@ -85,7 +88,7 @@ const App = () => {
             path="/note/:id"
             element={
               <PrivateRoute>
-                <NoteApp />
+                <Note />
               </PrivateRoute>
             }
           />
@@ -94,6 +97,14 @@ const App = () => {
             element={
               <PrivateRoute>
                 <Folders />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/notebooks"
+            element={
+              <PrivateRoute>
+                <Notebooks />
               </PrivateRoute>
             }
           />

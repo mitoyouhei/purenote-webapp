@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
@@ -31,7 +31,7 @@ const placeholder = "Enter your thoughts here...";
 
 interface BasicEditorProps {
   showFolderListNav: boolean;
-  onChange: (content: object) => void;
+  onChange: (content: object) => Promise<void>;
   initialEditorStateJSONString: string;
   autoFocus: boolean;
   id: string;
@@ -48,6 +48,7 @@ export default function BasicEditor({
   updatedAt,
   initTitle,
 }: BasicEditorProps) {
+  const [saving, setSaving] = useState(false);
   const editorConfig = {
     namespace: "BasicEditor",
     nodes: [
@@ -92,15 +93,22 @@ export default function BasicEditor({
         }
       }
       previousEditorStateRef.current = editorState.toJSON();
-      onChange(currentContent);
+      setSaving(true);
+      onChange(currentContent).then(() => {
+        setSaving(false);
+      });
     });
   }
+  const savingIndicator = saving ? (
+    <div className="position-absolute top-0 right-0 py-1"> Saving...</div>
+  ) : null;
   return (
     <LexicalComposer initialConfig={editorConfig}>
       <div className="editor-container position-relative h-100">
         <ToolbarPlugin showFolderListNav={showFolderListNav} />
-        <div className="editor-status-info px-5 py-1 text-center">
-          最后更新时间: {updatedAt}
+        <div className="editor-status-info px-5 py-1 text-center position-relative">
+          Last updated at: {updatedAt}
+          {savingIndicator}
         </div>
         <h1 className="mx-5">
           <TitleInput id={id} initTitle={initTitle} />

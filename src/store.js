@@ -17,6 +17,7 @@ import notes from "./slices/notes";
 import { auth } from "./firebase";
 import { signOut } from "firebase/auth";
 import { resetApp } from "./slices";
+import notebook from "./slices/notebook";
 
 localforage.config({
   driver: localforage.INDEXEDDB, // 使用 IndexedDB 作为首选驱动
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   folders: folders.reducer,
   notes: notes.reducer,
   client: client.reducer,
+  notebook: notebook.reducer,
 });
 
 // 配置持久化，并指定 localforage 作为存储引擎

@@ -1,10 +1,18 @@
 html,
 body {
     height: 100%;
+    margin: 0;
+    padding: 0;
 }
-  .input-title {
+
+* {
+    box-sizing: border-box;
+}
+
+.input-title {
     width: 100%;
 }
+
 .wrapper {
     display: flex;
     flex-direction: column;
@@ -14,6 +22,7 @@ body {
 .content {
     flex: 1;
 }
+
 .input-title,
 .input-title:hover,
 .input-title:focus,
@@ -28,12 +37,14 @@ body {
     flex-direction: row;
     justify-content: space-between;
 }
+
 .notes-list.list-group>.list-group-item.active-light {
     color: #000;
     background-color: #e9ecef;
     /* Bootstrap 的 bg-light 颜色 */
     border-color: #f8f9fa;
 }
+
 .footer {
     background-color: #f8f9fa;
 }
@@ -43,9 +54,11 @@ body {
     margin: 0 10px;
     color: #495057;
 }
+
 body>.offcanvas .navbar-nav a {
     margin: 10px;
 }
+
 #siderbar-dragger {
     width: 7px;
     cursor: ew-resize;

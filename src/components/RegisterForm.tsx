@@ -1,7 +1,8 @@
-// src/components/Login.js
+// src/components/Register.js
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
+
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { store } from "../store";
 import { setUser } from "../slices/user";
 import { useSelector } from "react-redux";
@@ -9,15 +10,14 @@ import { auth } from "../firebase";
 import { setGlobalErrorToast } from "../errorHandler";
 import Spinner from "./Spinner";
 
-const Login = () => {
+export const RegisterForm = () => {
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
-
-  const inputRef = useRef(null);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  const user = useSelector((state) => state.user);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const user = useSelector((state: any) => state.user);
 
   useEffect(() => {
     if (user) {
@@ -31,23 +31,26 @@ const Login = () => {
     }
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
       setLoading(true);
-      const userCredential = await signInWithEmailAndPassword(
+      if (password !== confirmPassword) {
+        setGlobalErrorToast("Password do not match");
+        return;
+      }
+
+      const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      console.log("login success", userCredential.user);
+      console.log("regiest success", userCredential.user);
       store.dispatch(setUser(userCredential.user.toJSON()));
       navigate("/");
-    } catch (error) {
-      if (error.code === "auth/invalid-credential") {
-        setGlobalErrorToast("Invalid email or password");
-      } else if (error.name === "FirebaseError") {
+    } catch (error: any) {
+      if (error.name === "FirebaseError") {
         setGlobalErrorToast(error.message.replace("Firebase: ", ""));
       } else {
         throw error;
@@ -64,7 +67,7 @@ const Login = () => {
         maxWidth: "500px",
       }}
     >
-      <h1>Login</h1>
+      <h1>Register</h1>
       {loading ? (
         <Spinner />
       ) : (
@@ -75,8 +78,8 @@ const Login = () => {
               ref={inputRef}
               type="email"
               className="form-control"
-              name="email"
               value={email}
+              name="email"
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
@@ -90,13 +93,21 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+          <div className="form-group">
+            <label htmlFor="password">Confirm Password</label>
+            <input
+              type="password"
+              className="form-control"
+              name="confirmpassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
           <button type="submit" className="btn btn-primary mt-2">
-            Login
+            Register
           </button>
         </form>
       )}
     </div>
   );
 };
-
-export default Login;

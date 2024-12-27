@@ -16,7 +16,7 @@ function getOobCodeFromURL() {
   return params.get("oobCode");
 }
 
-const ResetPassword = () => {
+export const ResetPasswordForm = () => {
   const [email, setEmail] = useState<string | null>("");
   const [oobCode, setOobCode] = useState<string | null>("");
   const [password, setPassword] = useState("");
@@ -141,5 +141,3 @@ const ResetPassword = () => {
     </div>
   );
 };
-
-export default ResetPassword;
