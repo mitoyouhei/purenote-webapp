@@ -29,6 +29,12 @@ interface NoteModel extends DataMeta {
   file: File | null;
 }
 
+// interface NotebookModel extends DataMeta {
+//   name: string | null;
+//   notesIds: string[];
+// }
+
+
 interface Permission {
   admins: string[];
   editors?: string[]; // Optional if some fields may be missing
@@ -44,6 +50,7 @@ export enum Collection {
 export enum FileType {
   note = "note",
   collabNote = "collabNote",
+  quillNote = "quillNote",
 }
 
 class NotAuthenticatedError extends Error {
@@ -96,7 +103,7 @@ async function updateNote(noteId: string, data: object): Promise<void> {
 export async function createEmptyNote() {
   const node = await createNote(null, {
     content: null,
-    type: FileType.collabNote,
+    type: FileType.note,
   });
   return node;
 }

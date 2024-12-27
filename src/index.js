@@ -6,7 +6,7 @@ import { Provider } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 
 import { logout, persistor, store } from "./store";
-import App from "./App";
+import App from "./views/App";
 import { ErrorBoundary } from "./errorHandler";
 import { auth } from "./firebase";
 import { setUser } from "./slices/user";

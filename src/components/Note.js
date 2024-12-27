@@ -14,6 +14,48 @@ import {
   // updateNoteFile,
 } from "../firebase/Collection";
 import { formatDateTime } from "../utils";
+import QuillEditor from "./Editor/QuillEditor";
+
+const EditorBuilder = {
+  [FileType.note]: ({ id, note, onChange, showFolderListNav }) => (
+    <BasicEditor
+      showFolderListNav={showFolderListNav}
+      onChange={onChange}
+      initialEditorStateJSONString={
+        note.file?.content ? note.file.content : null
+      }
+      autoFocus={false}
+      key={id}
+      id={id}
+      initTitle={note.name}
+      updatedAt={formatDateTime(note.updatedAt)}
+    />
+  ),
+
+  [FileType.collabNote]: ({ id, note, showFolderListNav }) => (
+    <CollaborationEditor
+      id={id}
+      key={id}
+      showFolderListNav={showFolderListNav}
+      initTitle={note.name}
+      updatedAt={formatDateTime(note.updatedAt)}
+    />
+  ),
+  [FileType.quillNote]: ({ id, note, onChange, showFolderListNav }) => (
+    <QuillEditor
+      id={id}
+      content={note.file?.content}
+      onChange={onChange}
+      showFolderListNav={showFolderListNav}
+    />
+  ),
+
+  build(type, props) {
+    const builder = this[type] || this[FileType.note];
+
+    return builder(props);
+  },
+};
 
 const Note = ({ showFolderListNav }) => {
   const { id } = useParams();
@@ -33,7 +75,7 @@ const Note = ({ showFolderListNav }) => {
           updatedAt: new Date().toISOString(),
         })
       );
-      updateNoteFile(id, content);
+      return updateNoteFile(id, content);
     },
     [id, note]
   );
@@ -59,30 +101,12 @@ const Note = ({ showFolderListNav }) => {
 
   if (!note || !id) return <Spinner />;
 
-  const isCollabNote = note.file?.type === FileType.collabNote;
-
-  return isCollabNote ? (
-    <CollaborationEditor
-      id={id}
-      key={id}
-      showFolderListNav={showFolderListNav}
-      initTitle={note.name}
-      updatedAt={formatDateTime(note.updatedAt)}
-    />
-  ) : (
-    <BasicEditor
-      showFolderListNav={showFolderListNav}
-      onChange={onChange}
-      initialEditorStateJSONString={
-        note.file?.content ? note.file.content : null
-      }
-      autoFocus={false}
-      key={id}
-      id={id}
-      initTitle={note.name}
-      updatedAt={formatDateTime(note.updatedAt)}
-    />
-  );
+  return EditorBuilder.build(note.file?.type, {
+    id,
+    note,
+    onChange,
+    showFolderListNav,
+  });
 };
 
 export default Note;
