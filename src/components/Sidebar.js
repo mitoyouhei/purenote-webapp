@@ -9,7 +9,7 @@ import {
   createEmptyNote,
   deleteNote,
   documentSnapshotToJSON,
-  onMyFilesystemChange,
+  onMyNotesChange,
 } from "../firebase/Collection";
 import { setFolders } from "../slices/folders";
 import Setting from "./Setting";
@@ -87,7 +87,7 @@ const Sidebar = () => {
   };
 
   useEffect(() => {
-    const unsubscribe = onMyFilesystemChange(async (snapshot) => {
+    const unsubscribe = onMyNotesChange(async (snapshot) => {
       const nodes = snapshot.docs.map(documentSnapshotToJSON).map((node) => ({
         id: node.id,
         name: node.name,

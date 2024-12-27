@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import Spinner from "./Spinner";
+import Spinner from "../components/Spinner";
 import { logout } from "../store";
 import { useNavigate } from "react-router-dom";
 
-const Logout = () => {
+export const Logout = () => {
   const navigate = useNavigate();
   useEffect(() => {
     async function logoutUser() {
@@ -14,5 +14,3 @@ const Logout = () => {
   }, [navigate]);
   return <Spinner />;
 };
-
-export default Logout;
