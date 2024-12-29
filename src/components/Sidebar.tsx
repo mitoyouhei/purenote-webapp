@@ -25,10 +25,10 @@ const NavItem = ({ item, isActive }: { item: any; isActive: boolean }) => {
       to={`/note/${item.id}`}
     >
       <div className="title-row">
-        <b>{item.name ? item.name : defaultNoteTitle}</b>
+        <b>{item.title ? item.title : defaultNoteTitle}</b>
       </div>
       <small className="fw-lighter" style={{ fontSize: ".675em" }}>
-        {formatDateTime(item.updatedAt)}
+        {formatDateTime(item.updated_at)}
       </small>
     </Link>
   );

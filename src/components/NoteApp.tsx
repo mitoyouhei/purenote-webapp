@@ -1,8 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Sidebar } from "./Sidebar";
 import Note from "./Note";
-import { store } from "../store";
-import { setNoteSiderbarWidth } from "../slices/client";
 import { IoIosArrowForward } from "react-icons/io";
 import Welcome from "./Welcome";
 
@@ -11,11 +9,17 @@ const NoteApp = ({
   initSiderbarWidth,
   userDisplayName,
   onLogout,
+  onAddNote,
+  onSidebarWidthChange,
+  notes,
 }: {
   id: string | null;
   initSiderbarWidth: number;
   userDisplayName: string;
   onLogout: () => void;
+  onAddNote: () => Promise<void>;
+  onSidebarWidthChange: (width: number) => void;
+  notes: any[];
 }) => {
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
   const [sidebarWidth, setSidebarWidth] = useState(
@@ -48,7 +52,7 @@ const NoteApp = ({
       document.body.style.userSelect = "";
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
-      store.dispatch(setNoteSiderbarWidth(sidebarRef.current));
+      onSidebarWidthChange(sidebarRef.current);
       setWidthOpacity(0);
     };
 
@@ -60,7 +64,7 @@ const NoteApp = ({
   function resetSidebarWidth() {
     sidebarRef.current = 300;
     setSidebarWidth(sidebarRef.current);
-    store.dispatch(setNoteSiderbarWidth(sidebarRef.current));
+    onSidebarWidthChange(sidebarRef.current);
   }
 
   return (
@@ -69,7 +73,11 @@ const NoteApp = ({
         className="position-fixed  top-0 start-0 h-100 w-100"
         style={{ paddingLeft: sidebarWidth }}
       >
-        {id ? <Note showFolderListNav={disableSidebar} /> : <Welcome />}
+        {id ? (
+          <Note showFolderListNav={disableSidebar} />
+        ) : (
+          <Welcome onAddNote={onAddNote} userDisplayName={userDisplayName} />
+        )}
       </div>
 
       <div
@@ -92,7 +100,7 @@ const NoteApp = ({
         />
         <Sidebar
           id=""
-          items={[]}
+          items={notes}
           userDisplayName={userDisplayName}
           onAddNote={() => {}}
           onDeleteNote={() => {}}
