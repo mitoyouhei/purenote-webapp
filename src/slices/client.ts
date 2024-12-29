@@ -36,12 +36,13 @@ const client = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_APP, () => initialState); // 重置为初始状态
+    builder.addCase(RESET_APP, (state) => {
+      return { ...state, errorMessage: null };
+    }); // 重置为初始状态
   },
 });
 
 export const {
-  setSocketConnected,
   setInitialized,
   setErrorMessage,
   setNoteSiderbarWidth,

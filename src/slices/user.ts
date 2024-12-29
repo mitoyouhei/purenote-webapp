@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RESET_APP } from ".";
-
-const initialState = null;
+import { User } from "@supabase/supabase-js";
+const initialState: User | null = null;
 const user = createSlice({
   name: "user",
   initialState,

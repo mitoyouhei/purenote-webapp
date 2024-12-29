@@ -1,32 +1,36 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Sidebar } from "./Sidebar";
 import Note from "./Note";
-import { useSelector } from "react-redux";
 import { store } from "../store";
 import { setNoteSiderbarWidth } from "../slices/client";
 import { IoIosArrowForward } from "react-icons/io";
-import { useNavigate, useParams } from "react-router-dom";
 import Welcome from "./Welcome";
 
-const NoteApp = () => {
-  const { id } = useParams();
-  const user = useSelector((state) => state.user);
-  const client = useSelector((state) => state.client);
-  const navigate = useNavigate();
+const NoteApp = ({
+  id,
+  initSiderbarWidth,
+  userDisplayName,
+  onLogout,
+}: {
+  id: string | null;
+  initSiderbarWidth: number;
+  userDisplayName: string;
+  onLogout: () => void;
+}) => {
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
   const [sidebarWidth, setSidebarWidth] = useState(
-    disableSidebar ? 0 : client.noteSiderbarWidth
+    disableSidebar ? 0 : initSiderbarWidth
   );
   const [widthOpacity, setWidthOpacity] = useState(0);
-  const sidebarRef = useRef(client.noteSiderbarWidth);
+  const sidebarRef = useRef(initSiderbarWidth);
 
-  const handleMouseDown = (e) => {
+  const handleMouseDown = (e: React.MouseEvent) => {
     const startX = e.clientX;
     const startWidth = sidebarRef.current;
     setWidthOpacity(0.4);
 
-    const handleMouseMove = (e) => {
-      let newWidth = startWidth + e.clientX - startX;
+    const handleMouseMove: EventListener = (e: Event) => {
+      let newWidth = startWidth + (e as MouseEvent).clientX - startX;
 
       if (newWidth < 200) {
         sidebarRef.current = 0;
@@ -59,9 +63,6 @@ const NoteApp = () => {
     store.dispatch(setNoteSiderbarWidth(sidebarRef.current));
   }
 
-  useEffect(() => {
-    if (!id && disableSidebar) navigate("/folders");
-  }, [id, disableSidebar, navigate]);
   return (
     <div className="position-fixed h-100">
       <div
@@ -92,10 +93,10 @@ const NoteApp = () => {
         <Sidebar
           id=""
           items={[]}
-          userDisplayName={user.email}
+          userDisplayName={userDisplayName}
           onAddNote={() => {}}
           onDeleteNote={() => {}}
-          onLogout={() => {}}
+          onLogout={onLogout}
         />
       </div>
 
