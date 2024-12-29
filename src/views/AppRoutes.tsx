@@ -15,6 +15,7 @@ import { Folders } from "./Folders";
 import { NotFound } from "./NotFound";
 import { Notebooks } from "./Notebooks";
 import { RootState } from "../store";
+import { EmailVerification } from "./EmailVerification";
 
 const RootLandingPage = () => {
   const user = useSelector((state: RootState) => state.user);
@@ -40,6 +41,14 @@ const AppRoutes = () => {
           element={
             <PublicLayout>
               <Register />
+            </PublicLayout>
+          }
+        />
+        <Route
+          path="/email-verification"
+          element={
+            <PublicLayout>
+              <EmailVerification />
             </PublicLayout>
           }
         />

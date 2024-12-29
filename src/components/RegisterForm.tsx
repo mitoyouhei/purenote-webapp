@@ -10,7 +10,7 @@ export const RegisterForm = ({
 }: {
   loading: boolean;
   error: string | null;
-  createUser: (email: string, password: string) => Promise<void>;
+  createUser: (email: string, password: string) => void;
 }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,7 +29,6 @@ export const RegisterForm = ({
     e.preventDefault();
     setPasswordNotMatch(false);
     if (password !== confirmPassword) {
-      // setError("Password do not match");
       setPasswordNotMatch(true);
       return;
     }

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import Sidebar from "./Sidebar";
+import { Sidebar } from "./Sidebar";
 import Note from "./Note";
 import { useSelector } from "react-redux";
 import { store } from "../store";
@@ -10,6 +10,7 @@ import Welcome from "./Welcome";
 
 const NoteApp = () => {
   const { id } = useParams();
+  const user = useSelector((state) => state.user);
   const client = useSelector((state) => state.client);
   const navigate = useNavigate();
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
@@ -88,7 +89,14 @@ const NoteApp = () => {
           className="position-absolute top-0 end-0 h-100 border-end"
           onMouseDown={handleMouseDown}
         />
-        <Sidebar />
+        <Sidebar
+          id=""
+          items={[]}
+          userDisplayName={user.email}
+          onAddNote={() => {}}
+          onDeleteNote={() => {}}
+          onLogout={() => {}}
+        />
       </div>
 
       {sidebarWidth === 0 && !disableSidebar ? (
