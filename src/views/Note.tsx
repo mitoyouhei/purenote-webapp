@@ -49,12 +49,14 @@ export const Note: React.FC = () => {
     getNotes(user?.id ?? "").then(setNotes);
   }, [user]);
 
+  if (!user) throw new Error("User not found");
   return (
     <NoteApp
+      email={user.email ?? ""}
       note={note}
       notes={notes}
       initSiderbarWidth={client.noteSiderbarWidth}
-      userDisplayName={user ? user.email ?? "" : ""}
+      userDisplayName={user.email ?? ""}
       onLogout={() => {
         navigate("/logout");
       }}
@@ -82,6 +84,10 @@ export const Note: React.FC = () => {
         note.content = content;
         setNotes([...notes]);
         await updateNoteContent(id, content);
+      }}
+      resetPassword={async (password: string) => {
+        if (!user?.email) return;
+        await supabase.auth.updateUser({ password });
       }}
     />
   );

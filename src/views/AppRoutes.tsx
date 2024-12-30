@@ -8,7 +8,6 @@ import PublicLayout from "../components/PublicLayout";
 import { Register } from "./Register";
 import { Login } from "./Login";
 import { Home } from "./Home";
-import { ResetPassword } from "./ResetPassword";
 import { Logout } from "./Logout";
 import { Note } from "./Note";
 import { Folders } from "./Folders";
@@ -67,14 +66,6 @@ const AppRoutes = () => {
           element={
             <PublicLayout>
               <Home />
-            </PublicLayout>
-          }
-        />
-        <Route
-          path="/auth/reset-password"
-          element={
-            <PublicLayout>
-              <ResetPassword />
             </PublicLayout>
           }
         />

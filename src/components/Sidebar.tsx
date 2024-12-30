@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import Setting from "./Setting";
 
+
 const defaultNoteTitle = "Untitled";
 
 const UserMenuToggle = React.forwardRef<
@@ -41,20 +42,30 @@ export const Sidebar = ({
   onDeleteNote,
   onLogout,
   items,
+  resetPassword,
+  email,
 }: {
   id: string;
   userDisplayName: string;
+  email: string;
   onAddNote: () => Promise<void>;
   onDeleteNote: () => void;
   onLogout: () => void;
   items: any[];
+  resetPassword: (password: string) => Promise<void>;
 }) => {
   const [showSetting, setShowSetting] = useState(false);
   const [addingNote, setAddingNote] = useState(false);
 
   return (
     <>
-      {showSetting ? <Setting onClose={() => setShowSetting(false)} /> : null}
+      {showSetting ? (
+        <Setting
+          email={email}
+          onClose={() => setShowSetting(false)}
+          resetPassword={resetPassword}
+        />
+      ) : null}
       <nav className="navbar">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">

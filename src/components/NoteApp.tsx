@@ -7,6 +7,7 @@ import Welcome from "./Welcome";
 const NoteApp = ({
   note,
   initSiderbarWidth,
+  email,
   userDisplayName,
   onLogout,
   onAddNote,
@@ -15,8 +16,10 @@ const NoteApp = ({
   notes,
   updateNoteTitle,
   onDeleteNote,
+  resetPassword,
 }: {
   note: any;
+  email: string;
   initSiderbarWidth: number;
   userDisplayName: string;
   onLogout: () => void;
@@ -26,6 +29,7 @@ const NoteApp = ({
   notes: any[];
   updateNoteTitle: (title: string) => Promise<void>;
   onDeleteNote: () => Promise<void>;
+  resetPassword: (password: string) => Promise<void>;
 }) => {
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
   const [sidebarWidth, setSidebarWidth] = useState(
@@ -111,12 +115,14 @@ const NoteApp = ({
           onMouseDown={handleMouseDown}
         />
         <Sidebar
+          email={email}
           id={note?.id}
           items={notes}
           userDisplayName={userDisplayName}
           onAddNote={onAddNote}
           onDeleteNote={onDeleteNote}
           onLogout={onLogout}
+          resetPassword={resetPassword}
         />
       </div>
 

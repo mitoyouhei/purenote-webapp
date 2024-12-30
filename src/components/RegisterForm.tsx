@@ -4,18 +4,17 @@ import React, { useEffect, useRef, useState } from "react";
 import Spinner from "./Spinner";
 
 export const RegisterForm = ({
-  loading,
   error,
   createUser,
 }: {
-  loading: boolean;
   error: string | null;
-  createUser: (email: string, password: string) => void;
+  createUser: (email: string, password: string) => Promise<void>;
 }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordNotMatch, setPasswordNotMatch] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -33,7 +32,9 @@ export const RegisterForm = ({
       return;
     }
 
-    createUser(email, password);
+    setLoading(true);
+    await createUser(email, password);
+    setLoading(false);
   };
 
   const errorMessage =

@@ -35,7 +35,5 @@ export const Register: React.FC = () => {
     }
   };
 
-  return (
-    <RegisterForm loading={loading} error={error} createUser={createUser} />
-  );
+  return <RegisterForm error={error} createUser={createUser} />;
 };
