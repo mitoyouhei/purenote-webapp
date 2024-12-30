@@ -25,3 +25,16 @@ export const updateNoteTitle = async (id: string, title: string) => {
   }
   return data[0];
 };
+
+export const updateNoteContent = async (id: string, content: string) => {
+  const { data, error } = await supabase
+    .from("notes")
+    .update({ content })
+    .eq("id", id)
+    .select();
+  if (error) {
+    console.error("Error updating note content:", error);
+    return null;
+  }
+  return data[0];
+};
