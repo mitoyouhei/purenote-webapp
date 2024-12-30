@@ -44,12 +44,13 @@ export const Sidebar = ({
 }: {
   id: string;
   userDisplayName: string;
-  onAddNote: () => void;
+  onAddNote: () => Promise<void>;
   onDeleteNote: () => void;
   onLogout: () => void;
   items: any[];
 }) => {
   const [showSetting, setShowSetting] = useState(false);
+  const [addingNote, setAddingNote] = useState(false);
 
   return (
     <>
@@ -77,8 +78,27 @@ export const Sidebar = ({
               </Dropdown.Menu>
             </Dropdown>
 
-            <span className="btn" onClick={onAddNote}>
+            <span
+              className="btn"
+              style={{ display: addingNote ? "none" : "block" }}
+              onClick={async () => {
+                setAddingNote(true);
+                await onAddNote();
+                setAddingNote(false);
+              }}
+            >
               <HiMiniPlus />
+            </span>
+            <span
+              className="btn"
+              style={{
+                display: addingNote ? "block" : "none",
+                paddingTop: "0.7rem",
+              }}
+            >
+              <div className="spinner-border spinner-border-sm" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
             </span>
             {id && (
               <span className="btn" onClick={onDeleteNote}>

@@ -7,9 +7,18 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { User } from "@supabase/supabase-js";
 import { useNavigate } from "react-router-dom";
-import { supabase, createNote } from "../supabase";
+import { supabase, createNote, updateNoteTitle } from "../supabase";
 import { setNoteSiderbarWidth } from "../slices/client";
 import { useDispatch } from "react-redux";
+
+async function getNotes(userId: string) {
+  const { data } = await supabase
+    .from("notes")
+    .select()
+    .order("updated_at", { ascending: false })
+    .eq("user_id", userId);
+  return data ?? [];
+}
 
 export const Note: React.FC = () => {
   const { id } = useParams();
@@ -18,11 +27,11 @@ export const Note: React.FC = () => {
   const user = useSelector((state: RootState) => state.user) as User | null;
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   async function onAddNote() {
     const newNote = await createNote();
-    if (newNote) {
-      navigate(`/note/${newNote[0].id}`);
-    }
+    setNotes(await getNotes(user?.id ?? ""));
+    navigate(`/note/${newNote.id}`);
   }
   function onSidebarWidthChange(width: number) {
     dispatch(setNoteSiderbarWidth(width));
@@ -33,13 +42,7 @@ export const Note: React.FC = () => {
   }
 
   useEffect(() => {
-    supabase
-      .from("notes")
-      .select()
-      .eq("user_id", user?.id)
-      .then(({ data, error }) => {
-        setNotes(data ?? []);
-      });
+    getNotes(user?.id ?? "").then(setNotes);
   }, [user]);
 
   return (
@@ -50,6 +53,10 @@ export const Note: React.FC = () => {
       userDisplayName={user ? user.email ?? "" : ""}
       onLogout={() => {
         navigate("/logout");
+      }}
+      updateNoteTitle={async (title: string) => {
+        if (!id) return;
+        return await updateNoteTitle(id, title);
       }}
       onAddNote={onAddNote}
       onSidebarWidthChange={onSidebarWidthChange}

@@ -9,6 +9,19 @@ export const createNote = async () => {
     console.error("Error creating note:", error);
     return null;
   }
+  return data[0];
+};
 
-  return data;
+export const updateNoteTitle = async (id: string, title: string) => {
+  const { data, error } = await supabase
+    .from("notes")
+    .update({ title })
+    .eq("id", id)
+    .select();
+
+  if (error) {
+    console.error("Error updating note title:", error);
+    return null;
+  }
+  return data[0];
 };

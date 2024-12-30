@@ -13,6 +13,7 @@ const NoteApp = ({
   onSidebarWidthChange,
   onNoteChange,
   notes,
+  updateNoteTitle,
 }: {
   note: any;
   initSiderbarWidth: number;
@@ -22,6 +23,7 @@ const NoteApp = ({
   onSidebarWidthChange: (width: number) => void;
   onNoteChange: (content: string) => Promise<void>;
   notes: any[];
+  updateNoteTitle: (title: string) => Promise<void>;
 }) => {
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
   const [sidebarWidth, setSidebarWidth] = useState(
@@ -81,6 +83,7 @@ const NoteApp = ({
             id={note.id}
             note={note}
             onChange={onNoteChange}
+            updateNoteTitle={updateNoteTitle}
           />
         ) : (
           <Welcome onAddNote={onAddNote} userDisplayName={userDisplayName} />
@@ -106,10 +109,10 @@ const NoteApp = ({
           onMouseDown={handleMouseDown}
         />
         <Sidebar
-          id=""
+          id={note?.id}
           items={notes}
           userDisplayName={userDisplayName}
-          onAddNote={() => {}}
+          onAddNote={onAddNote}
           onDeleteNote={() => {}}
           onLogout={onLogout}
         />

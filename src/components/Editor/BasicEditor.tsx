@@ -37,6 +37,7 @@ interface BasicEditorProps {
   id: string;
   updatedAt: string;
   initTitle: string;
+  updateNoteTitle: (title: string) => Promise<void>;
 }
 
 export default function BasicEditor({
@@ -47,6 +48,7 @@ export default function BasicEditor({
   id,
   updatedAt,
   initTitle,
+  updateNoteTitle,
 }: BasicEditorProps) {
   const [saving, setSaving] = useState(false);
   const editorConfig = {
@@ -111,7 +113,15 @@ export default function BasicEditor({
           {savingIndicator}
         </div>
         <h1 className="mx-5">
-          <TitleInput id={id} initTitle={initTitle} />
+          <TitleInput
+            id={id}
+            initTitle={initTitle}
+            updateTitle={async (title: string) => {
+              setSaving(true);
+              await updateNoteTitle(title);
+              setSaving(false);
+            }}
+          />
         </h1>
         <div className="editor-inner mx-5">
           <RichTextPlugin
