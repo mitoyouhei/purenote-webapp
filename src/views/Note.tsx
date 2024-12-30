@@ -12,6 +12,7 @@ import {
   createNote,
   updateNoteTitle,
   updateNoteContent,
+  deleteNote,
 } from "../supabase";
 import { setNoteSiderbarWidth } from "../slices/client";
 import { useDispatch } from "react-redux";
@@ -20,6 +21,7 @@ async function getNotes(userId: string) {
   const { data } = await supabase
     .from("notes")
     .select()
+    .is("deleted_at", null)
     .order("updated_at", { ascending: false })
     .eq("user_id", userId);
   return data ?? [];
@@ -61,6 +63,11 @@ export const Note: React.FC = () => {
         note.title = title;
         setNotes([...notes]);
         await updateNoteTitle(id, title);
+      }}
+      onDeleteNote={async () => {
+        if (!id) return;
+        await deleteNote(id);
+        setNotes(notes.filter((note) => note.id !== id));
       }}
       onAddNote={onAddNote}
       onSidebarWidthChange={onSidebarWidthChange}

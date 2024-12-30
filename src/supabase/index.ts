@@ -38,3 +38,17 @@ export const updateNoteContent = async (id: string, content: string) => {
   }
   return data[0];
 };
+
+export const deleteNote = async (id: string) => {
+  const { data, error } = await supabase
+    .from("notes")
+    .update({ deleted_at: new Date() })
+    .eq("id", id)
+    .select();
+  if (error) {
+    console.error("Error deleting note:", error);
+    return null;
+  }
+  return data[0];
+};
+
