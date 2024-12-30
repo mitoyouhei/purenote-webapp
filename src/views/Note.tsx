@@ -67,7 +67,13 @@ export const Note: React.FC = () => {
       onDeleteNote={async () => {
         if (!id) return;
         await deleteNote(id);
-        setNotes(notes.filter((note) => note.id !== id));
+        const restNotes = notes.filter((note) => note.id !== id);
+        setNotes(restNotes);
+        if (restNotes.length > 0) {
+          navigate(`/note/${restNotes[0].id}`);
+        } else {
+          navigate("/");
+        }
       }}
       onAddNote={onAddNote}
       onSidebarWidthChange={onSidebarWidthChange}
