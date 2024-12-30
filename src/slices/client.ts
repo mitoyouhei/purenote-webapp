@@ -4,7 +4,7 @@ import { RESET_APP } from ".";
 const initialState = {
   errorMessage: null,
   noteSiderbarWidth: 300,
-  initialized: false,
+  initializedUserSession: false,
 };
 const client = createSlice({
   name: "client",
@@ -16,10 +16,10 @@ const client = createSlice({
         noteSiderbarWidth: action.payload,
       };
     },
-    setInitialized: (state, action) => {
+    setInitializedUserSession: (state, action) => {
       return {
         ...state,
-        initialized: action.payload,
+        initializedUserSession: action.payload,
       };
     },
     setErrorMessage: (state, action) => {
@@ -36,14 +36,12 @@ const client = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_APP, (state) => {
-      return { ...state, errorMessage: null };
-    }); // 重置为初始状态
+    builder.addCase(RESET_APP, () => initialState); // 重置为初始状态
   },
 });
 
 export const {
-  setInitialized,
+  setInitializedUserSession,
   setErrorMessage,
   setNoteSiderbarWidth,
   clearErrorMessage,

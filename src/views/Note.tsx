@@ -20,7 +20,6 @@ export const Note: React.FC = () => {
   const dispatch = useDispatch();
   async function onAddNote() {
     const newNote = await createNote();
-    console.log("newNote", newNote);
     if (newNote) {
       navigate(`/note/${newNote[0].id}`);
     }
@@ -29,20 +28,23 @@ export const Note: React.FC = () => {
     dispatch(setNoteSiderbarWidth(width));
   }
 
+  async function onNoteChange(content: string) {
+    // await updateNoteFile(id, content);
+  }
+
   useEffect(() => {
     supabase
       .from("notes")
       .select()
       .eq("user_id", user?.id)
       .then(({ data, error }) => {
-        console.log("data", data);
         setNotes(data ?? []);
       });
   }, [user]);
 
   return (
     <NoteApp
-      id={id ?? null}
+      note={notes.find((note) => note.id === id)}
       notes={notes}
       initSiderbarWidth={client.noteSiderbarWidth}
       userDisplayName={user ? user.email ?? "" : ""}
@@ -51,6 +53,7 @@ export const Note: React.FC = () => {
       }}
       onAddNote={onAddNote}
       onSidebarWidthChange={onSidebarWidthChange}
+      onNoteChange={onNoteChange}
     />
   );
 

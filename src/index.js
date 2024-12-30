@@ -9,38 +9,35 @@ import App from "./views/App";
 import { ErrorBoundary } from "./errorHandler";
 import { supabase } from "./supabase";
 import { setUser } from "./slices/user";
-import { setInitialized } from "./slices/client";
+import { setInitializedUserSession } from "./slices/client";
 
 initializeApp();
 
 async function initializeState() {
+  function initliazeUserSession(session) {
+    const user = session ? session.user : null;
+    store.dispatch(setUser(user));
+    store.dispatch(setInitializedUserSession(true));
+  }
+
   supabase.auth.onAuthStateChange((event, session) => {
-    console.log(event, session);
+    initliazeUserSession(session);
+    // console.log("supabase.auth.onAuthStateChange", event, session);
 
-    if (event === "INITIAL_SESSION") {
-      // handle initial session
-    } else if (event === "SIGNED_IN") {
-      // handle sign in event
-    } else if (event === "SIGNED_OUT") {
-      // handle sign out event
-    } else if (event === "PASSWORD_RECOVERY") {
-      // handle password recovery event
-    } else if (event === "TOKEN_REFRESHED") {
-      // handle token refreshed event
-    } else if (event === "USER_UPDATED") {
-      // handle user updated event
-    }
+    // if (event === "INITIAL_SESSION") {
+    //   // handle initial session
+    // } else if (event === "SIGNED_IN") {
+    //   // handle sign in event
+    // } else if (event === "SIGNED_OUT") {
+    //   // handle sign out event
+    // } else if (event === "PASSWORD_RECOVERY") {
+    //   // handle password recovery event
+    // } else if (event === "TOKEN_REFRESHED") {
+    //   // handle token refreshed event
+    // } else if (event === "USER_UPDATED") {
+    //   // handle user updated event
+    // }
   });
-
-  const { data, error } = await supabase.auth.getSession();
-  if (error) {
-    throw error;
-  }
-  if (data.session?.user) {
-    store.dispatch(setUser(data.session.user));
-    console.log("supabase user", data.session.user);
-  }
-  store.dispatch(setInitialized(true));
 }
 
 function initializeUI() {

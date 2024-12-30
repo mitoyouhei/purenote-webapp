@@ -15,8 +15,8 @@ const handleSaveShortcut = (event: KeyboardEvent) => {
 };
 
 const App = () => {
-  const initialized = useSelector(
-    (state: RootState) => state.client.initialized
+  const initializedUserSession = useSelector(
+    (state: RootState) => state.client.initializedUserSession
   );
   useEffect(() => {
     document.addEventListener("keydown", handleSaveShortcut);
@@ -24,7 +24,7 @@ const App = () => {
       document.removeEventListener("keydown", handleSaveShortcut);
     };
   }, []);
-  if (!initialized) return <Spinner />;
+  if (!initializedUserSession) return <Spinner />;
   return (
     <>
       <AppRoutes />

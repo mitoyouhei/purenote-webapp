@@ -20,8 +20,8 @@ const store = configureStore({
   reducer: rootReducer,
 });
 async function logout() {
-  await supabase.auth.signOut();
   store.dispatch(resetApp());
+  await supabase.auth.signOut();
 }
 export type RootState = ReturnType<typeof rootReducer>;
 export { store, logout };

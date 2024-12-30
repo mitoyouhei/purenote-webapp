@@ -5,20 +5,22 @@ import { IoIosArrowForward } from "react-icons/io";
 import Welcome from "./Welcome";
 
 const NoteApp = ({
-  id,
+  note,
   initSiderbarWidth,
   userDisplayName,
   onLogout,
   onAddNote,
   onSidebarWidthChange,
+  onNoteChange,
   notes,
 }: {
-  id: string | null;
+  note: any;
   initSiderbarWidth: number;
   userDisplayName: string;
   onLogout: () => void;
   onAddNote: () => Promise<void>;
   onSidebarWidthChange: (width: number) => void;
+  onNoteChange: (content: string) => Promise<void>;
   notes: any[];
 }) => {
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
@@ -73,8 +75,13 @@ const NoteApp = ({
         className="position-fixed  top-0 start-0 h-100 w-100"
         style={{ paddingLeft: sidebarWidth }}
       >
-        {id ? (
-          <Note showFolderListNav={disableSidebar} />
+        {note ? (
+          <Note
+            showFolderListNav={disableSidebar}
+            id={note.id}
+            note={note}
+            onChange={onNoteChange}
+          />
         ) : (
           <Welcome onAddNote={onAddNote} userDisplayName={userDisplayName} />
         )}
