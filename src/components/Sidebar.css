@@ -17,6 +17,13 @@
     border: 0;
 }
 
+.sidebar-toolbar .btn {
+    line-height: 12px;
+}
+
+.sidebar-toolbar .btn:hover:not([disabled]) {
+    background-color: #eee;
+}
 
 .notes-list>.list-group-item.active {
     background-color: rgb(255 216 137);
