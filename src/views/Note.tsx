@@ -27,6 +27,8 @@ async function getNotes(userId: string) {
   return data ?? [];
 }
 
+
+
 export const Note: React.FC = () => {
   const { id } = useParams();
   const [notes, setNotes] = useState<any[]>([]);
@@ -56,6 +58,7 @@ export const Note: React.FC = () => {
 
   if (!user) throw new Error("User not found");
   if (!note) return <Spinner />;
+
   return (
     <NoteApp
       email={user.email ?? ""}
@@ -79,7 +82,7 @@ export const Note: React.FC = () => {
         if (restNotes.length > 0) {
           navigate(`/note/${restNotes[0].id}`);
         } else {
-          navigate("/");
+          navigate("/note/welcome");
         }
         await deleteNote(id);
       }}

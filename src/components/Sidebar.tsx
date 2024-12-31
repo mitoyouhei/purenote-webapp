@@ -1,7 +1,7 @@
 import "./Sidebar.css";
 import { Link } from "react-router-dom";
 import { HiMiniPlus, HiMiniUserCircle, HiTrash } from "react-icons/hi2";
-import { formatDateTime } from "../utils";
+import { extractText, formatDateTime } from "../utils";
 import React, { useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import Setting from "./Setting";
@@ -18,6 +18,7 @@ const UserMenuToggle = React.forwardRef<
 ));
 
 const NavItem = ({ item, isActive }: { item: any; isActive: boolean }) => {
+  const text = extractText(item.content, 200);
   return (
     <Link
       className={`list-group-item list-group-item-action my-2 rounded-1 ${
@@ -26,10 +27,10 @@ const NavItem = ({ item, isActive }: { item: any; isActive: boolean }) => {
       to={`/note/${item.id}`}
     >
       <div className="title-row">
-        <b>{item.title ? item.title : defaultNoteTitle}</b>
+        {item.title ? item.title : defaultNoteTitle}
       </div>
-      <small className="fw-lighter" style={{ fontSize: ".675em" }}>
-        {formatDateTime(item.updated_at)}
+      <small className="fw-lighter">
+        {formatDateTime(item.updated_at)} - {text}
       </small>
     </Link>
   );
