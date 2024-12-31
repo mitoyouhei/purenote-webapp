@@ -1,0 +1,9 @@
+.notes-list>.list-group-item {
+    border: 0;
+}
+
+
+.notes-list>.list-group-item.active {
+    background-color: rgb(255 216 137);
+    color: #000;
+}

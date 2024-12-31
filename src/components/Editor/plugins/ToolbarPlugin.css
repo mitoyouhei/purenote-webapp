@@ -5,9 +5,9 @@
     
     vertical-align: middle;
     width: 100%;
-    border-bottom: 1px solid #eee;
+    /* border-bottom: 1px solid #eee; */
     flex-wrap: wrap;
-        justify-content: center;
+    justify-content: center;
 }
 
 .toolbar .toolbar-item {
@@ -61,7 +61,7 @@
 
 .toolbar .divider {
     width: 1px;
-    background-color: #eee;
+    /* background-color: #eee; */
     margin: 0 4px;
 }
 

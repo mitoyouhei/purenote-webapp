@@ -16,7 +16,7 @@ import {
 } from "../supabase";
 import { setNoteSiderbarWidth } from "../slices/client";
 import { useDispatch } from "react-redux";
-
+import Spinner from "../components/Spinner";
 async function getNotes(userId: string) {
   const { data } = await supabase
     .from("notes")
@@ -46,10 +46,16 @@ export const Note: React.FC = () => {
   }
 
   useEffect(() => {
+    if (!note && notes.length > 0) {
+      navigate(`/note/${notes[0].id}`);
+    }
+  }, [note, notes, navigate]);
+  useEffect(() => {
     getNotes(user?.id ?? "").then(setNotes);
   }, [user]);
 
   if (!user) throw new Error("User not found");
+  if (!note) return <Spinner />;
   return (
     <NoteApp
       email={user.email ?? ""}
@@ -68,7 +74,6 @@ export const Note: React.FC = () => {
       }}
       onDeleteNote={async () => {
         if (!id) return;
-        await deleteNote(id);
         const restNotes = notes.filter((note) => note.id !== id);
         setNotes(restNotes);
         if (restNotes.length > 0) {
@@ -76,6 +81,7 @@ export const Note: React.FC = () => {
         } else {
           navigate("/");
         }
+        await deleteNote(id);
       }}
       onAddNote={onAddNote}
       onSidebarWidthChange={onSidebarWidthChange}

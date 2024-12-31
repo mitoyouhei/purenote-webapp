@@ -1,10 +1,10 @@
+import "./Sidebar.css";
 import { Link } from "react-router-dom";
 import { HiMiniPlus, HiMiniUserCircle, HiTrash } from "react-icons/hi2";
 import { formatDateTime } from "../utils";
 import React, { useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import Setting from "./Setting";
-
 
 const defaultNoteTitle = "Untitled";
 
@@ -20,7 +20,7 @@ const UserMenuToggle = React.forwardRef<
 const NavItem = ({ item, isActive }: { item: any; isActive: boolean }) => {
   return (
     <Link
-      className={`list-group-item list-group-item-action my-2 border-1 rounded-1 ${
+      className={`list-group-item list-group-item-action my-2 rounded-1 ${
         isActive ? "active" : ""
       }`}
       to={`/note/${item.id}`}

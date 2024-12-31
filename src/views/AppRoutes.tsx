@@ -1,8 +1,12 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 
-import PrivateRoute from "../components/PrivateRoute";
 import PublicLayout from "../components/PublicLayout";
 
 import { Register } from "./Register";
@@ -16,13 +20,19 @@ import { Notebooks } from "./Notebooks";
 import { RootState } from "../store";
 import { EmailVerification } from "./EmailVerification";
 
+const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
+  const user = useSelector((state: RootState) => state.user);
+
+  return user ? children : <Navigate to="/login" />;
+};
+
 const RootLandingPage = () => {
   const user = useSelector((state: RootState) => state.user);
 
   // TODO - remove Note as the redirect component
   return user ? (
     <PrivateRoute>
-      <Note />
+      <Navigate to="/note/welcome" />
     </PrivateRoute>
   ) : (
     <PublicLayout>
