@@ -1,1 +1,0 @@
-export { FireProvider } from "./provider";

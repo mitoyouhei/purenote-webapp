@@ -3,40 +3,57 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
-import { onAuthStateChanged } from "firebase/auth";
 
-import { logout, persistor, store } from "./store";
+import { store } from "./store";
 import App from "./views/App";
 import { ErrorBoundary } from "./errorHandler";
-import { auth } from "./firebase";
+import { supabase } from "./supabase";
 import { setUser } from "./slices/user";
-import Spinner from "./components/Spinner";
-import { PersistGate } from "redux-persist/integration/react";
+import { setInitializedUserSession } from "./slices/client";
 
 initializeApp();
 
-function initializeApp() {
-  const root = ReactDOM.createRoot(document.getElementById("root"));
+async function initializeState() {
+  function initliazeUserSession(session) {
+    const user = session ? session.user : null;
+    store.dispatch(setUser(user));
+    store.dispatch(setInitializedUserSession(true));
+  }
 
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      store.dispatch(setUser(user.toJSON()));
-    } else {
-      await logout();
-    }
+  supabase.auth.onAuthStateChange((event, session) => {
+    initliazeUserSession(session);
+    // console.log("supabase.auth.onAuthStateChange", event, session);
 
-    root.render(
-      <React.StrictMode>
-        <ErrorBoundary>
-          <Provider store={store}>
-            <PersistGate loading={<Spinner />} persistor={persistor}>
-              <App />
-            </PersistGate>
-          </Provider>
-        </ErrorBoundary>
-      </React.StrictMode>
-    );
+    // if (event === "INITIAL_SESSION") {
+    //   // handle initial session
+    // } else if (event === "SIGNED_IN") {
+    //   // handle sign in event
+    // } else if (event === "SIGNED_OUT") {
+    //   // handle sign out event
+    // } else if (event === "PASSWORD_RECOVERY") {
+    //   // handle password recovery event
+    // } else if (event === "TOKEN_REFRESHED") {
+    //   // handle token refreshed event
+    // } else if (event === "USER_UPDATED") {
+    //   // handle user updated event
+    // }
   });
+}
 
-  root.render(<Spinner />);
+function initializeUI() {
+  const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(
+    <React.StrictMode>
+      <ErrorBoundary>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </ErrorBoundary>
+    </React.StrictMode>
+  );
+}
+
+function initializeApp() {
+  initializeState();
+  initializeUI();
 }
