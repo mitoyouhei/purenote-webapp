@@ -1,8 +1,10 @@
-import React from "react";
-import { Sidebar } from "./Sidebar";
+import React, { useState } from "react";
 import Note from "./Note";
 import Welcome from "./Welcome";
 import { AppLayout } from "./AppLayout";
+import { NoteList } from "./NoteList";
+import { Topbar } from "./Topbar";
+import Setting from "./Setting";
 
 export const NoteApp = ({
   note,
@@ -32,6 +34,8 @@ export const NoteApp = ({
   resetPassword: (password: string) => Promise<void>;
 }) => {
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
+  const [showSetting, setShowSetting] = useState(false);
+  const activeId = note?.id;
 
   return (
     <AppLayout
@@ -51,16 +55,24 @@ export const NoteApp = ({
         )
       }
       sidebar={
-        <Sidebar
-          email={email}
-          id={note?.id}
-          items={notes}
-          userDisplayName={userDisplayName}
-          onAddNote={onAddNote}
-          onDeleteNote={onDeleteNote}
-          onLogout={onLogout}
-          resetPassword={resetPassword}
-        />
+        <>
+          {showSetting ? (
+            <Setting
+              email={email}
+              onClose={() => setShowSetting(false)}
+              resetPassword={resetPassword}
+            />
+          ) : null}
+          <Topbar
+            activeId={activeId}
+            userDisplayName={userDisplayName}
+            onAddNote={onAddNote}
+            onDeleteNote={onDeleteNote}
+            onLogout={onLogout}
+            onSettingClick={() => setShowSetting(true)}
+          />
+          <NoteList activeId={activeId} notes={notes} />
+        </>
       }
     />
   );
