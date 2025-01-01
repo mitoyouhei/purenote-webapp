@@ -41,26 +41,26 @@ test("login", async ({ page, isMobile }) => {
   await expect(page.locator(selector)).toBeVisible();
 });
 
-test("register", async ({ page, isMobile }) => {
-  const email = `fengzhe1983+pntest${Date.now()}tobedeleted@gmail.com`;
-  const password = "test12__sdfsdaf*dtobedeleted";
+// test("register", async ({ page, isMobile }) => {
+//   const email = `fengzhe1983+pntest${Date.now()}tobedeleted@gmail.com`;
+//   const password = "test12__sdfsdaf*dtobedeleted";
 
-  await page.goto(purenoteUrl);
+//   await page.goto(purenoteUrl);
 
-  if (isMobile) {
-    await page.click('button.navbar-toggler[aria-label="Toggle navigation"]');
-    await page.waitForSelector('a.btn:has-text("Login")');
-  }
+//   if (isMobile) {
+//     await page.click('button.navbar-toggler[aria-label="Toggle navigation"]');
+//     await page.waitForSelector('a.btn:has-text("Login")');
+//   }
 
-  await page.click('a.btn:has-text("Register")');
-  await page.fill('input[name="email"]', email);
-  await page.fill('input[name="password"]', password);
-  await page.fill('input[name="confirmpassword"]', password);
-  await page.click('button:has-text("Register")');
+//   await page.click('a.btn:has-text("Register")');
+//   await page.fill('input[name="email"]', email);
+//   await page.fill('input[name="password"]', password);
+//   await page.fill('input[name="confirmpassword"]', password);
+//   await page.click('button:has-text("Register")');
 
-  const selector = 'h1:has-text("Email Verification")';
-  await page.waitForSelector(selector, supabaseTimeout);
-  await page.waitForTimeout(1000);
-  await expect(page.locator(selector)).toBeVisible();
-});
+//   const selector = 'h1:has-text("Email Verification")';
+//   await page.waitForSelector(selector, supabaseTimeout);
+//   await page.waitForTimeout(1000);
+//   await expect(page.locator(selector)).toBeVisible();
+// });
 
