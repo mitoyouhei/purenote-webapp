@@ -19,6 +19,9 @@
 
 .sidebar-toolbar .btn {
     line-height: 12px;
+    color: #777;
+        padding: 0.3rem;
+        margin: 0 0.3rem;
 }
 
 .sidebar-toolbar .btn:hover:not([disabled]) {
