@@ -1,29 +1,22 @@
 // src/components/Register.js
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { store } from "../store";
-import { setUser } from "../slices/user";
-import { useSelector } from "react-redux";
-import { auth } from "../firebase";
-import { setGlobalErrorToast } from "../errorHandler";
 import Spinner from "./Spinner";
 
-export const RegisterForm = () => {
+export const RegisterForm = ({
+  error,
+  createUser,
+}: {
+  error: string | null;
+  createUser: (email: string, password: string) => Promise<void>;
+}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordNotMatch, setPasswordNotMatch] = useState(false);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const inputRef = useRef<HTMLInputElement>(null);
-  const user = useSelector((state: any) => state.user);
 
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, [navigate, user]);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -33,33 +26,28 @@ export const RegisterForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    try {
-      setLoading(true);
-      if (password !== confirmPassword) {
-        setGlobalErrorToast("Password do not match");
-        return;
-      }
-
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      console.log("regiest success", userCredential.user);
-      store.dispatch(setUser(userCredential.user.toJSON()));
-      navigate("/");
-    } catch (error: any) {
-      if (error.name === "FirebaseError") {
-        setGlobalErrorToast(error.message.replace("Firebase: ", ""));
-      } else {
-        throw error;
-      }
-    } finally {
-      setLoading(false);
+    setPasswordNotMatch(false);
+    if (password !== confirmPassword) {
+      setPasswordNotMatch(true);
+      return;
     }
+
+    setLoading(true);
+    await createUser(email, password);
+    setLoading(false);
   };
 
+  const errorMessage =
+    error && !passwordNotMatch ? (
+      <div className="alert alert-danger mt-2" role="alert">
+        {error}
+      </div>
+    ) : null;
+  const passwordNotMatchMessage = passwordNotMatch ? (
+    <div className="alert alert-danger mt-2" role="alert">
+      Password do not match
+    </div>
+  ) : null;
   return (
     <div
       className="container my-5"
@@ -106,6 +94,8 @@ export const RegisterForm = () => {
           <button type="submit" className="btn btn-primary mt-2">
             Register
           </button>
+          {errorMessage}
+          {passwordNotMatchMessage}
         </form>
       )}
     </div>

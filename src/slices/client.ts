@@ -4,6 +4,7 @@ import { RESET_APP } from ".";
 const initialState = {
   errorMessage: null,
   noteSiderbarWidth: 300,
+  initializedUserSession: false,
 };
 const client = createSlice({
   name: "client",
@@ -13,6 +14,12 @@ const client = createSlice({
       return {
         ...state,
         noteSiderbarWidth: action.payload,
+      };
+    },
+    setInitializedUserSession: (state, action) => {
+      return {
+        ...state,
+        initializedUserSession: action.payload,
       };
     },
     setErrorMessage: (state, action) => {
@@ -34,7 +41,7 @@ const client = createSlice({
 });
 
 export const {
-  setSocketConnected,
+  setInitializedUserSession,
   setErrorMessage,
   setNoteSiderbarWidth,
   clearErrorMessage,

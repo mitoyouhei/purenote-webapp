@@ -2,14 +2,18 @@ import React, { useEffect, useRef, useState } from "react";
 import { store } from "../../store";
 import { setNotes } from "../../slices/notes";
 import { useSelector } from "react-redux";
-import { updateNoteTitle } from "../../firebase/Collection";
-import { debounce } from "../../utils";
 
 const defaultNoteTitle = "Untitled";
 
-const saveTitle = debounce(updateNoteTitle, 200);
-
-const TitleInput = ({ id, initTitle }: { id: string; initTitle: string }) => {
+const TitleInput = ({
+  id,
+  initTitle,
+  updateTitle,
+}: {
+  id: string;
+  initTitle: string;
+  updateTitle: (title: string) => Promise<void>;
+}) => {
   const [title, setTitle] = useState(initTitle ?? "");
   const inputRef = useRef<HTMLInputElement | null>(null);
   const notes = useSelector((state: any) => state.notes);
@@ -31,7 +35,7 @@ const TitleInput = ({ id, initTitle }: { id: string; initTitle: string }) => {
         name: e.target.value,
       })
     );
-    saveTitle(id, e.target.value);
+    updateTitle(e.target.value);
   }
 
   return (

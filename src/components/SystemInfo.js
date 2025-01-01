@@ -24,7 +24,7 @@ const SystemInfo = () => {
           <strong className="me-auto">System Info</strong>
         </Toast.Header>
         <Toast.Body>
-          <p>process.env.NODE_ENV: {process.env.NODE_ENV}</p>
+          <code>{JSON.stringify(process.env, null, 2)}</code>
         </Toast.Body>
       </Toast>
       <Button

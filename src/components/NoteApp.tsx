@@ -1,31 +1,50 @@
-import React, { useEffect, useRef, useState } from "react";
-import Sidebar from "./Sidebar";
+import React, { useRef, useState } from "react";
+import { Sidebar } from "./Sidebar";
 import Note from "./Note";
-import { useSelector } from "react-redux";
-import { store } from "../store";
-import { setNoteSiderbarWidth } from "../slices/client";
 import { IoIosArrowForward } from "react-icons/io";
-import { useNavigate, useParams } from "react-router-dom";
 import Welcome from "./Welcome";
 
-const NoteApp = () => {
-  const { id } = useParams();
-  const client = useSelector((state) => state.client);
-  const navigate = useNavigate();
+const NoteApp = ({
+  note,
+  initSiderbarWidth,
+  email,
+  userDisplayName,
+  onLogout,
+  onAddNote,
+  onSidebarWidthChange,
+  onNoteChange,
+  notes,
+  updateNoteTitle,
+  onDeleteNote,
+  resetPassword,
+}: {
+  note: any;
+  email: string;
+  initSiderbarWidth: number;
+  userDisplayName: string;
+  onLogout: () => void;
+  onAddNote: () => Promise<void>;
+  onSidebarWidthChange: (width: number) => void;
+  onNoteChange: (content: string) => Promise<void>;
+  notes: any[];
+  updateNoteTitle: (title: string) => Promise<void>;
+  onDeleteNote: () => Promise<void>;
+  resetPassword: (password: string) => Promise<void>;
+}) => {
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
   const [sidebarWidth, setSidebarWidth] = useState(
-    disableSidebar ? 0 : client.noteSiderbarWidth
+    disableSidebar ? 0 : initSiderbarWidth
   );
   const [widthOpacity, setWidthOpacity] = useState(0);
-  const sidebarRef = useRef(client.noteSiderbarWidth);
+  const sidebarRef = useRef(initSiderbarWidth);
 
-  const handleMouseDown = (e) => {
+  const handleMouseDown = (e: React.MouseEvent) => {
     const startX = e.clientX;
     const startWidth = sidebarRef.current;
     setWidthOpacity(0.4);
 
-    const handleMouseMove = (e) => {
-      let newWidth = startWidth + e.clientX - startX;
+    const handleMouseMove: EventListener = (e: Event) => {
+      let newWidth = startWidth + (e as MouseEvent).clientX - startX;
 
       if (newWidth < 200) {
         sidebarRef.current = 0;
@@ -43,7 +62,7 @@ const NoteApp = () => {
       document.body.style.userSelect = "";
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
-      store.dispatch(setNoteSiderbarWidth(sidebarRef.current));
+      onSidebarWidthChange(sidebarRef.current);
       setWidthOpacity(0);
     };
 
@@ -55,19 +74,26 @@ const NoteApp = () => {
   function resetSidebarWidth() {
     sidebarRef.current = 300;
     setSidebarWidth(sidebarRef.current);
-    store.dispatch(setNoteSiderbarWidth(sidebarRef.current));
+    onSidebarWidthChange(sidebarRef.current);
   }
 
-  useEffect(() => {
-    if (!id && disableSidebar) navigate("/folders");
-  }, [id, disableSidebar, navigate]);
   return (
     <div className="position-fixed h-100">
       <div
         className="position-fixed  top-0 start-0 h-100 w-100"
         style={{ paddingLeft: sidebarWidth }}
       >
-        {id ? <Note showFolderListNav={disableSidebar} /> : <Welcome />}
+        {note ? (
+          <Note
+            showFolderListNav={disableSidebar}
+            id={note.id}
+            note={note}
+            onChange={onNoteChange}
+            updateNoteTitle={updateNoteTitle}
+          />
+        ) : (
+          <Welcome onAddNote={onAddNote} userDisplayName={userDisplayName} />
+        )}
       </div>
 
       <div
@@ -88,7 +114,16 @@ const NoteApp = () => {
           className="position-absolute top-0 end-0 h-100 border-end"
           onMouseDown={handleMouseDown}
         />
-        <Sidebar />
+        <Sidebar
+          email={email}
+          id={note?.id}
+          items={notes}
+          userDisplayName={userDisplayName}
+          onAddNote={onAddNote}
+          onDeleteNote={onDeleteNote}
+          onLogout={onLogout}
+          resetPassword={resetPassword}
+        />
       </div>
 
       {sidebarWidth === 0 && !disableSidebar ? (

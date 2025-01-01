@@ -5,11 +5,20 @@
     
     vertical-align: middle;
     width: 100%;
-    border-bottom: 1px solid #eee;
+    /* border-bottom: 1px solid #eee; */
     flex-wrap: wrap;
-        justify-content: center;
+    justify-content: center;
+}
+.toolbar-dropdown-menu {
+    padding: 3 0;
+    transform: translateX(40%);
 }
 
+.toolbar-dropdown-menu .toolbar-dropdown-row {
+    padding-left: 5px;
+    padding-right: 5px;
+    justify-content: space-evenly;
+}
 .toolbar .toolbar-item {
     margin: 4px;
     border: 0;
@@ -20,8 +29,9 @@
     cursor: pointer;
     vertical-align: middle;
     line-height: 16px;
-    color: #212529;
+    color: #777;
 }
+
 
 .toolbar .toolbar-item:disabled {
     cursor: not-allowed;
@@ -61,7 +71,7 @@
 
 .toolbar .divider {
     width: 1px;
-    background-color: #eee;
+    /* background-color: #eee; */
     margin: 0 4px;
 }
 
