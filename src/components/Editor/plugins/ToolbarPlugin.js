@@ -1,4 +1,6 @@
+import React from "react";
 import "./ToolbarPlugin.css";
+import Dropdown from "react-bootstrap/Dropdown";
 import {
   $isListNode,
   INSERT_ORDERED_LIST_COMMAND,
@@ -43,6 +45,7 @@ import {
   FaListOl,
   FaQuoteLeft,
   // FaParagraph,
+  FaA,
   FaStrikethrough,
   FaUnderline,
 } from "react-icons/fa6";
@@ -54,6 +57,39 @@ const LowPriority = 1;
 function Divider() {
   return <div className="divider" />;
 }
+
+const FontMenuToggle = React.forwardRef(({ onClick }, ref) => (
+  <button
+    className={"toolbar-item spaced "}
+    onClick={onClick}
+    aria-label="Format Bold"
+    ref={ref}
+  >
+    <FaA />
+  </button>
+));
+
+const AlignMenuToggle = React.forwardRef(({ onClick }, ref) => (
+  <button
+    className={"toolbar-item spaced "}
+    onClick={onClick}
+    aria-label="Format Bold"
+    ref={ref}
+  >
+    <FaAlignJustify />
+  </button>
+));
+
+const ListMenuToggle = React.forwardRef(({ onClick }, ref) => (
+  <button
+    className={"toolbar-item spaced "}
+    onClick={onClick}
+    aria-label="Format Bold"
+    ref={ref}
+  >
+    <FaList />
+  </button>
+));
 
 export default function ToolbarPlugin({ showFolderListNav }) {
   const [editor] = useLexicalComposerContext();
@@ -93,8 +129,6 @@ export default function ToolbarPlugin({ showFolderListNav }) {
           $isHeadingNode(node) ? parseInt(node.getTag().slice(1)) : 0
         );
       });
-
-
     }
   }, []);
 
@@ -219,6 +253,7 @@ export default function ToolbarPlugin({ showFolderListNav }) {
         </Link>
       ) : null}
       <button
+        style={{ display: "none" }}
         disabled={!canUndo}
         onClick={() => {
           editor.dispatchCommand(UNDO_COMMAND, undefined);
@@ -229,6 +264,7 @@ export default function ToolbarPlugin({ showFolderListNav }) {
         <FaArrowRotateLeft />
       </button>
       <button
+        style={{ display: "none" }}
         disabled={!canRedo}
         onClick={() => {
           editor.dispatchCommand(REDO_COMMAND, undefined);
@@ -239,117 +275,147 @@ export default function ToolbarPlugin({ showFolderListNav }) {
         <FaArrowRotateRight />
       </button>
       <Divider />
-      <button
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
-        }}
-        className={"toolbar-item spaced " + (isBold ? "active" : "")}
-        aria-label="Format Bold"
-      >
-        <FaBold />
-      </button>
-      <button
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
-        }}
-        className={"toolbar-item spaced " + (isItalic ? "active" : "")}
-        aria-label="Format Italics"
-      >
-        <FaItalic />
-      </button>
-      <button
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline");
-        }}
-        className={"toolbar-item spaced " + (isUnderline ? "active" : "")}
-        aria-label="Format Underline"
-      >
-        <FaUnderline />
-      </button>
-      <button
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough");
-        }}
-        className={"toolbar-item spaced " + (isStrikethrough ? "active" : "")}
-        aria-label="Format Strikethrough"
-      >
-        <FaStrikethrough />
-      </button>
-      <Divider />
-      <button
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
-        }}
-        className="toolbar-item spaced"
-        aria-label="Left Align"
-      >
-        <FaAlignLeft />
-      </button>
-      <button
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center");
-        }}
-        className="toolbar-item spaced"
-        aria-label="Center Align"
-      >
-        <FaAlignCenter />
-      </button>
-      <button
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right");
-        }}
-        className="toolbar-item spaced"
-        aria-label="Right Align"
-      >
-        <FaAlignRight />
-      </button>
-      <button
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
-        }}
-        className="toolbar-item spaced"
-        aria-label="Justify Align"
-      >
-        <FaAlignJustify />
-      </button>
-      <Divider />
-      <button
-        onClick={() => {
-          toggleList(INSERT_UNORDERED_LIST_COMMAND);
-        }}
-        className={"toolbar-item spaced " + (isUl ? "active" : "")}
-        aria-label="Unordered List"
-      >
-        <FaList />
-      </button>
-      <button
-        onClick={() => {
-          toggleList(INSERT_ORDERED_LIST_COMMAND);
-        }}
-        className={"toolbar-item spaced " + (isOl ? "active" : "")}
-        aria-label="Ordered List"
-      >
-        <FaListOl />
-      </button>
-      <Divider />
-      {[1, 2, 3, 4, 5, 6].map((level) => (
-        <button
-          key={level}
-          className={
-            "toolbar-item spaced " + (headerIndex === level ? "active" : "")
-          }
-          onClick={() => toggleHeading(level)}
-        >
-          H{level}
-        </button>
-      ))}
 
-      <button
-        className={"toolbar-item spaced " + (isQuote ? "active" : "")}
-        onClick={() => toggleQuote()}
-      >
-        <FaQuoteLeft />
-      </button>
+      <Dropdown drop="down-centered">
+        <Dropdown.Toggle as={FontMenuToggle} />
+
+        <Dropdown.Menu className="toolbar-dropdown-menu" align={{ sm: "end" }}>
+          <div className="d-flex toolbar-dropdown-row">
+            <button
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
+              }}
+              className={"toolbar-item spaced " + (isBold ? "active" : "")}
+              aria-label="Format Bold"
+            >
+              <FaBold />
+            </button>
+            <button
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
+              }}
+              className={"toolbar-item spaced " + (isItalic ? "active" : "")}
+              aria-label="Format Italics"
+            >
+              <FaItalic />
+            </button>
+            <button
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline");
+              }}
+              className={"toolbar-item spaced " + (isUnderline ? "active" : "")}
+              aria-label="Format Underline"
+            >
+              <FaUnderline />
+            </button>
+            <button
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough");
+              }}
+              className={
+                "toolbar-item spaced " + (isStrikethrough ? "active" : "")
+              }
+              aria-label="Format Strikethrough"
+            >
+              <FaStrikethrough />
+            </button>
+
+            <button
+              className={"toolbar-item spaced " + (isQuote ? "active" : "")}
+              onClick={() => toggleQuote()}
+            >
+              <FaQuoteLeft />
+            </button>
+          </div>
+
+          <Dropdown.Divider />
+
+          <div className="d-flex toolbar-dropdown-row">
+            {[1, 2, 3, 4, 5, 6].map((level) => (
+              <button
+                key={level}
+                className={
+                  "toolbar-item spaced " +
+                  (headerIndex === level ? "active" : "")
+                }
+                onClick={() => toggleHeading(level)}
+              >
+                H{level}
+              </button>
+            ))}
+          </div>
+        </Dropdown.Menu>
+      </Dropdown>
+      <Dropdown drop="down-centered">
+        <Dropdown.Toggle as={ListMenuToggle} />
+
+        <Dropdown.Menu className="toolbar-dropdown-menu" align={{ sm: "end" }}>
+          <div className="d-flex toolbar-dropdown-row">
+            <button
+              onClick={() => {
+                toggleList(INSERT_UNORDERED_LIST_COMMAND);
+              }}
+              className={"toolbar-item spaced " + (isUl ? "active" : "")}
+              aria-label="Unordered List"
+            >
+              <FaList />
+            </button>
+            <button
+              onClick={() => {
+                toggleList(INSERT_ORDERED_LIST_COMMAND);
+              }}
+              className={"toolbar-item spaced " + (isOl ? "active" : "")}
+              aria-label="Ordered List"
+            >
+              <FaListOl />
+            </button>
+          </div>
+        </Dropdown.Menu>
+      </Dropdown>
+      <Dropdown drop="down-centered">
+        <Dropdown.Toggle as={AlignMenuToggle} />
+
+        <Dropdown.Menu className="toolbar-dropdown-menu" align={{ sm: "end" }}>
+          <div className="d-flex toolbar-dropdown-row">
+            <button
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
+              }}
+              className="toolbar-item spaced"
+              aria-label="Left Align"
+            >
+              <FaAlignLeft />
+            </button>
+            <button
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center");
+              }}
+              className="toolbar-item spaced"
+              aria-label="Center Align"
+            >
+              <FaAlignCenter />
+            </button>
+            <button
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right");
+              }}
+              className="toolbar-item spaced"
+              aria-label="Right Align"
+            >
+              <FaAlignRight />
+            </button>
+            <button
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
+              }}
+              className="toolbar-item spaced"
+              aria-label="Justify Align"
+            >
+              <FaAlignJustify />
+            </button>
+          </div>
+        </Dropdown.Menu>
+      </Dropdown>
     </div>
   );
 }

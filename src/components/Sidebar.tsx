@@ -1,10 +1,10 @@
+import "./Sidebar.css";
 import { Link } from "react-router-dom";
 import { HiMiniPlus, HiMiniUserCircle, HiTrash } from "react-icons/hi2";
-import { formatDateTime } from "../utils";
+import { extractText, formatDateTime } from "../utils";
 import React, { useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import Setting from "./Setting";
-
 
 const defaultNoteTitle = "Untitled";
 
@@ -18,18 +18,20 @@ const UserMenuToggle = React.forwardRef<
 ));
 
 const NavItem = ({ item, isActive }: { item: any; isActive: boolean }) => {
+  const text = item.content ? ": " + extractText(item.content, 200) : "";
   return (
     <Link
-      className={`list-group-item list-group-item-action my-2 border-1 rounded-1 ${
+      className={`list-group-item list-group-item-action my-2 rounded-1 ${
         isActive ? "active" : ""
       }`}
       to={`/note/${item.id}`}
     >
       <div className="title-row">
-        <b>{item.title ? item.title : defaultNoteTitle}</b>
+        {item.title ? item.title : defaultNoteTitle}
       </div>
-      <small className="fw-lighter" style={{ fontSize: ".675em" }}>
+      <small className="fw-lighter">
         {formatDateTime(item.updated_at)}
+        {text}
       </small>
     </Link>
   );
@@ -75,7 +77,7 @@ export const Sidebar = ({
               style={{ width: 100 }}
             ></img>
           </Link>
-          <div className="d-flex">
+          <div className="d-flex sidebar-toolbar">
             <Dropdown>
               <Dropdown.Toggle as={UserMenuToggle} />
 
@@ -91,26 +93,22 @@ export const Sidebar = ({
 
             <span
               className="btn"
-              style={{ display: addingNote ? "none" : "block" }}
               onClick={async () => {
                 setAddingNote(true);
                 await onAddNote();
                 setAddingNote(false);
               }}
             >
-              <HiMiniPlus />
-            </span>
-            <span
-              className="btn"
-              style={{
-                display: addingNote ? "block" : "none",
-                paddingTop: "0.7rem",
-              }}
-            >
-              <div className="spinner-border spinner-border-sm" role="status">
+              <span
+                className="spinner-border spinner-border-sm position-absolute"
+                style={{ top: 20, display: addingNote ? "block" : "none" }}
+                role="status"
+              >
                 <span className="visually-hidden">Loading...</span>
-              </div>
+              </span>
+              <HiMiniPlus style={{ opacity: addingNote ? 0 : 1 }} />
             </span>
+
             {id && (
               <span className="btn" onClick={onDeleteNote}>
                 <HiTrash />

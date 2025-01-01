@@ -16,7 +16,7 @@ import {
 } from "../supabase";
 import { setNoteSiderbarWidth } from "../slices/client";
 import { useDispatch } from "react-redux";
-
+import Spinner from "../components/Spinner";
 async function getNotes(userId: string) {
   const { data } = await supabase
     .from("notes")
@@ -27,13 +27,17 @@ async function getNotes(userId: string) {
   return data ?? [];
 }
 
-export const Note: React.FC = () => {
+
+
+export const Note = ({ user }: { user: User }) => {
+  const userId = user.id;
   const { id } = useParams();
-  const [notes, setNotes] = useState<any[]>([]);
-  const client = useSelector((state: RootState) => state.client);
-  const user = useSelector((state: RootState) => state.user) as User | null;
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const client = useSelector((state: RootState) => state.client);
+  const [notes, setNotes] = useState<any[]>([]);
+  const [fetching, setFetching] = useState(false);
+
   const note = notes.find((note) => note.id === id);
 
   async function onAddNote() {
@@ -46,10 +50,19 @@ export const Note: React.FC = () => {
   }
 
   useEffect(() => {
-    getNotes(user?.id ?? "").then(setNotes);
-  }, [user]);
+    if (!note && notes.length > 0) {
+      navigate(`/note/${notes[0].id}`);
+    }
+  }, [note, notes, navigate]);
+  useEffect(() => {
+    setFetching(true);
+    getNotes(userId)
+      .then(setNotes)
+      .finally(() => setFetching(false));
+  }, [userId]);
 
   if (!user) throw new Error("User not found");
+  if (fetching) return <Spinner />;
   return (
     <NoteApp
       email={user.email ?? ""}
@@ -68,14 +81,14 @@ export const Note: React.FC = () => {
       }}
       onDeleteNote={async () => {
         if (!id) return;
-        await deleteNote(id);
         const restNotes = notes.filter((note) => note.id !== id);
         setNotes(restNotes);
         if (restNotes.length > 0) {
           navigate(`/note/${restNotes[0].id}`);
         } else {
-          navigate("/");
+          navigate("/note/welcome");
         }
+        await deleteNote(id);
       }}
       onAddNote={onAddNote}
       onSidebarWidthChange={onSidebarWidthChange}
