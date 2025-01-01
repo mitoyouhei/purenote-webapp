@@ -29,13 +29,15 @@ async function getNotes(userId: string) {
 
 
 
-export const Note: React.FC = () => {
+export const Note = ({ user }: { user: User }) => {
+  const userId = user.id;
   const { id } = useParams();
-  const [notes, setNotes] = useState<any[]>([]);
-  const client = useSelector((state: RootState) => state.client);
-  const user = useSelector((state: RootState) => state.user) as User | null;
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const client = useSelector((state: RootState) => state.client);
+  const [notes, setNotes] = useState<any[]>([]);
+  const [fetching, setFetching] = useState(false);
+
   const note = notes.find((note) => note.id === id);
 
   async function onAddNote() {
@@ -53,12 +55,14 @@ export const Note: React.FC = () => {
     }
   }, [note, notes, navigate]);
   useEffect(() => {
-    getNotes(user?.id ?? "").then(setNotes);
-  }, [user]);
+    setFetching(true);
+    getNotes(userId)
+      .then(setNotes)
+      .finally(() => setFetching(false));
+  }, [userId]);
 
   if (!user) throw new Error("User not found");
-  if (!note) return <Spinner />;
-
+  if (fetching) return <Spinner />;
   return (
     <NoteApp
       email={user.email ?? ""}

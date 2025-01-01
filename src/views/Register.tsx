@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 export const Register: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
-
   const navigate = useNavigate();
 
   const redirectToEmailVerification = () => {
@@ -25,12 +24,10 @@ export const Register: React.FC = () => {
       } else if (data.user) {
         redirectToEmailVerification();
       }
-      console.log(data);
     } catch (error: any) {
       console.error(error);
       setError(error);
     }
   };
-
   return <RegisterForm error={error} createUser={createUser} />;
 };

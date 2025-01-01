@@ -20,28 +20,10 @@ import { Notebooks } from "./Notebooks";
 import { RootState } from "../store";
 import { EmailVerification } from "./EmailVerification";
 
-const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
-  const user = useSelector((state: RootState) => state.user);
-
-  return user ? children : <Navigate to="/login" />;
-};
-
-const RootLandingPage = () => {
-  const user = useSelector((state: RootState) => state.user);
-
-  // TODO - remove Note as the redirect component
-  return user ? (
-    <PrivateRoute>
-      <Navigate to="/note/welcome" />
-    </PrivateRoute>
-  ) : (
-    <PublicLayout>
-      <Home />
-    </PublicLayout>
-  );
-};
 
 const AppRoutes = () => {
+  const user = useSelector((state: RootState) => state.user);
+
   return (
     <Router>
       <Routes>
@@ -69,39 +51,30 @@ const AppRoutes = () => {
             </PublicLayout>
           }
         />
-        <Route path="/" element={<RootLandingPage />} />
-        <Route path="/logout" element={<Logout />} />
         <Route
-          path="/home"
+          path="/"
           element={
-            <PublicLayout>
-              <Home />
-            </PublicLayout>
+            user ? (
+              <Navigate to="/note/welcome" />
+            ) : (
+              <PublicLayout>
+                <Home />
+              </PublicLayout>
+            )
           }
         />
+        <Route path="/logout" element={<Logout />} />
         <Route
           path="/note/:id"
-          element={
-            <PrivateRoute>
-              <Note />
-            </PrivateRoute>
-          }
+          element={user ? <Note user={user} /> : <Navigate to="/login" />}
         />
         <Route
           path="/folders"
-          element={
-            <PrivateRoute>
-              <Folders />
-            </PrivateRoute>
-          }
+          element={user ? <Folders /> : <Navigate to="/login" />}
         />
         <Route
           path="/notebooks"
-          element={
-            <PrivateRoute>
-              <Notebooks />
-            </PrivateRoute>
-          }
+          element={user ? <Notebooks /> : <Navigate to="/login" />}
         />
         <Route
           path="*"
