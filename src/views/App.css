@@ -47,7 +47,7 @@ body>.offcanvas .navbar-nav a {
 }
 
 #siderbar-dragger {
-    width: 7px;
+    width: 10px;
     cursor: ew-resize;
     background-color: transparent;
     opacity: 0;
