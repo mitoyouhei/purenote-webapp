@@ -4,12 +4,14 @@ export const AppLayout = ({
   initSiderbarWidth,
   onSidebarWidthChange,
   editor,
-  sidebar,
+  noteList,
+  topbar,
 }: {
   initSiderbarWidth: number;
   onSidebarWidthChange: (width: number) => void;
   editor: React.ReactNode;
-  sidebar: React.ReactNode;
+  noteList: React.ReactNode;
+  topbar: React.ReactNode;
 }) => {
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
   const [sidebarWidth, setSidebarWidth] = useState(
@@ -84,7 +86,8 @@ export const AppLayout = ({
           className="position-absolute top-0 end-0 h-100 border-end"
           onMouseDown={handleMouseDown}
         />
-        {sidebar}
+        {topbar}
+        {noteList}
       </div>
     </div>
   );
