@@ -1,5 +1,5 @@
 import "./Topbar.css";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { HiMiniPlus, HiMiniUserCircle, HiTrash } from "react-icons/hi2";
 import React, { useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -33,7 +33,7 @@ export const Topbar = ({
   return (
     <nav className="navbar topbar">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/"></Link>
+        <div className="d-flex"></div>
         <div className="d-flex">
           <Dropdown>
             <Dropdown.Toggle as={UserMenuToggle} />
@@ -56,7 +56,7 @@ export const Topbar = ({
           >
             <span
               className="spinner-border spinner-border-sm position-absolute"
-              style={{ top: 20, display: addingNote ? "block" : "none" }}
+              style={{ top: 14, display: addingNote ? "block" : "none" }}
               role="status"
             >
               <span className="visually-hidden">Loading...</span>

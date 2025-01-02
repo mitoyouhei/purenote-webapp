@@ -1,28 +1,52 @@
 import React, { useRef, useState } from "react";
+import { BsLayoutSidebar } from "react-icons/bs";
+
+function minNoteListWidth() {
+  return 250;
+}
+function minFolderListWidth() {
+  return 150;
+}
 
 export const AppLayout = ({
-  initSiderbarWidth,
-  onSidebarWidthChange,
   editor,
   noteList,
   folderList,
   topbar,
 }: {
-  initSiderbarWidth: number;
-  onSidebarWidthChange: (width: number) => void;
   editor: React.ReactNode;
   noteList: React.ReactNode;
   folderList: React.ReactNode;
   topbar: React.ReactNode;
 }) => {
-  const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
-  const [sidebarWidth, setSidebarWidth] = useState(
-    disableSidebar ? 0 : initSiderbarWidth
-  );
-  const [noteListWidth, setNoteListWidth] = useState(initSiderbarWidth);
   const [widthOpacity, setWidthOpacity] = useState(0);
-  const sidebarRef = useRef(initSiderbarWidth);
-  const noteListRef = useRef(initSiderbarWidth);
+
+  const [showFolderList, setShowFolderList] = useState(false);
+
+  const [sidebarWidth, setSidebarWidth] = useState(300);
+  const sidebarRef = useRef(sidebarWidth);
+
+  const [folderListWidth, setFolderListWidth] = useState(200);
+  const folderListRef = useRef(folderListWidth);
+
+  const folderListToggle = () => {
+    const nextShowFolderList = !showFolderList;
+    setShowFolderList(nextShowFolderList);
+
+    if (nextShowFolderList) {
+      const nextSidebarWidth = Math.min(
+        window.innerWidth / 2,
+        sidebarWidth + folderListWidth
+      );
+      setSidebarWidth(nextSidebarWidth);
+      sidebarRef.current = nextSidebarWidth;
+    } else {
+      const nextSidebarWidth = sidebarWidth - folderListWidth;
+
+      setSidebarWidth(nextSidebarWidth);
+      sidebarRef.current = nextSidebarWidth;
+    }
+  };
 
   const handleMouseDown = (e: React.MouseEvent) => {
     const startX = e.clientX;
@@ -30,25 +54,32 @@ export const AppLayout = ({
     setWidthOpacity(0.4);
 
     const handleMouseMove: EventListener = (e: Event) => {
-      let newWidth = startWidth + (e as MouseEvent).clientX - startX;
+      const changeX = (e as MouseEvent).clientX - startX;
+      let newWidth = startWidth + changeX;
 
-      if (newWidth < 200) {
-        sidebarRef.current = 0;
-      } else {
-        newWidth = Math.min(window.innerWidth / 2, newWidth);
-        newWidth = Math.max(270, newWidth);
-        newWidth = Math.floor(newWidth);
-        sidebarRef.current = newWidth;
-      }
+      const minWidth = showFolderList
+        ? minNoteListWidth() + minFolderListWidth()
+        : minNoteListWidth();
 
+      newWidth = Math.min(window.innerWidth / 2, newWidth);
+      newWidth = Math.max(minWidth, newWidth);
+      newWidth = Math.floor(newWidth);
+      sidebarRef.current = newWidth;
       setSidebarWidth(sidebarRef.current);
+
+      const nextNoteListWidth = sidebarRef.current - folderListWidth;
+      if (nextNoteListWidth < minNoteListWidth()) {
+        const nextFolderListWidth = sidebarRef.current - minNoteListWidth();
+        setFolderListWidth(nextFolderListWidth);
+        folderListRef.current = nextFolderListWidth;
+      }
     };
 
     const handleMouseUp = () => {
       document.body.style.userSelect = "";
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
-      onSidebarWidthChange(sidebarRef.current);
+      // onSidebarWidthChange(sidebarRef.current);
       setWidthOpacity(0);
     };
 
@@ -59,17 +90,17 @@ export const AppLayout = ({
 
   const handleFolderListMouseDown = (e: React.MouseEvent) => {
     const startX = e.clientX;
-    const startWidth = noteListRef.current;
+    const startWidth = folderListRef.current;
 
     const handleFolderListMouseMove: EventListener = (e: Event) => {
-      let newWidth = startWidth - (e as MouseEvent).clientX + startX;
+      const changeX = (e as MouseEvent).clientX - startX;
+      let newWidth = startWidth + changeX;
 
-      newWidth = Math.min(sidebarWidth - 150, newWidth);
-      newWidth = Math.max(200, newWidth);
-      // newWidth = Math.floor(newWidth);
-      noteListRef.current = newWidth;
+      newWidth = Math.min(sidebarWidth - minNoteListWidth(), newWidth);
+      newWidth = Math.max(minFolderListWidth(), newWidth);
 
-      setNoteListWidth(noteListRef.current);
+      folderListRef.current = newWidth;
+      setFolderListWidth(folderListRef.current);
     };
 
     const handleFolderListMouseUp = () => {
@@ -106,6 +137,40 @@ export const AppLayout = ({
           width: sidebarWidth,
         }}
       >
+        <div className="h-100 d-flex flex-row position-relative">
+          <div
+            className="h-100 bg-secondary-subtle overflow-hidden position-relative"
+            style={{
+              width: showFolderList ? folderListWidth : 0,
+              boxShadow: "inset 0 0 10px rgba(0, 0, 0, 0.1)",
+              paddingTop: 44,
+            }}
+          >
+            <div
+              className="resize-dragger position-absolute top-0 end-0 h-100 border-start"
+              onMouseDown={handleFolderListMouseDown}
+            />
+            {folderList}
+          </div>
+          <div
+            className="h-100"
+            style={{
+              width: sidebarWidth - (showFolderList ? folderListWidth : 0),
+            }}
+          >
+            {topbar}
+            {noteList}
+          </div>
+          <div
+            className="topbar position-absolute top-0 start-0"
+            style={{ padding: "8px" }}
+          >
+            <span className="btn" onClick={folderListToggle}>
+              <BsLayoutSidebar />
+            </span>
+          </div>
+        </div>
+
         <div
           className="position-absolute top-0 end-0 px-1"
           style={{ fontSize: "10px", opacity: widthOpacity }}
@@ -116,26 +181,6 @@ export const AppLayout = ({
           className="resize-dragger position-absolute top-0 end-0 h-100 border-end"
           onMouseDown={handleMouseDown}
         />
-
-        <div className="h-100 d-flex flex-row">
-          <div
-            className="h-100 bg-secondary-subtle overflow-hidden position-relative"
-            style={{
-              width: sidebarWidth - noteListWidth,
-              boxShadow: "inset 0 0 10px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <div
-              className="resize-dragger position-absolute top-0 end-0 h-100 border-start"
-              onMouseDown={handleFolderListMouseDown}
-            />
-            {folderList}
-          </div>
-          <div className="h-100" style={{ width: noteListWidth }}>
-            {topbar}
-            {noteList}
-          </div>
-        </div>
       </div>
     </div>
   );

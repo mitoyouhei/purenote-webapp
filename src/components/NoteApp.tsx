@@ -38,7 +38,6 @@ export const NoteApp = ({
   const [showSetting, setShowSetting] = useState(false);
   const activeId = note?.id;
 
-
   const setting = showSetting ? (
     <Setting
       email={email}
@@ -62,8 +61,6 @@ export const NoteApp = ({
     <>
       {setting}
       <AppLayout
-        initSiderbarWidth={initSiderbarWidth}
-        onSidebarWidthChange={onSidebarWidthChange}
         editor={editor}
         topbar={
           <Topbar
