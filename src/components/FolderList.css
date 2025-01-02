@@ -1,0 +1,7 @@
+.folder-list>.list-group-item>small,
+.folder-list>.list-group-item .title-row {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

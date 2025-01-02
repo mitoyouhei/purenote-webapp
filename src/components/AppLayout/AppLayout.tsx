@@ -5,20 +5,24 @@ export const AppLayout = ({
   onSidebarWidthChange,
   editor,
   noteList,
+  folderList,
   topbar,
 }: {
   initSiderbarWidth: number;
   onSidebarWidthChange: (width: number) => void;
   editor: React.ReactNode;
   noteList: React.ReactNode;
+  folderList: React.ReactNode;
   topbar: React.ReactNode;
 }) => {
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
   const [sidebarWidth, setSidebarWidth] = useState(
     disableSidebar ? 0 : initSiderbarWidth
   );
+  const [noteListWidth, setNoteListWidth] = useState(initSiderbarWidth);
   const [widthOpacity, setWidthOpacity] = useState(0);
   const sidebarRef = useRef(initSiderbarWidth);
+  const noteListRef = useRef(initSiderbarWidth);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     const startX = e.clientX;
@@ -53,6 +57,33 @@ export const AppLayout = ({
     document.body.style.userSelect = "none";
   };
 
+  const handleFolderListMouseDown = (e: React.MouseEvent) => {
+    const startX = e.clientX;
+    const startWidth = noteListRef.current;
+
+    const handleFolderListMouseMove: EventListener = (e: Event) => {
+      let newWidth = startWidth - (e as MouseEvent).clientX + startX;
+
+      newWidth = Math.min(sidebarWidth - 150, newWidth);
+      newWidth = Math.max(200, newWidth);
+      // newWidth = Math.floor(newWidth);
+      noteListRef.current = newWidth;
+
+      setNoteListWidth(noteListRef.current);
+    };
+
+    const handleFolderListMouseUp = () => {
+      document.body.style.userSelect = "";
+      document.removeEventListener("mousemove", handleFolderListMouseMove);
+      document.removeEventListener("mouseup", handleFolderListMouseUp);
+      // onSidebarWidthChange(noteListRef.current);
+    };
+
+    document.addEventListener("mousemove", handleFolderListMouseMove);
+    document.addEventListener("mouseup", handleFolderListMouseUp);
+    document.body.style.userSelect = "none";
+  };
+
   // function resetSidebarWidth() {
   //   sidebarRef.current = 300;
   //   setSidebarWidth(sidebarRef.current);
@@ -76,18 +107,35 @@ export const AppLayout = ({
         }}
       >
         <div
-          className="sidebar-dragger position-absolute top-0 end-0 px-1"
+          className="position-absolute top-0 end-0 px-1"
           style={{ fontSize: "10px", opacity: widthOpacity }}
         >
           {sidebarWidth}px
         </div>
         <div
-          id="siderbar-dragger"
-          className="position-absolute top-0 end-0 h-100 border-end"
+          className="resize-dragger position-absolute top-0 end-0 h-100 border-end"
           onMouseDown={handleMouseDown}
         />
-        {topbar}
-        {noteList}
+
+        <div className="h-100 d-flex flex-row">
+          <div
+            className="h-100 bg-secondary-subtle overflow-hidden position-relative"
+            style={{
+              width: sidebarWidth - noteListWidth,
+              boxShadow: "inset 0 0 10px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <div
+              className="resize-dragger position-absolute top-0 end-0 h-100 border-start"
+              onMouseDown={handleFolderListMouseDown}
+            />
+            {folderList}
+          </div>
+          <div className="h-100" style={{ width: noteListWidth }}>
+            {topbar}
+            {noteList}
+          </div>
+        </div>
       </div>
     </div>
   );

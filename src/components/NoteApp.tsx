@@ -5,6 +5,7 @@ import { AppLayout } from "./AppLayout";
 import { NoteList } from "./NoteList";
 import { Topbar } from "./Topbar";
 import Setting from "./Setting";
+import { FolderList } from "./FolderList";
 
 export const NoteApp = ({
   note,
@@ -75,6 +76,15 @@ export const NoteApp = ({
           />
         }
         noteList={<NoteList activeId={activeId} notes={notes} />}
+        folderList={
+          <FolderList
+            activeId={activeId}
+            folders={[
+              { id: "1", title: "Folder A", updated_at: new Date() },
+              { id: "2", title: "Folder B", updated_at: new Date() },
+            ]}
+          />
+        }
       />
     </>
   );

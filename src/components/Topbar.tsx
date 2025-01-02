@@ -33,18 +33,12 @@ export const Topbar = ({
   return (
     <nav className="navbar topbar">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/">
-          <img
-            src="/logo-title.png"
-            alt="Pure Note"
-            style={{ width: 100 }}
-          ></img>
-        </Link>
+        <Link className="navbar-brand" to="/"></Link>
         <div className="d-flex">
           <Dropdown>
             <Dropdown.Toggle as={UserMenuToggle} />
 
-            <Dropdown.Menu align={{ sm: "end" }}>
+            <Dropdown.Menu>
               <Dropdown.Header>{userDisplayName}</Dropdown.Header>
               <Dropdown.Divider />
               <Dropdown.Item onClick={onSettingClick}>Setting</Dropdown.Item>
