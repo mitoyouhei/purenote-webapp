@@ -6,6 +6,7 @@ import { NoteList } from "./NoteList";
 import { Topbar } from "./Topbar";
 import Setting from "./Setting";
 import { FolderList } from "./FolderList";
+import { NewFolderForm } from "./NewFolderForm";
 
 export const NoteApp = ({
   note,
@@ -17,9 +18,11 @@ export const NoteApp = ({
   onSidebarWidthChange,
   onNoteChange,
   notes,
+  folders,
   updateNoteTitle,
   onDeleteNote,
   resetPassword,
+  createFolder,
 }: {
   note: any;
   email: string;
@@ -30,14 +33,23 @@ export const NoteApp = ({
   onSidebarWidthChange: (width: number) => void;
   onNoteChange: (content: string) => Promise<void>;
   notes: any[];
+  folders: any[];
   updateNoteTitle: (title: string) => Promise<void>;
   onDeleteNote: () => Promise<void>;
   resetPassword: (password: string) => Promise<void>;
+  createFolder: (name: string) => Promise<void>;
 }) => {
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
   const [showSetting, setShowSetting] = useState(false);
+  const [showNewFolderForm, setShowNewFolderForm] = useState(false);
   const activeId = note?.id;
 
+  const newFolderForm = showNewFolderForm ? (
+    <NewFolderForm
+      onClose={() => setShowNewFolderForm(false)}
+      createFolder={createFolder}
+    />
+  ) : null;
   const setting = showSetting ? (
     <Setting
       email={email}
@@ -59,6 +71,7 @@ export const NoteApp = ({
 
   return (
     <>
+      {newFolderForm}
       {setting}
       <AppLayout
         editor={editor}
@@ -76,10 +89,8 @@ export const NoteApp = ({
         folderList={
           <FolderList
             activeId={activeId}
-            folders={[
-              { id: "1", title: "Folder A", updated_at: new Date() },
-              { id: "2", title: "Folder B", updated_at: new Date() },
-            ]}
+            folders={folders}
+            onNewFolderClick={() => setShowNewFolderForm(true)}
           />
         }
       />

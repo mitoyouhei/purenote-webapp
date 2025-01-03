@@ -20,7 +20,7 @@ const FolderNav = ({
       to={`/folder/${folder.id}`}
     >
       <div className="title-row">
-        {folder.title ? folder.title : defaultNoteTitle}
+        {folder.name ? folder.name : defaultNoteTitle}
       </div>
     </Link>
   );
@@ -29,9 +29,11 @@ const FolderNav = ({
 export const FolderList = ({
   activeId,
   folders,
+  onNewFolderClick,
 }: {
   activeId: string;
   folders: any[];
+  onNewFolderClick: () => void;
 }) => {
   return (
     <div
@@ -45,6 +47,9 @@ export const FolderList = ({
           isActive={folder.id === activeId}
         />
       ))}
+      <button className="btn btn-primary" onClick={onNewFolderClick}>
+        New Folder
+      </button>
     </div>
   );
 };

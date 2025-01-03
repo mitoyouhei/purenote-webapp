@@ -12,6 +12,8 @@ import {
   updateNoteTitle,
   updateNoteContent,
   deleteNote,
+  initRootFolder,
+  updateFolder,
 } from "../supabase";
 import { setNoteSiderbarWidth } from "../slices/client";
 import { useDispatch } from "react-redux";
@@ -26,7 +28,14 @@ async function getNotes(userId: string) {
   return data ?? [];
 }
 
-
+async function getRootFolder(userId: string) {
+  const { data } = await supabase
+    .from("folders")
+    .select()
+    .is("deleted_at", null)
+    .eq("user_id", userId);
+  return data?.[0];
+}
 
 export const Note = ({ user }: { user: User }) => {
   const userId = user.id;
@@ -35,6 +44,9 @@ export const Note = ({ user }: { user: User }) => {
   const dispatch = useDispatch();
   const client = useSelector((state: RootState) => state.client);
   const [notes, setNotes] = useState<any[]>([]);
+  const [rootFolder, setRootFolder] = useState<any>({
+    root: { folders: [] },
+  });
   const [fetching, setFetching] = useState(false);
 
   const note = notes.find((note) => note.id === id);
@@ -53,22 +65,43 @@ export const Note = ({ user }: { user: User }) => {
       navigate(`/note/${notes[0].id}`);
     }
   }, [note, notes, navigate]);
+
   useEffect(() => {
-    setFetching(true);
-    getNotes(userId)
-      .then(setNotes)
-      .finally(() => setFetching(false));
+    async function fetchData() {
+      setFetching(true);
+      let rootFolderRow = await getRootFolder(userId);
+      if (!rootFolderRow) {
+        rootFolderRow = await initRootFolder();
+      }
+      const notes = await getNotes(userId);
+
+      setNotes(notes);
+      setRootFolder(rootFolderRow);
+      setFetching(false);
+    }
+    fetchData();
   }, [userId]);
 
-  if (!user) throw new Error("User not found");
+  async function createFolder(name: string) {
+    const newFolder = { id: crypto.randomUUID(), name };
+    const newRoot = {
+      ...rootFolder,
+      root: { folders: [...rootFolder.root.folders, newFolder] },
+    };
+    setRootFolder(newRoot);
+    updateFolder(userId, newRoot.root);
+  }
+
   if (fetching) return <Spinner />;
   return (
     <NoteApp
       email={user.email ?? ""}
       note={note}
       notes={notes}
+      folders={rootFolder?.root?.folders ?? []}
       initSiderbarWidth={client.noteSiderbarWidth}
       userDisplayName={user.email ?? ""}
+      createFolder={createFolder}
       onLogout={() => {
         navigate("/logout");
       }}
@@ -103,13 +136,4 @@ export const Note = ({ user }: { user: User }) => {
       }}
     />
   );
-
-  // return (
-  //   <AppLayout
-  //     topbar={<span>topbar</span>}
-  //     firstNav={<span>firstNav</span>}
-  //     secondNav={<span>secondNav</span>}
-  //     main={<span>main</span>}
-  //   />
-  // );
 };
