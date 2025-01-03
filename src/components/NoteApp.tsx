@@ -23,6 +23,7 @@ export const NoteApp = ({
   onDeleteNote,
   resetPassword,
   createFolder,
+  onFolderDeleteClick,
 }: {
   note: any;
   email: string;
@@ -38,6 +39,7 @@ export const NoteApp = ({
   onDeleteNote: () => Promise<void>;
   resetPassword: (password: string) => Promise<void>;
   createFolder: (name: string) => Promise<void>;
+  onFolderDeleteClick: (id: string) => void;
 }) => {
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
   const [showSetting, setShowSetting] = useState(false);
@@ -91,6 +93,7 @@ export const NoteApp = ({
             activeId={activeId}
             folders={folders}
             onNewFolderClick={() => setShowNewFolderForm(true)}
+            onFolderDeleteClick={onFolderDeleteClick}
           />
         }
       />

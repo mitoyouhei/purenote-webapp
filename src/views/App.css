@@ -45,14 +45,3 @@ body {
 body>.offcanvas .navbar-nav a {
     margin: 10px;
 }
-
-.resize-dragger {
-    width: 10px;
-    cursor: ew-resize;
-    background-color: transparent;
-    opacity: 0;
-}
-
-.resize-dragger:hover {
-    opacity: 1;
-}

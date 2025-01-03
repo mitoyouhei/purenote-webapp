@@ -96,6 +96,9 @@ export const Note = ({ user }: { user: User }) => {
   return (
     <NoteApp
       email={user.email ?? ""}
+      onFolderDeleteClick={async (id: string) => {
+        console.log("onFolderDeleteClick", id);
+      }}
       note={note}
       notes={notes}
       folders={rootFolder?.root?.folders ?? []}

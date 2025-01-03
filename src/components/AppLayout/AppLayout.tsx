@@ -103,7 +103,7 @@ export const AppLayout = ({
       setSidebarWidth(sidebarRef.current);
 
       const nextNoteListWidth = sidebarRef.current - folderListWidth;
-      if (nextNoteListWidth < minNoteListWidth()) {
+      if (showFolderList && nextNoteListWidth < minNoteListWidth()) {
         const nextFolderListWidth = sidebarRef.current - minNoteListWidth();
         setFolderListWidth(nextFolderListWidth);
         folderListRef.current = nextFolderListWidth;
@@ -190,7 +190,7 @@ export const AppLayout = ({
             }}
           >
             <div
-              className="resize-dragger position-absolute top-0 end-0 h-100 border-start"
+              className="resize-dragger position-absolute top-0 end-0 h-100"
               onMouseDown={handleFolderListMouseDown}
             />
             {folderList}
