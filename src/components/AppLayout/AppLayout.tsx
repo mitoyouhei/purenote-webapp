@@ -21,6 +21,10 @@ export const AppLayout = ({
 }) => {
   const [widthOpacity, setWidthOpacity] = useState(0);
 
+  const editorDomRef = useRef<HTMLDivElement>(null);
+  const sidebarDomRef = useRef<HTMLDivElement>(null);
+  const folderListDomRef = useRef<HTMLDivElement>(null);
+
   const [showFolderList, setShowFolderList] = useState(false);
 
   const [sidebarWidth, setSidebarWidth] = useState(300);
@@ -46,6 +50,37 @@ export const AppLayout = ({
       setSidebarWidth(nextSidebarWidth);
       sidebarRef.current = nextSidebarWidth;
     }
+  };
+
+  const clearStyleOnDrag = () => {
+    if (editorDomRef.current) {
+      editorDomRef.current.style.transition = "";
+    }
+    if (sidebarDomRef.current) {
+      sidebarDomRef.current.style.transition = "";
+    }
+    if (folderListDomRef.current) {
+      folderListDomRef.current.style.transition = "";
+    }
+    document.body.style.userSelect = "none";
+  };
+
+  const animationDuration = 0.4;
+  const editorAnimationStyle = `padding-left ${animationDuration}s ease-in-out`;
+  const sidebarAnimationStyle = `width ${animationDuration}s ease-in-out`;
+  const folderListAnimationStyle = `width ${animationDuration}s ease-in-out`;
+
+  const resetStyleOnDrag = () => {
+    if (editorDomRef.current) {
+      editorDomRef.current.style.transition = editorAnimationStyle;
+    }
+    if (sidebarDomRef.current) {
+      sidebarDomRef.current.style.transition = sidebarAnimationStyle;
+    }
+    if (folderListDomRef.current) {
+      folderListDomRef.current.style.transition = folderListAnimationStyle;
+    }
+    document.body.style.userSelect = "";
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -76,7 +111,7 @@ export const AppLayout = ({
     };
 
     const handleMouseUp = () => {
-      document.body.style.userSelect = "";
+      resetStyleOnDrag();
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
       // onSidebarWidthChange(sidebarRef.current);
@@ -85,7 +120,7 @@ export const AppLayout = ({
 
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
-    document.body.style.userSelect = "none";
+    clearStyleOnDrag();
   };
 
   const handleFolderListMouseDown = (e: React.MouseEvent) => {
@@ -104,7 +139,7 @@ export const AppLayout = ({
     };
 
     const handleFolderListMouseUp = () => {
-      document.body.style.userSelect = "";
+      resetStyleOnDrag();
       document.removeEventListener("mousemove", handleFolderListMouseMove);
       document.removeEventListener("mouseup", handleFolderListMouseUp);
       // onSidebarWidthChange(noteListRef.current);
@@ -112,7 +147,7 @@ export const AppLayout = ({
 
     document.addEventListener("mousemove", handleFolderListMouseMove);
     document.addEventListener("mouseup", handleFolderListMouseUp);
-    document.body.style.userSelect = "none";
+    clearStyleOnDrag();
   };
 
   // function resetSidebarWidth() {
@@ -125,25 +160,33 @@ export const AppLayout = ({
     <div className="position-fixed h-100">
       <div
         className="position-fixed  top-0 start-0 h-100 w-100"
-        style={{ paddingLeft: sidebarWidth }}
+        ref={editorDomRef}
+        style={{
+          paddingLeft: sidebarWidth,
+          transition: editorAnimationStyle,
+        }}
       >
         {editor}
       </div>
 
       <div
         className="h-100 shadow-sm position-fixed"
+        ref={sidebarDomRef}
         style={{
           overflow: "auto",
           width: sidebarWidth,
+          transition: sidebarAnimationStyle,
         }}
       >
         <div className="h-100 d-flex flex-row position-relative">
           <div
             className="h-100 bg-secondary-subtle overflow-hidden position-relative"
+            ref={folderListDomRef}
             style={{
               width: showFolderList ? folderListWidth : 0,
               boxShadow: "inset 0 0 10px rgba(0, 0, 0, 0.1)",
               paddingTop: 44,
+              transition: folderListAnimationStyle,
             }}
           >
             <div
@@ -185,3 +228,5 @@ export const AppLayout = ({
     </div>
   );
 };
+
+
