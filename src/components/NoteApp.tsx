@@ -85,7 +85,13 @@ export const NoteApp = ({
             onSettingClick={() => setShowSetting(true)}
           />
         }
-        noteList={<NoteList activeId={activeNoteId} notes={notes} />}
+        noteList={
+          <NoteList
+            activeId={activeNoteId}
+            notes={notes}
+            folderId={activeFolderId}
+          />
+        }
         folderList={
           <FolderList
             activeId={activeFolderId}

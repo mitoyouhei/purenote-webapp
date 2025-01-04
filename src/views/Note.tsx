@@ -12,42 +12,10 @@ import {
   deleteNote,
   initRootFolder,
   updateFolder,
+  findFolderByNoteId,
 } from "../supabase";
 import Spinner from "../components/Spinner";
-async function getNotes(userId: string) {
-  const { data } = await supabase
-    .from("notes")
-    .select()
-    .is("deleted_at", null)
-    .order("updated_at", { ascending: false })
-    .eq("user_id", userId);
-  return data ?? [];
-}
-
-async function getRootFolder(userId: string) {
-  const { data } = await supabase
-    .from("folders")
-    .select()
-    .is("deleted_at", null)
-    .eq("user_id", userId);
-  return data?.[0];
-}
-
-function findFolderById(parentFolder: any, folderId: any): any | null {
-  if (parentFolder.id === folderId) {
-    return parentFolder;
-  }
-
-  if (Array.isArray(parentFolder.folders)) {
-    for (const folder of parentFolder.folders) {
-      const result = findFolderById(folder, folderId);
-      if (result) {
-        return result;
-      }
-    }
-  }
-  return null;
-}
+import { getNotes, getRootFolder, findFolderById } from "../supabase";
 
 function findUncontainedNotes(folder: any, notesList: any[]) {
   const containedNoteIds = new Set();
@@ -93,9 +61,13 @@ export const Note = ({ user }: { user: User }) => {
   const note = folderNotes.find((note: any) => note.id === noteId);
 
   async function onAddNote() {
-    const newNote = await createNote();
+    if (!folderId) throw new Error("folderId is required");
+
+    const [newNote, newRootFolder] = await createNote(folderId, rootFolder);
+
     setNotes([newNote, ...notes]);
-    navigate(`/note/${newNote.id}`);
+    setRootFolder(newRootFolder);
+    navigate(`/folder/${folderId}/${newNote.id}`);
   }
 
   useEffect(() => {
@@ -108,6 +80,11 @@ export const Note = ({ user }: { user: User }) => {
       navigate(`/folder/${rootFolder.root.folders[0].id}/welcome`);
     }
   }, [folder, rootFolder, navigate]);
+  useEffect(() => {
+    if (folder && !note && folderNotes.length < 1) {
+      navigate(`/folder/${folderId}/welcome`);
+    }
+  }, [folder, note, folderNotes, folderId, navigate]);
 
   useEffect(() => {
     async function getOrCreateRootFolder() {
@@ -166,13 +143,19 @@ export const Note = ({ user }: { user: User }) => {
       onDeleteNote={async () => {
         if (!noteId) return;
         const restNotes = notes.filter((note) => note.id !== noteId);
+        const folder = findFolderByNoteId(rootFolder.root, noteId);
+        if (folder) {
+          folder.notes = folder.notes?.filter((id: string) => id !== noteId);
+        }
+        setRootFolder(rootFolder);
         setNotes(restNotes);
         if (restNotes.length > 0) {
-          navigate(`/note/${restNotes[0].id}`);
+          navigate(`/folder/${folderId}/${restNotes[0].id}`);
         } else {
-          navigate("/note/welcome");
+          navigate(`/folder/${folderId}/welcome`);
         }
         await deleteNote(noteId);
+        await updateFolder(rootFolder.user_id, rootFolder.root);
       }}
       onAddNote={onAddNote}
       onNoteChange={async (content: string) => {
