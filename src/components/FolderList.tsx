@@ -24,12 +24,15 @@ const FolderNav = ({
       className={`d-flex align-items-center justify-content-between list-group-item list-group-item-action rounded-1 ${
         isActive ? "active" : ""
       }`}
-      to={`/folder/${folder.id}/welcome`}
+      to={`/folder/${folder.id}/${
+        folder.notes?.length > 0 ? folder.notes[0] : "welcome"
+      }`}
     >
       <div className="d-flex align-items-center">
         <BsFolder2 className="me-1 folder-icon" />
         <div className="title-row">
-          {folder.name ? folder.name : defaultNoteTitle}
+          {folder.name ? folder.name : defaultNoteTitle} (
+          {folder.notes?.length ?? 0})
         </div>
       </div>
 
@@ -75,9 +78,11 @@ export const FolderList = ({
   folders,
   onNewFolderClick,
   onFolderDeleteClick,
+  defaultFolder,
 }: {
   activeId: string;
   folders: any[];
+  defaultFolder: any;
   onNewFolderClick: () => void;
   onFolderDeleteClick: (id: string) => void;
 }) => {
@@ -96,6 +101,19 @@ export const FolderList = ({
       className="folder-list list-group px-2"
       style={{ overflow: "visible" }}
     >
+      <FolderNav
+        onFolderDeleteClick={() => {}}
+        folder={defaultFolder}
+        isActive={defaultFolder.id === activeId}
+        showMenu={showMenuForFolder === defaultFolder.id}
+        onMenuClick={() => {
+          if (showMenuForFolder === defaultFolder.id) {
+            clearMenu();
+          } else {
+            setShowMenuForFolder(defaultFolder.id);
+          }
+        }}
+      />
       {folders.map((folder) => (
         <FolderNav
           onFolderDeleteClick={onFolderDeleteClick}

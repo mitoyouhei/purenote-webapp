@@ -3,7 +3,11 @@ import supabase from "./supabase";
 export { supabase };
 
 
-function addNoteToFolder(folder: any, targetFolderId: string, noteId: string) {
+export function addNoteToFolder(
+  folder: any,
+  targetFolderId: string,
+  noteId: string
+) {
   if (folder.id === targetFolderId) {
     folder.notes = folder.notes ?? [];
     folder.notes.push(noteId);
@@ -44,25 +48,27 @@ export function findFolderByNoteId(folder: any, noteId: any): any | null {
   return null;
 }
 
-export const createNote = async (targetFolderId: string, rootFolder: any) => {
+export const createNote = async () => {
   const { data, error } = await supabase.from("notes").insert([{}]).select();
 
   if (error) {
     console.error("Error creating note:", error);
-    return [null, rootFolder];
+    return null;
   }
-  const folder = findFolderById(rootFolder.root, targetFolderId);
-  if (!folder.isUniqueDefault) {
-    addNoteToFolder(rootFolder.root, targetFolderId, data[0].id);
-    await updateFolder(rootFolder.user_id, rootFolder.root);
-  }
-  return [data[0], rootFolder];
+  return data[0];
 };
-export const initRootFolder = async () => {
-  const { data, error } = await supabase.from("folders").insert([{}]).select();
+export const initRootFolder = async (userId: string) => {
+  const { data, error } = await supabase
+    .from("folders")
+    .upsert([{}])
+    .eq("user_id", userId)
+    .select();
 
   if (error) {
     console.error("Error creating root folder:", error);
+    if (error.code === "23505") {
+      return await getRootFolder(userId);
+    }
     return null;
   }
   return data[0];
