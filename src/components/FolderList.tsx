@@ -24,7 +24,7 @@ const FolderNav = ({
       className={`d-flex align-items-center justify-content-between list-group-item list-group-item-action rounded-1 ${
         isActive ? "active" : ""
       }`}
-      to={`/folder/${folder.id}`}
+      to={`/folder/${folder.id}/welcome`}
     >
       <div className="d-flex align-items-center">
         <BsFolder2 className="me-1 folder-icon" />

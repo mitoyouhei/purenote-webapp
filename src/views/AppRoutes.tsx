@@ -69,6 +69,10 @@ const AppRoutes = () => {
           element={user ? <Note user={user} /> : <Navigate to="/login" />}
         />
         <Route
+          path="/folder/:folderId/:noteId"
+          element={user ? <Note user={user} /> : <Navigate to="/login" />}
+        />
+        <Route
           path="/folders"
           element={user ? <Folders /> : <Navigate to="/login" />}
         />
