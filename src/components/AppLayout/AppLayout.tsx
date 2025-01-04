@@ -1,12 +1,18 @@
 import React, { useRef, useState } from "react";
 import { BsLayoutSidebar } from "react-icons/bs";
+import { useLocalStorageState } from "../../hooks/useLocalStorageState";
 
 function minNoteListWidth() {
   return 250;
 }
 function minFolderListWidth() {
-  return 150;
+  return 200;
 }
+
+const animationDuration = 0.4;
+const editorAnimationStyle = `padding-left ${animationDuration}s ease-in-out`;
+const sidebarAnimationStyle = `width ${animationDuration}s ease-in-out`;
+const folderListAnimationStyle = `width ${animationDuration}s ease-in-out`;
 
 export const AppLayout = ({
   editor,
@@ -25,12 +31,21 @@ export const AppLayout = ({
   const sidebarDomRef = useRef<HTMLDivElement>(null);
   const folderListDomRef = useRef<HTMLDivElement>(null);
 
-  const [showFolderList, setShowFolderList] = useState(false);
+  const [showFolderList, setShowFolderList] = useLocalStorageState(
+    "AppLayout.showFolderList",
+    false
+  );
 
-  const [sidebarWidth, setSidebarWidth] = useState(300);
+  const [sidebarWidth, setSidebarWidth] = useLocalStorageState(
+    "AppLayout.sidebarWidth",
+    350
+  );
   const sidebarRef = useRef(sidebarWidth);
 
-  const [folderListWidth, setFolderListWidth] = useState(200);
+  const [folderListWidth, setFolderListWidth] = useLocalStorageState(
+    "AppLayout.folderListWidth",
+    250
+  );
   const folderListRef = useRef(folderListWidth);
 
   const folderListToggle = () => {
@@ -64,11 +79,6 @@ export const AppLayout = ({
     }
     document.body.style.userSelect = "none";
   };
-
-  const animationDuration = 0.4;
-  const editorAnimationStyle = `padding-left ${animationDuration}s ease-in-out`;
-  const sidebarAnimationStyle = `width ${animationDuration}s ease-in-out`;
-  const folderListAnimationStyle = `width ${animationDuration}s ease-in-out`;
 
   const resetStyleOnDrag = () => {
     if (editorDomRef.current) {
@@ -228,5 +238,3 @@ export const AppLayout = ({
     </div>
   );
 };
-
-

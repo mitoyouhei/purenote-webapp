@@ -23,7 +23,7 @@ const FolderNav = ({
     <Link
       className={`d-flex align-items-center justify-content-between list-group-item list-group-item-action rounded-1 ${
         isActive ? "active" : ""
-      }`}
+      } ${showMenu ? "z-3" : ""}`}
       to={`/folder/${folder.id}/${
         folder.notes?.length > 0 ? folder.notes[0] : "welcome"
       }`}
@@ -31,18 +31,18 @@ const FolderNav = ({
       <div className="d-flex align-items-center">
         <BsFolder2 className="me-1 folder-icon" />
         <div className="title-row">
-          {folder.name ? folder.name : defaultNoteTitle} (
-          {folder.notes?.length ?? 0})
+          {folder.name ? folder.name : defaultNoteTitle}{" "}
         </div>
       </div>
 
       <div
-        className="position-relative"
+        className="position-relative d-flex align-items-center flex-row-reverse"
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
         }}
       >
+        <span className="badge">{folder.notes?.length ?? 0}</span>
         <button
           className="btn btn-light menu-btn"
           onClick={(e) => {
@@ -52,12 +52,13 @@ const FolderNav = ({
         >
           <BsThreeDots />
         </button>
+
         <div
-          className={`menu-dropdown position-absolute top-100 end-0 mt-1 z-2 ${
+          className={`menu-dropdown position-absolute top-100 end-0 mt-1 ${
             showMenu ? "show" : ""
           }`}
         >
-          <div className="card">
+          <div className="card" style={{ backgroundColor: "#000" }}>
             <ul className="list-group list-group-flush">
               <li
                 className="list-group-item"

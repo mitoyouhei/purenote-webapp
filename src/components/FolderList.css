@@ -11,11 +11,32 @@
     margin: 0.2rem 0;
     background-color: transparent;
 }
+.folder-list>.list-group-item.active {
+    margin: 0.2rem 0;
+    background-color: rgb(255 196 75);
+}
+
+.folder-list>.list-group-item .badge {
+    color: #7b7b7b;
+    font-size: 0.7rem;
+    font-weight: normal;
+}
+
+.folder-list>.list-group-item.active .badge {
+    color: #fff;
+}
+
+.folder-list>.list-group-item {
+    border: none;
+}
 
 .folder-list>.list-group-item .folder-icon {
     color: rgb(255 148 0);
-    font-size: 0.8rem;
+    font-size: 1rem;
     font-weight: bolder;
+}
+.folder-list>.list-group-item.active .folder-icon {
+    color: white;
 }
 
 
