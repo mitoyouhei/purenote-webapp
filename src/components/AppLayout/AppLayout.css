@@ -1,12 +1,10 @@
-#app-layout {}
-
-#app-layout .dragger {
-    width: 12px;
+.resize-dragger {
+    width: 10px;
     cursor: ew-resize;
     background-color: transparent;
-    opacity: 0;
+    opacity: 1;
 }
 
-#app-layout .dragger:hover {
+.resize-dragger:hover {
     opacity: 1;
 }

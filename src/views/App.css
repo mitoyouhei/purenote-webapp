@@ -45,14 +45,3 @@ body {
 body>.offcanvas .navbar-nav a {
     margin: 10px;
 }
-
-#siderbar-dragger {
-    width: 7px;
-    cursor: ew-resize;
-    background-color: transparent;
-    opacity: 0;
-}
-
-#siderbar-dragger:hover {
-    opacity: 1;
-}
