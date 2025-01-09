@@ -7,6 +7,8 @@ import { Topbar } from "./Topbar";
 import Setting from "./Setting";
 import { FolderList } from "./FolderList";
 import { NewFolderForm } from "./NewFolderForm";
+import type { Note as NoteType } from "../supabase/types";
+import type { Folder } from "../supabase/types";
 
 export const NoteApp = ({
   note,
@@ -25,27 +27,27 @@ export const NoteApp = ({
   defaultFolder,
   onFolderDeleteClick,
 }: {
-  note: any;
-  folder: any;
+  note: NoteType | null;
+  folder: Folder | null;
   email: string;
   userDisplayName: string;
   onLogout: () => void;
   onAddNote: () => Promise<void>;
   onNoteChange: (content: string) => Promise<void>;
-  notes: any[];
-  folders: any[];
+  notes: NoteType[];
+  folders: Folder[];
   updateNoteTitle: (title: string) => Promise<void>;
   onDeleteNote: () => Promise<void>;
   resetPassword: (password: string) => Promise<void>;
   createFolder: (name: string) => Promise<void>;
   onFolderDeleteClick: (id: string) => void;
-  defaultFolder: any;
+  defaultFolder: Folder;
 }) => {
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
   const [showSetting, setShowSetting] = useState(false);
   const [showNewFolderForm, setShowNewFolderForm] = useState(false);
-  const activeNoteId = note?.id;
-  const activeFolderId = folder?.id;
+  const activeNoteId = note?.id ?? '';
+  const activeFolderId = folder?.id ?? '';
   const newFolderForm = showNewFolderForm ? (
     <NewFolderForm
       onClose={() => setShowNewFolderForm(false)}
@@ -59,7 +61,7 @@ export const NoteApp = ({
       resetPassword={resetPassword}
     />
   ) : null;
-  const editor = note ? (
+  const editor = note && note.id ? (
     <Note
       showFolderListNav={disableSidebar}
       id={note.id}

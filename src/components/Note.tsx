@@ -1,7 +1,7 @@
 import React from "react";
 import { BasicEditor } from "./Editor";
-
 import { formatDateTime } from "../utils";
+import type { Note as NoteType } from "../supabase/types";
 
 const Note = ({
   showFolderListNav,
@@ -12,7 +12,7 @@ const Note = ({
 }: {
   showFolderListNav: boolean;
   id: string;
-  note: any;
+  note: NoteType;
   onChange: (content: string) => Promise<void>;
   updateNoteTitle: (title: string) => Promise<void>;
 }) => {
@@ -23,13 +23,13 @@ const Note = ({
         const content = JSON.stringify(editorStateJSON);
         return onChange(content);
       }}
-      initialEditorStateJSONString={note.content}
+      initialEditorStateJSONString={note.content ?? ''}
       autoFocus={false}
       key={id}
       id={id}
-      initTitle={note.title}
+      initTitle={note.title ?? 'Untitled'}
       updateNoteTitle={updateNoteTitle}
-      updatedAt={formatDateTime(note.updated_at)}
+      updatedAt={formatDateTime(note.updated_at ?? new Date().toISOString())}
     />
   );
 

@@ -7,23 +7,24 @@ export interface SupabaseResponse<T> {
 
 export interface Note {
   id: string;
-  title?: string;
-  content?: string;
-  deleted_at?: Date | null;
-  created_at?: string;
-  updated_at?: string;
-  user_id?: string;
+  title: string | null;
+  content: string | null;
+  deleted_at: Date | null;
+  created_at: string | null;
+  updated_at: string | null;
+  user_id: string;
 }
 
 export interface Folder {
   id: string;
-  notes?: string[];
-  folders?: Folder[];
-  user_id?: string;
-  deleted_at?: Date | null;
-  root?: any;
-  created_at?: string;
-  updated_at?: string;
+  notes: string[] | null;
+  folders: Folder[] | null;
+  user_id: string;
+  deleted_at: Date | null;
+  root: any;
+  created_at: string | null;
+  updated_at: string | null;
+  name: string;
 }
 
 export type NoteResponse = SupabaseResponse<Note>;

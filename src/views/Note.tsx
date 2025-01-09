@@ -22,19 +22,18 @@ import {
   findFolderById,
   addNoteToFolder,
 } from "../supabase";
-interface Folder {
-  id: string;
-  name: string;
-  folders?: Folder[];
-  notes?: string[];
-  user_id?: string;
-  root?: any;
-}
+// Use the imported Folder type from supabase/types
+import type { Folder } from "../supabase/types";
 const defaultFolder: Folder = {
   id: "default",
   name: "Notes",
   folders: [],
   notes: [],
+  user_id: "",
+  deleted_at: null,
+  root: { folders: [] },
+  created_at: null,
+  updated_at: null
 };
 
 function findUncontainedNotes(folder: Folder, notesList: NoteType[]) {
@@ -42,7 +41,7 @@ function findUncontainedNotes(folder: Folder, notesList: NoteType[]) {
 
   function collectNotes(folder: Folder) {
     if (folder.notes) {
-      folder.notes.forEach((noteId: any) => containedNoteIds.add(noteId));
+      folder.notes.forEach((noteId: string) => containedNoteIds.add(noteId));
     }
     if (Array.isArray(folder.folders)) {
       folder.folders.forEach(collectNotes);
@@ -61,8 +60,16 @@ export const Note = ({ user }: { user: User }) => {
   const { folderId, noteId } = useParams();
 
   const [notes, setNotes] = useState<NoteType[]>([]);
-  const [rootFolder, setRootFolder] = useState<any>({
+  const [rootFolder, setRootFolder] = useState<Folder>({
+    id: "",
+    name: "Root",
+    folders: [],
+    notes: [],
+    user_id: userId,
+    deleted_at: null,
     root: { folders: [] },
+    created_at: null,
+    updated_at: null
   });
   const [initialized, setInitialized] = useState(false);
   const isDefaultFolder = defaultFolder.id === folderId;
@@ -84,7 +91,7 @@ export const Note = ({ user }: { user: User }) => {
     ).filter((note): note is NoteType => note !== undefined);
   }, [isDefaultFolder, folder, notes, rootFolder.root]);
 
-  const note = folderNotes.find((note: any) => note.id === noteId);
+  const note: NoteType | null = folderNotes.find((note: NoteType) => note.id === noteId) ?? null;
 
   async function onAddNote() {
     if (!folderId) {
@@ -93,13 +100,20 @@ export const Note = ({ user }: { user: User }) => {
     }
 
     const response = await createNote(userId);
-    if (!response.data) return;
+    if (!response?.data || !response.data.id) {
+      console.error('Failed to create note:', response?.error);
+      return;
+    }
     
     const newNote = response.data;
-    if (!isDefaultFolder) {
+    if (!isDefaultFolder && rootFolder?.root) {
       addNoteToFolder(rootFolder.root, folderId!, newNote.id);
-      await updateFolder(rootFolder.user_id, rootFolder.root);
-      setRootFolder(rootFolder);
+      const updateResponse = await updateFolder(rootFolder.user_id, rootFolder.root);
+      if (updateResponse.error) {
+        console.error('Failed to update folder:', updateResponse.error);
+      } else if (updateResponse.data) {
+        setRootFolder(updateResponse.data);
+      }
     }
     setNotes([newNote, ...notes]);
 
@@ -107,14 +121,26 @@ export const Note = ({ user }: { user: User }) => {
   }
   async function onDeleteNote() {
     if (!noteId) return;
+    
+    const deleteResponse = await deleteNote(noteId);
+    if (!deleteResponse?.data) {
+      console.error('Failed to delete note:', deleteResponse?.error);
+      return;
+    }
+
     const restNotes = notes.filter((note) => note.id !== noteId);
 
     if (!isDefaultFolder) {
       const folder = findFolderByNoteId(rootFolder.root, noteId);
-      if (folder) {
-        folder.notes = folder.notes?.filter((id: string) => id !== noteId);
+      if (folder && folder.notes) {
+        folder.notes = folder.notes.filter((id: string) => id !== noteId);
+        const updateResponse = await updateFolder(rootFolder.user_id, rootFolder.root);
+        if (updateResponse.error) {
+          console.error('Failed to update folder:', updateResponse.error);
+        } else if (updateResponse.data) {
+          setRootFolder(updateResponse.data);
+        }
       }
-      setRootFolder(rootFolder);
     }
 
     setNotes(restNotes);
@@ -122,10 +148,6 @@ export const Note = ({ user }: { user: User }) => {
       navigate(`/folder/${folderId}/${restNotes[0].id}`);
     } else {
       navigate(`/folder/${folderId}/welcome`);
-    }
-    await deleteNote(noteId);
-    if (!isDefaultFolder) {
-      await updateFolder(rootFolder.user_id, rootFolder.root);
     }
   }
 
@@ -146,34 +168,63 @@ export const Note = ({ user }: { user: User }) => {
   }, [folder, note, folderNotes, folderId, navigate]);
 
   useEffect(() => {
-    async function getOrCreateRootFolder() {
-      let rootFolderRow = await getRootFolder(userId);
-      if (!rootFolderRow) {
-        rootFolderRow = await initRootFolder(userId);
+    async function getOrCreateRootFolder(): Promise<Folder | null> {
+      const rootFolderResponse = await getRootFolder(userId);
+      if (!rootFolderResponse?.data) {
+        const initResponse = await initRootFolder(userId);
+        if (!initResponse?.data) {
+          console.error('Failed to initialize root folder:', initResponse?.error);
+          return null;
+        }
+        return initResponse.data;
       }
-      return rootFolderRow;
+      return rootFolderResponse.data;
     }
     async function fetchData() {
-      const [rootFolderRow, notes] = await Promise.all([
+      const [rootFolder, notes] = await Promise.all([
         getOrCreateRootFolder(),
         getNotes(userId),
       ]);
 
-      setRootFolder(rootFolderRow);
-      setNotes(notes);
+      if (rootFolder) {
+        setRootFolder(rootFolder);
+      }
+      if (Array.isArray(notes)) {
+        setNotes(notes);
+      } else {
+        console.error('Failed to fetch notes');
+        setNotes([]);
+      }
       setInitialized(true);
     }
     fetchData();
   }, [userId]);
 
   async function createFolder(name: string) {
-    const newFolder = { id: crypto.randomUUID(), name };
-    const newRoot = {
-      ...rootFolder,
-      root: { folders: [...rootFolder.root.folders, newFolder] },
+    const newFolder: Folder = {
+      id: crypto.randomUUID(),
+      name,
+      folders: [],
+      notes: [],
+      user_id: userId,
+      deleted_at: null,
+      root: null,
+      created_at: null,
+      updated_at: null
     };
-    setRootFolder(newRoot);
-    updateFolder(userId, newRoot.root);
+    const newRoot: Folder = {
+      ...rootFolder,
+      root: { folders: [...(rootFolder.root?.folders ?? []), newFolder] }
+    };
+    
+    const response = await updateFolder(userId, newRoot);
+    if (response.error) {
+      console.error('Failed to create folder:', response.error);
+      return;
+    }
+    if (response.data) {
+      setRootFolder(response.data);
+    }
   }
 
   if (!initialized) return <Spinner />;
@@ -195,17 +246,27 @@ export const Note = ({ user }: { user: User }) => {
       }}
       updateNoteTitle={async (title: string) => {
         if (!noteId || !note) return;
-        const updatedNote = { ...note, title };
+        const response = await updateNoteTitle(noteId, title);
+        if (!response?.data) {
+          console.error('Failed to update note title:', response?.error);
+          return;
+        }
+        const updatedNote = response.data;
+        if (!updatedNote) return;
         setNotes(notes.map(n => n.id === noteId ? updatedNote : n));
-        await updateNoteTitle(noteId, title);
       }}
       onDeleteNote={onDeleteNote}
       onAddNote={onAddNote}
       onNoteChange={async (content: string) => {
         if (!noteId || !note) return;
-        const updatedNote = { ...note, content };
+        const response = await updateNoteContent(noteId, content);
+        if (!response?.data) {
+          console.error('Failed to update note content:', response?.error);
+          return;
+        }
+        const updatedNote = response.data;
+        if (!updatedNote) return;
         setNotes(notes.map(n => n.id === noteId ? updatedNote : n));
-        await updateNoteContent(noteId, content);
       }}
       resetPassword={async (password: string) => {
         if (!user?.email) return;

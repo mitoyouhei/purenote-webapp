@@ -1,4 +1,4 @@
-import { PostgrestError, PostgrestResponse } from '@supabase/supabase-js';
+import { PostgrestResponse } from '@supabase/supabase-js';
 import supabase from './supabase';
 import { SupabaseError, SupabaseResponse } from './types';
 
@@ -7,10 +7,11 @@ export async function checkAuth(): Promise<boolean> {
   return session !== null;
 }
 
-export async function handleSupabaseOperation<T, IsArray extends boolean = false>(
+export async function handleSupabaseOperation<T>(
   operation: string,
-  action: () => Promise<PostgrestResponse<IsArray extends true ? T[] : T>> | PostgrestResponse<IsArray extends true ? T[] : T>
-): Promise<SupabaseResponse<IsArray extends true ? T[] : T>> {
+  action: () => Promise<PostgrestResponse<T>>,
+  isSingleItem: boolean = true
+): Promise<SupabaseResponse<T>> {
   if (!(await checkAuth())) {
     return {
       data: null,
@@ -29,16 +30,27 @@ export async function handleSupabaseOperation<T, IsArray extends boolean = false
       };
     }
 
-    if (!data || Array.isArray(data) && data.length === 0) {
+    if (!data || (Array.isArray(data) && data.length === 0)) {
       return {
         data: null,
         error: 'No data found'
       };
     }
 
-    // Return data as-is, TypeScript will ensure correct typing through generics
+    // Handle both single object and array responses
+    if (!isSingleItem) {
+      // For array responses, ensure we have an array
+      const dataArray = Array.isArray(data) ? data : data ? [data] : null;
+      return {
+        data: dataArray as T,
+        error: null
+      };
+    }
+
+    // For single item responses, return the first item if it's an array
+    const singleItem = Array.isArray(data) ? data[0] : data;
     return {
-      data: data as IsArray extends true ? T[] : T,
+      data: singleItem as T,
       error: null
     };
   } catch (err) {
