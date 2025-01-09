@@ -1,54 +1,40 @@
 import supabase from "./supabase";
+import { handleSupabaseOperation } from "./utils";
+import { Note, NoteResponse } from "./types";
 
 export { supabase };
 
-export const createNote = async () => {
-  const { data, error } = await supabase.from("notes").insert([{}]).select();
-
-  if (error) {
-    console.error("Error creating note:", error);
-    return null;
-  }
-  return data[0];
+export const createNote = async (): Promise<NoteResponse> => {
+  return handleSupabaseOperation<Note>("createNote", () =>
+    supabase.from("notes").insert([{}]).select()
+  );
 };
 
-export const updateNoteTitle = async (id: string, title: string) => {
-  const { data, error } = await supabase
-    .from("notes")
-    .update({ title })
-    .eq("id", id)
-    .select();
-
-  if (error) {
-    console.error("Error updating note title:", error);
-    return null;
-  }
-  return data[0];
+export const updateNoteTitle = async (
+  id: string,
+  title: string
+): Promise<NoteResponse> => {
+  return handleSupabaseOperation<Note>("updateNoteTitle", () =>
+    supabase.from("notes").update({ title }).eq("id", id).select()
+  );
 };
 
-export const updateNoteContent = async (id: string, content: string) => {
-  const { data, error } = await supabase
-    .from("notes")
-    .update({ content })
-    .eq("id", id)
-    .select();
-  if (error) {
-    console.error("Error updating note content:", error);
-    return null;
-  }
-  return data[0];
+export const updateNoteContent = async (
+  id: string,
+  content: string
+): Promise<NoteResponse> => {
+  return handleSupabaseOperation<Note>("updateNoteContent", () =>
+    supabase.from("notes").update({ content }).eq("id", id).select()
+  );
 };
 
-export const deleteNote = async (id: string) => {
-  const { data, error } = await supabase
-    .from("notes")
-    .update({ deleted_at: new Date() })
-    .eq("id", id)
-    .select();
-  if (error) {
-    console.error("Error deleting note:", error);
-    return null;
-  }
-  return data[0];
+export const deleteNote = async (id: string): Promise<NoteResponse> => {
+  return handleSupabaseOperation<Note>("deleteNote", () =>
+    supabase
+      .from("notes")
+      .update({ deleted_at: new Date() })
+      .eq("id", id)
+      .select()
+  );
 };
 
