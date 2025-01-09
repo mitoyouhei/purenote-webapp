@@ -66,21 +66,22 @@ export const Note = ({ user }: { user: User }) => {
   });
   const [initialized, setInitialized] = useState(false);
   const isDefaultFolder = defaultFolder.id === folderId;
-  const defaultFolderNotes = findUncontainedNotes(rootFolder.root, notes);
+  const defaultFolderNotes = rootFolder.root ? findUncontainedNotes(rootFolder.root, notes) : [];
   defaultFolder.notes = defaultFolderNotes.map((note) => note.id);
 
   const folder = isDefaultFolder || !folderId
     ? defaultFolder
-    : findFolderById(rootFolder.root, folderId);
+    : (rootFolder.root ? findFolderById(rootFolder.root, folderId) : null);
 
   const folderNotes = useMemo(() => {
+    if (!notes) return [];
     if (isDefaultFolder) {
-      return findUncontainedNotes(rootFolder.root, notes);
+      return rootFolder.root ? findUncontainedNotes(rootFolder.root, notes) : [];
     }
     const noteIds = folder?.notes ?? [];
-    return noteIds.map((noteId: any) =>
-      notes.find((note: any) => note.id === noteId)
-    );
+    return noteIds.map((noteId: string) =>
+      notes.find((note: NoteType) => note.id === noteId)
+    ).filter((note): note is NoteType => note !== undefined);
   }, [isDefaultFolder, folder, notes, rootFolder.root]);
 
   const note = folderNotes.find((note: any) => note.id === noteId);
