@@ -1,7 +1,7 @@
 import { PostgrestError } from '@supabase/supabase-js';
 
 export interface SupabaseResponse<T> {
-  data: T | null;
+  data: T | null;  // T is either a single type or array type based on IsArray generic
   error: string | null;
 }
 

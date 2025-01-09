@@ -52,7 +52,7 @@ export function findFolderByNoteId(folder: Folder, noteId: string): Folder | nul
 }
 
 export const createNote = async (): Promise<NoteResponse> => {
-  return handleSupabaseOperation<Note>("createNote", async () => {
+  return handleSupabaseOperation<Note, false>("createNote", async () => {
     return await supabase.from("notes").insert([{}]).select();
   });
 };
@@ -77,22 +77,19 @@ export const initRootFolder = async (userId: string): Promise<FolderResponse> =>
 };
 
 export const getNotes = async (userId: string): Promise<Note[]> => {
-  const { data, error } = await supabase
-    .from("notes")
-    .select()
-    .is("deleted_at", null)
-    .order("updated_at", { ascending: false })
-    .eq("user_id", userId);
-  
-  if (error) {
-    console.error(new SupabaseError("getNotes", error));
-    return [];
-  }
-  return data ?? [];
+  const response = await handleSupabaseOperation<Note, true>("getNotes", async () =>
+    await supabase
+      .from("notes")
+      .select()
+      .is("deleted_at", null)
+      .order("updated_at", { ascending: false })
+      .eq("user_id", userId)
+  );
+  return response.data ?? [];
 };
 
 export const getRootFolder = async (userId: string): Promise<FolderResponse> => {
-  return handleSupabaseOperation<Folder>("getRootFolder", async () => {
+  return handleSupabaseOperation<Folder, false>("getRootFolder", async () => {
     return await supabase
       .from("folders")
       .select()
@@ -103,7 +100,7 @@ export const getRootFolder = async (userId: string): Promise<FolderResponse> => 
 };
 
 export const updateFolder = async (userId: string, root: Folder): Promise<FolderResponse> => {
-  return handleSupabaseOperation<Folder>("updateFolder", async () => {
+  return handleSupabaseOperation<Folder, false>("updateFolder", async () => {
     return await supabase
       .from("folders")
       .update({ root })
@@ -116,7 +113,7 @@ export const updateNoteTitle = async (
   id: string,
   title: string
 ): Promise<NoteResponse> => {
-  return handleSupabaseOperation<Note>("updateNoteTitle", async () => {
+  return handleSupabaseOperation<Note, false>("updateNoteTitle", async () => {
     return await supabase.from("notes").update({ title }).eq("id", id).select();
   });
 };
@@ -125,13 +122,13 @@ export const updateNoteContent = async (
   id: string,
   content: string
 ): Promise<NoteResponse> => {
-  return handleSupabaseOperation<Note>("updateNoteContent", async () => {
+  return handleSupabaseOperation<Note, false>("updateNoteContent", async () => {
     return await supabase.from("notes").update({ content }).eq("id", id).select();
   });
 };
 
 export const deleteNote = async (id: string): Promise<NoteResponse> => {
-  return handleSupabaseOperation<Note>("deleteNote", async () => {
+  return handleSupabaseOperation<Note, false>("deleteNote", async () => {
     return await supabase
       .from("notes")
       .update({ deleted_at: new Date() })

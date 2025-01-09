@@ -7,10 +7,10 @@ export async function checkAuth(): Promise<boolean> {
   return session !== null;
 }
 
-export async function handleSupabaseOperation<T>(
+export async function handleSupabaseOperation<T, IsArray extends boolean = false>(
   operation: string,
-  action: () => Promise<PostgrestResponse<T>> | PostgrestResponse<T>
-): Promise<SupabaseResponse<T>> {
+  action: () => Promise<PostgrestResponse<IsArray extends true ? T[] : T>> | PostgrestResponse<IsArray extends true ? T[] : T>
+): Promise<SupabaseResponse<IsArray extends true ? T[] : T>> {
   if (!(await checkAuth())) {
     return {
       data: null,
@@ -36,11 +36,9 @@ export async function handleSupabaseOperation<T>(
       };
     }
 
-    // Handle both single object and array responses
-    const result = Array.isArray(data) ? data[0] : data;
-    
+    // Return data as-is, TypeScript will ensure correct typing through generics
     return {
-      data: result as T,
+      data: data as IsArray extends true ? T[] : T,
       error: null
     };
   } catch (err) {
