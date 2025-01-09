@@ -3,6 +3,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { NoteApp } from "../components/NoteApp";
 import { useParams } from "react-router-dom";
 import { User } from "@supabase/supabase-js";
+import { Note as NoteType } from "../supabase/types";
 import { useNavigate } from "react-router-dom";
 import {
   supabase,
@@ -21,12 +22,14 @@ import {
   findFolderById,
   addNoteToFolder,
 } from "../supabase";
-type Folder = {
+interface Folder {
   id: string;
   name: string;
-  folders: Folder[];
-  notes: string[];
-};
+  folders?: Folder[];
+  notes?: string[];
+  user_id?: string;
+  root?: any;
+}
 const defaultFolder: Folder = {
   id: "default",
   name: "Notes",
@@ -34,10 +37,10 @@ const defaultFolder: Folder = {
   notes: [],
 };
 
-function findUncontainedNotes(folder: any, notesList: any[]) {
+function findUncontainedNotes(folder: Folder, notesList: NoteType[]) {
   const containedNoteIds = new Set();
 
-  function collectNotes(folder: any) {
+  function collectNotes(folder: Folder) {
     if (folder.notes) {
       folder.notes.forEach((noteId: any) => containedNoteIds.add(noteId));
     }
@@ -57,7 +60,7 @@ export const Note = ({ user }: { user: User }) => {
   const userId = user.id;
   const { folderId, noteId } = useParams();
 
-  const [notes, setNotes] = useState<any[]>([]);
+  const [notes, setNotes] = useState<NoteType[]>([]);
   const [rootFolder, setRootFolder] = useState<any>({
     root: { folders: [] },
   });
@@ -66,7 +69,7 @@ export const Note = ({ user }: { user: User }) => {
   const defaultFolderNotes = findUncontainedNotes(rootFolder.root, notes);
   defaultFolder.notes = defaultFolderNotes.map((note) => note.id);
 
-  const folder = isDefaultFolder
+  const folder = isDefaultFolder || !folderId
     ? defaultFolder
     : findFolderById(rootFolder.root, folderId);
 
@@ -83,7 +86,10 @@ export const Note = ({ user }: { user: User }) => {
   const note = folderNotes.find((note: any) => note.id === noteId);
 
   async function onAddNote() {
-    if (!folderId) throw new Error("folderId is required");
+    if (!folderId) {
+      console.error("folderId is required for adding a note");
+      return;
+    }
 
     const response = await createNote();
     if (!response.data) return;
@@ -124,7 +130,7 @@ export const Note = ({ user }: { user: User }) => {
 
   useEffect(() => {
     if (!note && folderNotes.length > 0) {
-      navigate(`/folder/${folderId}/${folderNotes[0].id}`);
+      navigate(`/folder/${folderId}/${folderNotes[0]?.id ?? 'welcome'}`);
     }
   }, [note, folderNotes, folderId, navigate]);
   useEffect(() => {
@@ -187,17 +193,17 @@ export const Note = ({ user }: { user: User }) => {
         navigate("/logout");
       }}
       updateNoteTitle={async (title: string) => {
-        if (!noteId) return;
-        note.title = title;
-        setNotes([...notes]);
+        if (!noteId || !note) return;
+        const updatedNote = { ...note, title };
+        setNotes(notes.map(n => n.id === noteId ? updatedNote : n));
         await updateNoteTitle(noteId, title);
       }}
       onDeleteNote={onDeleteNote}
       onAddNote={onAddNote}
       onNoteChange={async (content: string) => {
-        if (!noteId) return;
-        note.content = content;
-        setNotes([...notes]);
+        if (!noteId || !note) return;
+        const updatedNote = { ...note, content };
+        setNotes(notes.map(n => n.id === noteId ? updatedNote : n));
         await updateNoteContent(noteId, content);
       }}
       resetPassword={async (password: string) => {
