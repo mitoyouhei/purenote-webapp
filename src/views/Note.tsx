@@ -92,7 +92,7 @@ export const Note = ({ user }: { user: User }) => {
       return;
     }
 
-    const response = await createNote();
+    const response = await createNote(userId);
     if (!response.data) return;
     
     const newNote = response.data;

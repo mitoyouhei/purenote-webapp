@@ -51,9 +51,16 @@ export function findFolderByNoteId(folder: Folder, noteId: string): Folder | nul
   return null;
 }
 
-export const createNote = async (): Promise<NoteResponse> => {
+export const createNote = async (userId: string): Promise<NoteResponse> => {
   return handleSupabaseOperation<Note, false>("createNote", async () => {
-    return await supabase.from("notes").insert([{}]).select();
+    return await supabase
+      .from("notes")
+      .insert([{ 
+        user_id: userId,
+        title: "Untitled",
+        content: ""
+      }])
+      .select();
   });
 };
 export const initRootFolder = async (userId: string): Promise<FolderResponse> => {
