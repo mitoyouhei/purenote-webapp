@@ -1,165 +1,240 @@
-import "./AppLayout.css";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
+import { BsLayoutSidebar } from "react-icons/bs";
+import { useLocalStorageState } from "../../hooks/useLocalStorageState";
 
-const FIRST_PERCENTAGE = 0.15;
-const SECOND_PERCENTAGE = 0.15;
-const MAX_TOTAL_PERCENTAGE = 0.5;
-const MIN_NAV_WIDTH = 200;
-const MIN_TOTAL_WIDTH = 800;
+function minNoteListWidth() {
+  return 250;
+}
+function minFolderListWidth() {
+  return 200;
+}
 
-const TOP_NAV_HEIGHT = 50;
+const animationDuration = 0.4;
+const editorAnimationStyle = `padding-left ${animationDuration}s ease-in-out`;
+const sidebarAnimationStyle = `width ${animationDuration}s ease-in-out`;
+const folderListAnimationStyle = `width ${animationDuration}s ease-in-out`;
 
-const Dragger: React.FC<{ onDrag: (change: number) => void }> = ({
-  onDrag,
+export const AppLayout = ({
+  editor,
+  noteList,
+  folderList,
+  topbar,
+}: {
+  editor: React.ReactNode;
+  noteList: React.ReactNode;
+  folderList: React.ReactNode;
+  topbar: React.ReactNode;
 }) => {
+  const [widthOpacity, setWidthOpacity] = useState(0);
+
+  const editorDomRef = useRef<HTMLDivElement>(null);
+  const sidebarDomRef = useRef<HTMLDivElement>(null);
+  const folderListDomRef = useRef<HTMLDivElement>(null);
+
+  const [showFolderList, setShowFolderList] = useLocalStorageState(
+    "AppLayout.showFolderList",
+    false
+  );
+
+  const [sidebarWidth, setSidebarWidth] = useLocalStorageState(
+    "AppLayout.sidebarWidth",
+    350
+  );
+  const sidebarRef = useRef(sidebarWidth);
+
+  const [folderListWidth, setFolderListWidth] = useLocalStorageState(
+    "AppLayout.folderListWidth",
+    250
+  );
+  const folderListRef = useRef(folderListWidth);
+
+  const folderListToggle = () => {
+    const nextShowFolderList = !showFolderList;
+    setShowFolderList(nextShowFolderList);
+
+    if (nextShowFolderList) {
+      const nextSidebarWidth = Math.min(
+        window.innerWidth / 2,
+        sidebarWidth + folderListWidth
+      );
+      setSidebarWidth(nextSidebarWidth);
+      sidebarRef.current = nextSidebarWidth;
+    } else {
+      const nextSidebarWidth = sidebarWidth - folderListWidth;
+
+      setSidebarWidth(nextSidebarWidth);
+      sidebarRef.current = nextSidebarWidth;
+    }
+  };
+
+  const clearStyleOnDrag = () => {
+    if (editorDomRef.current) {
+      editorDomRef.current.style.transition = "";
+    }
+    if (sidebarDomRef.current) {
+      sidebarDomRef.current.style.transition = "";
+    }
+    if (folderListDomRef.current) {
+      folderListDomRef.current.style.transition = "";
+    }
+    document.body.style.userSelect = "none";
+  };
+
+  const resetStyleOnDrag = () => {
+    if (editorDomRef.current) {
+      editorDomRef.current.style.transition = editorAnimationStyle;
+    }
+    if (sidebarDomRef.current) {
+      sidebarDomRef.current.style.transition = sidebarAnimationStyle;
+    }
+    if (folderListDomRef.current) {
+      folderListDomRef.current.style.transition = folderListAnimationStyle;
+    }
+    document.body.style.userSelect = "";
+  };
+
   const handleMouseDown = (e: React.MouseEvent) => {
     const startX = e.clientX;
+    const startWidth = sidebarRef.current;
+    setWidthOpacity(0.4);
 
-    const handleMouseMove = (e: MouseEvent) => {
-      let change = e.clientX - startX;
-      onDrag(change);
+    const handleMouseMove: EventListener = (e: Event) => {
+      const changeX = (e as MouseEvent).clientX - startX;
+      let newWidth = startWidth + changeX;
+
+      const minWidth = showFolderList
+        ? minNoteListWidth() + minFolderListWidth()
+        : minNoteListWidth();
+
+      newWidth = Math.min(window.innerWidth / 2, newWidth);
+      newWidth = Math.max(minWidth, newWidth);
+      newWidth = Math.floor(newWidth);
+      sidebarRef.current = newWidth;
+      setSidebarWidth(sidebarRef.current);
+
+      const nextNoteListWidth = sidebarRef.current - folderListWidth;
+      if (showFolderList && nextNoteListWidth < minNoteListWidth()) {
+        const nextFolderListWidth = sidebarRef.current - minNoteListWidth();
+        setFolderListWidth(nextFolderListWidth);
+        folderListRef.current = nextFolderListWidth;
+      }
     };
 
     const handleMouseUp = () => {
+      resetStyleOnDrag();
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
-      document.body.style.userSelect = "";
+      // onSidebarWidthChange(sidebarRef.current);
+      setWidthOpacity(0);
     };
 
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
-    document.body.style.userSelect = "none";
+    clearStyleOnDrag();
   };
-  return (
-    <div
-      className="position-absolute top-0 end-0 h-100 border-end dragger"
-      onMouseDown={handleMouseDown}
-    ></div>
-  );
-};
 
-const FirstNav: React.FC<{
-  width: number;
-  onDrag: (change: number) => void;
-  children: React.ReactNode;
-}> = ({ width, onDrag, children }) => {
-  return (
-    <div
-      className="position-fixed top-0 start-0 h-100"
-      style={{
-        // backgroundColor: "#eee",
-        paddingTop: TOP_NAV_HEIGHT,
-        width,
-      }}
-    >
-      {children}
-      <Dragger onDrag={onDrag} />
-    </div>
-  );
-};
-const SecondNav: React.FC<{
-  width: number;
-  left: number;
-  onDrag: (change: number) => void;
-  children: React.ReactNode;
-}> = ({ width, left, onDrag, children }) => {
-  return (
-    <div
-      className="position-fixed top-0 h-100"
-      style={{
-        // backgroundColor: "#ddd",
-        paddingTop: TOP_NAV_HEIGHT,
-        width,
-        left,
-      }}
-    >
-      {children}
-      <Dragger onDrag={onDrag} />
-    </div>
-  );
-};
-const TopNav: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
-    <div
-      className="position-fixed top-0 start-0 w-100"
-      style={{
-        height: TOP_NAV_HEIGHT,
-        // backgroundColor: "red",
-      }}
-    >
-      {children}
-    </div>
-  );
-};
+  const handleFolderListMouseDown = (e: React.MouseEvent) => {
+    const startX = e.clientX;
+    const startWidth = folderListRef.current;
 
-export const AppLayout: React.FC<{
-  topbar: React.ReactNode;
-  firstNav: React.ReactNode;
-  secondNav: React.ReactNode;
-  main: React.ReactNode;
-}> = ({ topbar, firstNav, secondNav, main }) => {
-  const [firstPercentage, setFirstPercentage] = useState(FIRST_PERCENTAGE);
-  const [secondPercentage, setSecondPercentage] = useState(SECOND_PERCENTAGE);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const handleFolderListMouseMove: EventListener = (e: Event) => {
+      const changeX = (e as MouseEvent).clientX - startX;
+      let newWidth = startWidth + changeX;
 
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
+      newWidth = Math.min(sidebarWidth - minNoteListWidth(), newWidth);
+      newWidth = Math.max(minFolderListWidth(), newWidth);
+
+      folderListRef.current = newWidth;
+      setFolderListWidth(folderListRef.current);
     };
 
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
+    const handleFolderListMouseUp = () => {
+      resetStyleOnDrag();
+      document.removeEventListener("mousemove", handleFolderListMouseMove);
+      document.removeEventListener("mouseup", handleFolderListMouseUp);
+      // onSidebarWidthChange(noteListRef.current);
     };
-  }, []);
 
-  const firstNavWidth = Math.max(
-    MIN_NAV_WIDTH,
-    Math.floor(windowWidth * firstPercentage)
-  );
-  const secondNavWidth = Math.max(
-    MIN_NAV_WIDTH,
-    Math.floor(windowWidth * secondPercentage)
-  );
+    document.addEventListener("mousemove", handleFolderListMouseMove);
+    document.addEventListener("mouseup", handleFolderListMouseUp);
+    clearStyleOnDrag();
+  };
+
+  // function resetSidebarWidth() {
+  //   sidebarRef.current = 300;
+  //   setSidebarWidth(sidebarRef.current);
+  //   onSidebarWidthChange(sidebarRef.current);
+  // }
 
   return (
-    <div
-      id="app-layout"
-      className="position-fixed top-0 start-0 h-100 w-100"
-      style={{
-        minWidth: `${MIN_TOTAL_WIDTH}px`,
-        paddingTop: TOP_NAV_HEIGHT,
-        paddingLeft: firstNavWidth + secondNavWidth,
-      }}
-    >
-      <div>{main}</div>
-      <FirstNav
-        width={firstNavWidth}
-        onDrag={(change) => {
-          const newFirstWidth = firstNavWidth + change;
-          const newFirstPercentage = newFirstWidth / windowWidth;
-
-          const max = MAX_TOTAL_PERCENTAGE - secondPercentage;
-          setFirstPercentage(Math.min(newFirstPercentage, max));
+    <div className="position-fixed h-100">
+      <div
+        className="position-fixed  top-0 start-0 h-100 w-100"
+        ref={editorDomRef}
+        style={{
+          paddingLeft: sidebarWidth,
+          transition: editorAnimationStyle,
         }}
       >
-        {firstNav}
-      </FirstNav>
-      <SecondNav
-        width={secondNavWidth}
-        left={firstNavWidth}
-        onDrag={(change) => {
-          const newSecondWidth = secondNavWidth + change;
-          const newSecondPercentage = newSecondWidth / windowWidth;
+        {editor}
+      </div>
 
-          const max = MAX_TOTAL_PERCENTAGE - firstPercentage;
-          setSecondPercentage(Math.min(newSecondPercentage, max));
+      <div
+        className="h-100 shadow-sm position-fixed"
+        ref={sidebarDomRef}
+        style={{
+          overflow: "auto",
+          width: sidebarWidth,
+          transition: sidebarAnimationStyle,
         }}
       >
-        {secondNav}
-      </SecondNav>
-      <TopNav>{topbar}</TopNav>
+        <div className="h-100 d-flex flex-row position-relative">
+          <div
+            className="h-100 bg-secondary-subtle overflow-hidden position-relative"
+            ref={folderListDomRef}
+            style={{
+              width: showFolderList ? folderListWidth : 0,
+              boxShadow: "inset 0 0 10px rgba(0, 0, 0, 0.1)",
+              paddingTop: 44,
+              transition: folderListAnimationStyle,
+            }}
+          >
+            <div
+              className="resize-dragger position-absolute top-0 end-0 h-100"
+              onMouseDown={handleFolderListMouseDown}
+            />
+            {folderList}
+          </div>
+          <div
+            className="h-100"
+            style={{
+              width: sidebarWidth - (showFolderList ? folderListWidth : 0),
+            }}
+          >
+            {topbar}
+            {noteList}
+          </div>
+          <div
+            className="topbar position-absolute top-0 start-0"
+            style={{ padding: "8px" }}
+          >
+            <span className="btn" onClick={folderListToggle}>
+              <BsLayoutSidebar />
+            </span>
+          </div>
+        </div>
+
+        <div
+          className="position-absolute top-0 end-0 px-1"
+          style={{ fontSize: "10px", opacity: widthOpacity }}
+        >
+          {sidebarWidth}px
+        </div>
+        <div
+          className="resize-dragger position-absolute top-0 end-0 h-100 border-end"
+          onMouseDown={handleMouseDown}
+        />
+      </div>
     </div>
   );
 };

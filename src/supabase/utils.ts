@@ -1,4 +1,4 @@
-import { PostgrestError, PostgrestSingleResponse } from '@supabase/supabase-js';
+import { PostgrestError, PostgrestResponse } from '@supabase/supabase-js';
 import supabase from './supabase';
 import { SupabaseError, SupabaseResponse } from './types';
 
@@ -9,7 +9,7 @@ export async function checkAuth(): Promise<boolean> {
 
 export async function handleSupabaseOperation<T>(
   operation: string,
-  action: () => Promise<PostgrestSingleResponse<T>> | PostgrestSingleResponse<T>
+  action: () => Promise<PostgrestResponse<T>> | PostgrestResponse<T>
 ): Promise<SupabaseResponse<T>> {
   if (!(await checkAuth())) {
     return {
