@@ -192,9 +192,7 @@ export const Note = ({ user }: { user: User }) => {
     navigate(`/folder/${targetFolderId}/${note.id}`);
 
     // Persist to Supabase
-    if (!isDefaultFolder) {
-      await updateFolder(userId, rootFolder.root);
-    }
+    await updateFolder(userId, rootFolder.root);
   }
 
   return (
