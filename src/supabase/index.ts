@@ -83,6 +83,16 @@ export const getNotes = async (userId: string) => {
   return data ?? [];
 };
 
+export const getDeletedNotes = async (userId: string) => {
+  const { data } = await supabase
+    .from("notes")
+    .select()
+    .not("deleted_at", "is", null)
+    .order("deleted_at", { ascending: false })
+    .eq("user_id", userId);
+  return data ?? [];
+};
+
 export const getRootFolder = async (userId: string) => {
   const { data } = await supabase
     .from("folders")
@@ -144,3 +154,4 @@ export const deleteNote = async (id: string) => {
   }
   return data[0];
 };
+

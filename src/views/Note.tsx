@@ -20,7 +20,15 @@ import {
   getRootFolder,
   findFolderById,
   addNoteToFolder,
+  getDeletedNotes,
 } from "../supabase";
+
+const trashFolder = {
+  id: "trash",
+  name: "回收站",
+  folders: [],
+  notes: [],
+};
 type Folder = {
   id: string;
   name: string;
@@ -63,10 +71,13 @@ export const Note = ({ user }: { user: User }) => {
   });
   const [initialized, setInitialized] = useState(false);
   const isDefaultFolder = defaultFolder.id === folderId;
+  const isTrashFolder = folderId === "trash";
   const defaultFolderNotes = findUncontainedNotes(rootFolder.root, notes);
   defaultFolder.notes = defaultFolderNotes.map((note) => note.id);
 
-  const folder = isDefaultFolder
+  const folder = isTrashFolder
+    ? trashFolder
+    : isDefaultFolder
     ? defaultFolder
     : findFolderById(rootFolder.root, folderId);
 
@@ -146,7 +157,7 @@ export const Note = ({ user }: { user: User }) => {
     async function fetchData() {
       const [rootFolderRow, notes] = await Promise.all([
         getOrCreateRootFolder(),
-        getNotes(userId),
+        isTrashFolder ? getDeletedNotes(userId) : getNotes(userId),
       ]);
 
       setRootFolder(rootFolderRow);

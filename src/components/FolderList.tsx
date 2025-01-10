@@ -6,6 +6,13 @@ import { BsFolder2, BsThreeDots } from "react-icons/bs";
 
 const defaultNoteTitle = "Untitled";
 
+const trashFolder = {
+  id: "trash",
+  name: "回收站",
+  folders: [],
+  notes: [],
+};
+
 const FolderNav = ({
   folder,
   showMenu,
@@ -131,6 +138,13 @@ export const FolderList = ({
           }}
         />
       ))}
+      <FolderNav
+        onFolderDeleteClick={() => {}}
+        folder={trashFolder}
+        isActive={trashFolder.id === activeId}
+        showMenu={false}
+        onMenuClick={() => {}}
+      />
       <button
         className="btn btn-sm btn-light my-3"
         style={{ whiteSpace: "nowrap" }}
