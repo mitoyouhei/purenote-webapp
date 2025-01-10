@@ -90,11 +90,22 @@ export const NoteApp = ({
             onSettingClick={() => setShowSetting(true)}
             folders={folders}
             defaultFolder={defaultFolder}
-            onMoveNoteToFolder={(folderId) => {
-              store.dispatch(setSuccessMessage(`Note moved to ${
-                folderId === defaultFolder.id ? defaultFolder.name : 
-                folders.find(f => f.id === folderId)?.name || 'folder'
-              }`));
+            onMoveNoteToFolder={(folderId: string) => {
+              const targetFolder = folderId === defaultFolder.id ? defaultFolder : 
+                                 folders.find(f => f.id === folderId);
+              if (!targetFolder || !note?.id) return;
+              
+              // Update UI state to simulate note movement
+              if (folder?.notes) {
+                folder.notes = folder.notes.filter((noteId: string) => noteId !== note.id);
+              }
+              
+              targetFolder.notes = targetFolder.notes || [];
+              if (!targetFolder.notes.includes(note.id)) {
+                targetFolder.notes.push(note.id);
+              }
+
+              store.dispatch(setSuccessMessage(`Note moved to ${targetFolder.name}`));
             }}
           />
         }
