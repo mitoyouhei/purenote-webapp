@@ -310,11 +310,6 @@ export const Note = ({ user }: { user: User }) => {
         
         // Persist to Supabase
         await updateFolder(userId, rootFolder.root);
-        if (!targetFolder) return;
-
-        targetFolder.name = newName;
-        setRootFolder({ ...rootFolder });
-        await updateFolder(userId, rootFolder.root);
       }}
       note={note}
       folder={folder}
