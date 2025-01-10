@@ -40,6 +40,24 @@ export const NoteApp = ({
   createFolder: (name: string) => Promise<void>;
   onFolderDeleteClick: (id: string) => void;
   defaultFolder: any;
+  onMoveNoteToFolder?: (folderId: string) => void;
+}: {
+  note: any;
+  folder: any;
+  email: string;
+  userDisplayName: string;
+  onLogout: () => void;
+  onAddNote: () => Promise<void>;
+  onNoteChange: (content: string) => Promise<void>;
+  notes: any[];
+  folders: any[];
+  updateNoteTitle: (title: string) => Promise<void>;
+  onDeleteNote: () => Promise<void>;
+  resetPassword: (password: string) => Promise<void>;
+  createFolder: (name: string) => Promise<void>;
+  onFolderDeleteClick: (id: string) => void;
+  defaultFolder: any;
+  onMoveNoteToFolder?: (folderId: string) => void;
 }) => {
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
   const [showSetting, setShowSetting] = useState(false);
@@ -85,6 +103,9 @@ export const NoteApp = ({
             onDeleteNote={onDeleteNote}
             onLogout={onLogout}
             onSettingClick={() => setShowSetting(true)}
+            folders={folders}
+            defaultFolder={defaultFolder}
+            onMoveNoteToFolder={onMoveNoteToFolder}
           />
         }
         noteList={

@@ -1,6 +1,6 @@
 import "./Topbar.css";
 // import { Link } from "react-router-dom";
-import { HiMiniPlus, HiMiniUserCircle, HiTrash } from "react-icons/hi2";
+import { HiMiniPlus, HiMiniUserCircle, HiTrash, HiArrowRight } from "react-icons/hi2";
 import React, { useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 
@@ -27,6 +27,9 @@ export const Topbar = ({
   onDeleteNote: () => void;
   onLogout: () => void;
   onSettingClick: () => void;
+  folders?: { id: string; name: string }[];
+  defaultFolder?: { id: string; name: string };
+  onMoveNoteToFolder?: (folderId: string) => void;
 }) => {
   const [addingNote, setAddingNote] = useState(false);
 
@@ -65,9 +68,34 @@ export const Topbar = ({
           </span>
 
           {activeId && (
-            <span className="btn" onClick={onDeleteNote}>
-              <HiTrash />
-            </span>
+            <>
+              {folders && (
+                <Dropdown>
+                  <Dropdown.Toggle as="span" className="btn">
+                    <HiArrowRight />
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    {defaultFolder && (
+                      <Dropdown.Item onClick={() => onMoveNoteToFolder?.(defaultFolder.id)}>
+                        {defaultFolder.name}
+                      </Dropdown.Item>
+                    )}
+                    {defaultFolder && folders.length > 0 && <Dropdown.Divider />}
+                    {folders.map(folder => (
+                      <Dropdown.Item 
+                        key={folder.id}
+                        onClick={() => onMoveNoteToFolder?.(folder.id)}
+                      >
+                        {folder.name}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
+              )}
+              <span className="btn" onClick={onDeleteNote}>
+                <HiTrash />
+              </span>
+            </>
           )}
         </div>
       </div>

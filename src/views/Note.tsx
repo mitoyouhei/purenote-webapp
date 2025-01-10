@@ -167,6 +167,36 @@ export const Note = ({ user }: { user: User }) => {
   }
 
   if (!initialized) return <Spinner />;
+  async function onMoveNoteToFolder(targetFolderId: string) {
+    if (!note?.id || !rootFolder?.root) return;
+
+    const targetFolder = targetFolderId === defaultFolder.id ? defaultFolder : 
+                        findFolderById(rootFolder.root.folders, targetFolderId);
+    if (!targetFolder) return;
+
+    // Remove note from current folder
+    if (!isDefaultFolder && folder?.notes) {
+      folder.notes = folder.notes.filter((id: string) => id !== note.id);
+    }
+
+    // Add note to target folder
+    targetFolder.notes = targetFolder.notes || [];
+    if (!targetFolder.notes.includes(note.id)) {
+      targetFolder.notes.push(note.id);
+    }
+
+    // Update state immediately
+    setRootFolder({ ...rootFolder });
+
+    // Persist to Supabase
+    if (!isDefaultFolder) {
+      await updateFolder(userId, rootFolder.root);
+    }
+
+    // Update URL to reflect new location
+    navigate(`/folder/${targetFolderId}/${note.id}`);
+  }
+
   return (
     <NoteApp
       defaultFolder={defaultFolder}
@@ -201,6 +231,7 @@ export const Note = ({ user }: { user: User }) => {
         if (!user?.email) return;
         await supabase.auth.updateUser({ password });
       }}
+      onMoveNoteToFolder={onMoveNoteToFolder}
     />
   );
 };
