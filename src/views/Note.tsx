@@ -284,6 +284,38 @@ export const Note = ({ user }: { user: User }) => {
       defaultFolder={defaultFolder}
       email={user.email ?? ""}
       onFolderDeleteClick={onFolderDeleteClick}
+      onFolderRenameClick={async (id: string, newName: string) => {
+        if (!rootFolder?.root) return;
+        
+        // Don't allow renaming default or trash folders
+        if (id === 'default' || id === 'trash') return;
+        
+        // Validate input
+        if (!newName.trim()) {
+          console.error('Folder name cannot be empty');
+          return;
+        }
+
+        const targetFolder = findFolderById(rootFolder.root, id);
+        if (!targetFolder) {
+          console.error('Folder not found');
+          return;
+        }
+
+        // Update folder name
+        targetFolder.name = newName;
+        
+        // Update state immediately
+        setRootFolder({ ...rootFolder });
+        
+        // Persist to Supabase
+        await updateFolder(userId, rootFolder.root);
+        if (!targetFolder) return;
+
+        targetFolder.name = newName;
+        setRootFolder({ ...rootFolder });
+        await updateFolder(userId, rootFolder.root);
+      }}
       note={note}
       folder={folder}
       notes={folderNotes.sort(
