@@ -5,28 +5,29 @@ import { Note, NoteResponse, FolderData, RootFolder, FolderResponse } from "./ty
 export { supabase };
 
 export function addNoteToFolder(
-  folder: FolderData,
+  folders: FolderData[],
   targetFolderId: string,
   noteId: string
 ): void {
-  if (folder.id === targetFolderId) {
-    folder.notes = folder.notes ?? [];
-    folder.notes.push(noteId);
-  } else if (Array.isArray(folder.folders)) {
-    for (const subFolder of folder.folders) {
-      addNoteToFolder(subFolder, targetFolderId, noteId);
+  for (const folder of folders) {
+    if (folder.id === targetFolderId) {
+      folder.notes = folder.notes ?? [];
+      folder.notes.push(noteId);
+      return;
+    }
+    if (Array.isArray(folder.folders)) {
+      addNoteToFolder(folder.folders, targetFolderId, noteId);
     }
   }
 }
 
-export function findFolderById(folder: FolderData, folderId: string): FolderData | null {
-  if (folder.id === folderId) {
-    return folder;
-  }
-
-  if (Array.isArray(folder.folders)) {
-    for (const subFolder of folder.folders) {
-      const result = findFolderById(subFolder, folderId);
+export function findFolderById(folders: FolderData[], folderId: string): FolderData | null {
+  for (const folder of folders) {
+    if (folder.id === folderId) {
+      return folder;
+    }
+    if (Array.isArray(folder.folders)) {
+      const result = findFolderById(folder.folders, folderId);
       if (result) {
         return result;
       }
@@ -35,14 +36,13 @@ export function findFolderById(folder: FolderData, folderId: string): FolderData
   return null;
 }
 
-export function findFolderByNoteId(folder: FolderData, noteId: string): FolderData | null {
-  if (folder.notes?.includes(noteId)) {
-    return folder;
-  }
-
-  if (Array.isArray(folder.folders)) {
-    for (const subFolder of folder.folders) {
-      const result = findFolderByNoteId(subFolder, noteId);
+export function findFolderByNoteId(folders: FolderData[], noteId: string): FolderData | null {
+  for (const folder of folders) {
+    if (folder.notes?.includes(noteId)) {
+      return folder;
+    }
+    if (Array.isArray(folder.folders)) {
+      const result = findFolderByNoteId(folder.folders, noteId);
       if (result) {
         return result;
       }

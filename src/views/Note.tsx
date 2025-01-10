@@ -31,8 +31,8 @@ const defaultFolder: FolderData = {
   notes: []
 };
 
-function findUncontainedNotes(folder: FolderData, notesList: NoteType[]) {
-  const containedNoteIds = new Set();
+function findUncontainedNotes(folders: FolderData[], notesList: NoteType[]): NoteType[] {
+  const containedNoteIds = new Set<string>();
 
   function collectNotes(folder: FolderData) {
     if (folder.notes) {
@@ -43,7 +43,7 @@ function findUncontainedNotes(folder: FolderData, notesList: NoteType[]) {
     }
   }
 
-  collectNotes(folder);
+  folders.forEach(collectNotes);
 
   return notesList.filter((note) => !containedNoteIds.has(note.id));
 }
@@ -72,23 +72,24 @@ export const Note = ({ user }: { user: User }) => {
   });
   const [initialized, setInitialized] = useState(false);
   const isDefaultFolder = defaultFolder.id === folderId;
-  const defaultFolderNotes = rootFolder.root?.folders[0] ? findUncontainedNotes(rootFolder.root.folders[0], notes) : [];
+  const allFolders = rootFolder.root?.folders ?? [];
+  const defaultFolderNotes = findUncontainedNotes(allFolders, notes);
   defaultFolder.notes = defaultFolderNotes.map((note) => note.id);
 
   const folder = isDefaultFolder || !folderId
     ? defaultFolder
-    : (rootFolder.root?.folders[0] ? findFolderById(rootFolder.root.folders[0], folderId) : null);
+    : (allFolders.length > 0 ? findFolderById(allFolders, folderId) : null);
 
   const folderNotes = useMemo(() => {
     if (!notes) return [];
     if (isDefaultFolder) {
-      return rootFolder.root?.folders[0] ? findUncontainedNotes(rootFolder.root.folders[0], notes) : [];
+      return findUncontainedNotes(allFolders, notes);
     }
     const noteIds = folder?.notes ?? [];
     return noteIds.map((noteId: string) =>
       notes.find((note: NoteType) => note.id === noteId)
     ).filter((note): note is NoteType => note !== undefined);
-  }, [isDefaultFolder, folder, notes, rootFolder.root]);
+  }, [isDefaultFolder, folder, notes, allFolders]);
 
   const note: NoteType | null = folderNotes.find((note: NoteType) => note.id === noteId) ?? null;
 
@@ -105,8 +106,9 @@ export const Note = ({ user }: { user: User }) => {
     }
     
     const newNote = response.data;
-    if (!isDefaultFolder && rootFolder?.root) {
-      addNoteToFolder(rootFolder.root.folders[0], folderId!, newNote.id);
+    if (!isDefaultFolder && rootFolder?.root?.folders) {
+      const allFolders = rootFolder.root.folders;
+      addNoteToFolder(allFolders, folderId!, newNote.id);
       const updateResponse = await updateFolder(rootFolder.user_id, rootFolder);
       if (updateResponse.error) {
         console.error('Failed to update folder:', updateResponse.error);
@@ -129,8 +131,9 @@ export const Note = ({ user }: { user: User }) => {
 
     const restNotes = notes.filter((note) => note.id !== noteId);
 
-    if (!isDefaultFolder) {
-      const folder = rootFolder.root?.folders[0] ? findFolderByNoteId(rootFolder.root.folders[0], noteId) : null;
+    if (!isDefaultFolder && rootFolder?.root?.folders) {
+      const allFolders = rootFolder.root.folders;
+      const folder = findFolderByNoteId(allFolders, noteId);
       if (folder && folder.notes) {
         folder.notes = folder.notes.filter((id: string) => id !== noteId);
         const updateResponse = await updateFolder(rootFolder.user_id, rootFolder);
@@ -156,7 +159,8 @@ export const Note = ({ user }: { user: User }) => {
     }
   }, [note, folderNotes, folderId, navigate]);
   useEffect(() => {
-    if (!folder && rootFolder.root.folders.length > 0) {
+    if (!folder && rootFolder.root?.folders?.length > 0) {
+      // Navigate to the first available folder
       navigate(`/folder/${rootFolder.root.folders[0].id}/welcome`);
     }
   }, [folder, rootFolder, navigate]);

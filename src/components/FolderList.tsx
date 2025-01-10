@@ -6,18 +6,22 @@ import { BsFolder2, BsThreeDots } from "react-icons/bs";
 
 const defaultNoteTitle = "Untitled";
 
+import { FolderData } from "../supabase/types";
+
 const FolderNav = ({
   folder,
   showMenu,
   onMenuClick,
   isActive,
   onFolderDeleteClick,
+  isDefaultFolder = false,
 }: {
-  folder: any;
+  folder: FolderData;
   showMenu: boolean;
   onMenuClick: (id: string) => void;
   isActive: boolean;
   onFolderDeleteClick: (id: string) => void;
+  isDefaultFolder?: boolean;
 }) => {
   return (
     <Link
@@ -25,13 +29,13 @@ const FolderNav = ({
         isActive ? "active" : ""
       } ${showMenu ? "z-3" : ""}`}
       to={`/folder/${folder.id}/${
-        folder.notes?.length > 0 ? folder.notes[0] : "welcome"
+        folder.notes && folder.notes.length > 0 && folder.notes[0] ? folder.notes[0] : "welcome"
       }`}
     >
       <div className="d-flex align-items-center">
         <BsFolder2 className="me-1 folder-icon" />
         <div className="title-row">
-          {folder.name ? folder.name : defaultNoteTitle}{" "}
+          {folder.name || defaultNoteTitle}{" "}
         </div>
       </div>
 
@@ -42,33 +46,37 @@ const FolderNav = ({
           e.stopPropagation();
         }}
       >
-        <span className="badge">{folder.notes?.length ?? 0}</span>
-        <button
-          className="btn btn-light menu-btn"
-          onClick={(e) => {
-            e.preventDefault();
-            onMenuClick(folder.id);
-          }}
-        >
-          <BsThreeDots />
-        </button>
+        <span className="badge">{folder.notes ? folder.notes.length : 0}</span>
+        {!isDefaultFolder && (
+          <>
+            <button
+              className="btn btn-light menu-btn"
+              onClick={(e) => {
+                e.preventDefault();
+                onMenuClick(folder.id);
+              }}
+            >
+              <BsThreeDots />
+            </button>
 
-        <div
-          className={`menu-dropdown position-absolute top-100 end-0 mt-1 ${
-            showMenu ? "show" : ""
-          }`}
-        >
-          <div className="card" style={{ backgroundColor: "#000" }}>
-            <ul className="list-group list-group-flush">
-              <li
-                className="list-group-item"
-                onClick={() => onFolderDeleteClick(folder.id)}
-              >
-                Delete
-              </li>
-            </ul>
-          </div>
-        </div>
+            <div
+              className={`menu-dropdown position-absolute top-100 end-0 mt-1 ${
+                showMenu ? "show" : ""
+              }`}
+            >
+              <div className="card" style={{ backgroundColor: "#000" }}>
+                <ul className="list-group list-group-flush">
+                  <li
+                    className="list-group-item"
+                    onClick={() => onFolderDeleteClick(folder.id)}
+                  >
+                    Delete
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </Link>
   );
@@ -82,12 +90,12 @@ export const FolderList = ({
   defaultFolder,
 }: {
   activeId: string;
-  folders: any[];
-  defaultFolder: any;
+  folders: FolderData[];
+  defaultFolder: FolderData;
   onNewFolderClick: () => void;
   onFolderDeleteClick: (id: string) => void;
 }) => {
-  const [showMenuForFolder, setShowMenuForFolder] = useState(null);
+  const [showMenuForFolder, setShowMenuForFolder] = useState<string | null>(null);
   const clearMenu = () => {
     setShowMenuForFolder(null);
   };
@@ -103,7 +111,7 @@ export const FolderList = ({
       style={{ overflow: "visible" }}
     >
       <FolderNav
-        onFolderDeleteClick={() => {}}
+        onFolderDeleteClick={() => {}} // Default folder cannot be deleted
         folder={defaultFolder}
         isActive={defaultFolder.id === activeId}
         showMenu={showMenuForFolder === defaultFolder.id}
@@ -114,6 +122,7 @@ export const FolderList = ({
             setShowMenuForFolder(defaultFolder.id);
           }
         }}
+        isDefaultFolder={true}
       />
       {folders.map((folder) => (
         <FolderNav
