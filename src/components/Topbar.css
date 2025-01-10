@@ -8,3 +8,6 @@
 .topbar .btn:hover:not([disabled]) {
     background-color: #eee;
 }
+.topbar .dropdown-toggle::after {
+    vertical-align: .1em;
+}

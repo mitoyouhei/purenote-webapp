@@ -144,6 +144,22 @@ export const deleteNote = async (id: string) => {
   return data[0];
 };
 
+export const deleteNotes = async (ids: string[]) => {
+  const { data, error } = await supabase
+    .from("notes")
+    .update({ deleted_at: new Date() })
+    .in("id", ids)
+    .select();
+
+  if (error) {
+    console.error("Error deleting notes:", error);
+    return null;
+  }
+  return data;
+};
+
+
+
 export const restoreNote = async (id: string) => {
   const { data, error } = await supabase
     .from("notes")

@@ -9,7 +9,7 @@ export const Topbar = ({
   activeId,
   onAddNote,
   onDeleteNote,
-
+  isTrashFolder,
   folders,
   defaultFolder,
   onMoveNoteToFolder,
@@ -17,6 +17,7 @@ export const Topbar = ({
   activeId: string;
   onAddNote: () => Promise<void>;
   onDeleteNote: () => void;
+  isTrashFolder: boolean;
   folders?: { id: string; name: string }[];
   defaultFolder?: { id: string; name: string };
   onMoveNoteToFolder?: (folderId: string) => void;
@@ -29,7 +30,7 @@ export const Topbar = ({
         <div className="d-flex"></div>
         <div className="d-flex">
           <span
-            className="btn"
+            className={`btn ${isTrashFolder ? "d-none" : ""}`}
             onClick={async () => {
               setAddingNote(true);
               await onAddNote();
@@ -75,7 +76,10 @@ export const Topbar = ({
                   </Dropdown.Menu>
                 </Dropdown>
               )}
-              <span className="btn" onClick={onDeleteNote}>
+              <span
+                className={`btn ${isTrashFolder ? "d-none" : ""}`}
+                onClick={onDeleteNote}
+              >
                 <HiTrash />
               </span>
             </>

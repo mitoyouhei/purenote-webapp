@@ -23,6 +23,7 @@ export const NoteApp = ({
   resetPassword,
   createFolder,
   defaultFolder,
+  isTrashFolder,
   trashFolder,
   onFolderDeleteClick,
   onMoveNoteToFolder,
@@ -43,6 +44,7 @@ export const NoteApp = ({
   onFolderDeleteClick: (id: string) => void;
   defaultFolder: any;
   trashFolder: any;
+  isTrashFolder: boolean;
   onMoveNoteToFolder?: (folderId: string) => void;
 }) => {
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
@@ -86,6 +88,7 @@ export const NoteApp = ({
         editor={editor}
         topbar={
           <Topbar
+            isTrashFolder={isTrashFolder}
             activeId={activeNoteId}
             onAddNote={onAddNote}
             onDeleteNote={onDeleteNote}
