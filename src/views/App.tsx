@@ -2,6 +2,7 @@ import "./App.css";
 import React, { useEffect } from "react";
 import SystemInfo from "../components/SystemInfo";
 import ErrorToast from "../components/ErrorToast";
+import SuccessToast from "../components/SuccessToast";
 import AppRoutes from "./AppRoutes";
 import Spinner from "../components/Spinner";
 import { useSelector } from "react-redux";
@@ -30,6 +31,7 @@ const App = () => {
       <AppRoutes />
       <SystemInfo />
       <ErrorToast />
+      <SuccessToast />
     </>
   );
 };

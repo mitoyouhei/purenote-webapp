@@ -3,6 +3,7 @@ import { RESET_APP } from ".";
 
 const initialState = {
   errorMessage: null,
+  successMessage: null,
   noteSiderbarWidth: 300,
   initializedUserSession: false,
 };
@@ -34,6 +35,18 @@ const client = createSlice({
         errorMessage: null,
       };
     },
+    setSuccessMessage: (state, action) => {
+      return {
+        ...state,
+        successMessage: action.payload,
+      };
+    },
+    clearSuccessMessage: (state) => {
+      return {
+        ...state,
+        successMessage: null,
+      };
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(RESET_APP, () => initialState); // 重置为初始状态
@@ -45,5 +58,7 @@ export const {
   setErrorMessage,
   setNoteSiderbarWidth,
   clearErrorMessage,
+  setSuccessMessage,
+  clearSuccessMessage,
 } = client.actions;
 export default client;

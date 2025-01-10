@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { store } from "../store";
+import { setSuccessMessage } from "../slices/client";
 import Note from "./Note";
 import Welcome from "./Welcome";
 import { AppLayout } from "./AppLayout";
@@ -40,6 +42,7 @@ export const NoteApp = ({
   createFolder: (name: string) => Promise<void>;
   onFolderDeleteClick: (id: string) => void;
   defaultFolder: any;
+  onMoveNoteToFolder?: (folderId: string) => void;
 }) => {
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
   const [showSetting, setShowSetting] = useState(false);
@@ -85,6 +88,14 @@ export const NoteApp = ({
             onDeleteNote={onDeleteNote}
             onLogout={onLogout}
             onSettingClick={() => setShowSetting(true)}
+            folders={folders}
+            defaultFolder={defaultFolder}
+            onMoveNoteToFolder={(folderId) => {
+              store.dispatch(setSuccessMessage(`Note moved to ${
+                folderId === defaultFolder.id ? defaultFolder.name : 
+                folders.find(f => f.id === folderId)?.name || 'folder'
+              }`));
+            }}
           />
         }
         noteList={
