@@ -82,14 +82,20 @@ export const Note = ({ user }: { user: User }) => {
     : findFolderById(rootFolder.root, folderId);
 
   const folderNotes = useMemo(() => {
+    if (isTrashFolder) {
+      // For trash folder, return all deleted notes directly
+      // No need to filter by folder.notes since these are already deleted notes
+      return notes;
+    }
     if (isDefaultFolder) {
       return findUncontainedNotes(rootFolder.root, notes);
     }
+    // For regular folders, only show notes that belong to this folder
     const noteIds = folder?.notes ?? [];
     return noteIds.map((noteId: any) =>
       notes.find((note: any) => note.id === noteId)
-    );
-  }, [isDefaultFolder, folder, notes, rootFolder.root]);
+    ).filter(Boolean); // Remove any undefined entries
+  }, [isTrashFolder, isDefaultFolder, folder, notes, rootFolder.root]);
 
   const note = folderNotes.find((note: any) => note.id === noteId);
 
@@ -141,10 +147,10 @@ export const Note = ({ user }: { user: User }) => {
     }
   }, [folder, rootFolder, navigate]);
   useEffect(() => {
-    if (folder && folderNotes.length < 1) {
+    if (folder && folderNotes.length < 1 && !isTrashFolder) {
       navigate(`/folder/${folderId}/welcome`);
     }
-  }, [folder, note, folderNotes, folderId, navigate]);
+  }, [folder, note, folderNotes, folderId, navigate, isTrashFolder]);
 
   useEffect(() => {
     async function getOrCreateRootFolder() {
@@ -155,17 +161,19 @@ export const Note = ({ user }: { user: User }) => {
       return rootFolderRow;
     }
     async function fetchData() {
+      console.log('Fetching data, isTrashFolder:', isTrashFolder);
       const [rootFolderRow, notes] = await Promise.all([
         getOrCreateRootFolder(),
         isTrashFolder ? getDeletedNotes(userId) : getNotes(userId),
       ]);
+      console.log('Fetched notes:', notes);
 
       setRootFolder(rootFolderRow);
       setNotes(notes);
       setInitialized(true);
     }
     fetchData();
-  }, [userId]);
+  }, [userId, isTrashFolder]);
 
   async function createFolder(name: string) {
     const newFolder = { id: crypto.randomUUID(), name };
