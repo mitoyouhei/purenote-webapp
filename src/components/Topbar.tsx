@@ -1,35 +1,22 @@
 import "./Topbar.css";
 // import { Link } from "react-router-dom";
-import { HiMiniPlus, HiMiniUserCircle, HiTrash, HiArrowRight } from "react-icons/hi2";
+import { HiMiniPlus, HiTrash, HiArrowRight } from "react-icons/hi2";
 import React, { useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 
-const UserMenuToggle = React.forwardRef<
-  HTMLSpanElement,
-  { onClick: () => void }
->(({ onClick }, ref) => (
-  <span className="btn" onClick={onClick} ref={ref}>
-    <HiMiniUserCircle />
-  </span>
-));
 
 export const Topbar = ({
   activeId,
-  userDisplayName,
   onAddNote,
   onDeleteNote,
-  onLogout,
-  onSettingClick,
+
   folders,
   defaultFolder,
   onMoveNoteToFolder,
 }: {
   activeId: string;
-  userDisplayName: string;
   onAddNote: () => Promise<void>;
   onDeleteNote: () => void;
-  onLogout: () => void;
-  onSettingClick: () => void;
   folders?: { id: string; name: string }[];
   defaultFolder?: { id: string; name: string };
   onMoveNoteToFolder?: (folderId: string) => void;
@@ -41,17 +28,6 @@ export const Topbar = ({
       <div className="container-fluid">
         <div className="d-flex"></div>
         <div className="d-flex">
-          <Dropdown>
-            <Dropdown.Toggle as={UserMenuToggle} />
-
-            <Dropdown.Menu>
-              <Dropdown.Header>{userDisplayName}</Dropdown.Header>
-              <Dropdown.Divider />
-              <Dropdown.Item onClick={onSettingClick}>Setting</Dropdown.Item>
-              <Dropdown.Item onClick={onLogout}>Logout</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-
           <span
             className="btn"
             onClick={async () => {
@@ -79,13 +55,17 @@ export const Topbar = ({
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     {defaultFolder && (
-                      <Dropdown.Item onClick={() => onMoveNoteToFolder?.(defaultFolder.id)}>
+                      <Dropdown.Item
+                        onClick={() => onMoveNoteToFolder?.(defaultFolder.id)}
+                      >
                         {defaultFolder.name}
                       </Dropdown.Item>
                     )}
-                    {defaultFolder && folders.length > 0 && <Dropdown.Divider />}
-                    {folders.map(folder => (
-                      <Dropdown.Item 
+                    {defaultFolder && folders.length > 0 && (
+                      <Dropdown.Divider />
+                    )}
+                    {folders.map((folder) => (
+                      <Dropdown.Item
                         key={folder.id}
                         onClick={() => onMoveNoteToFolder?.(folder.id)}
                       >

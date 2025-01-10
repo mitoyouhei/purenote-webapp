@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import { BsLayoutSidebar } from "react-icons/bs";
 import { useLocalStorageState } from "../../hooks/useLocalStorageState";
+import { Dropdown } from "react-bootstrap";
+import { HiMiniUserCircle } from "react-icons/hi2";
 
 function minNoteListWidth() {
   return 250;
@@ -14,16 +16,31 @@ const editorAnimationStyle = `padding-left ${animationDuration}s ease-in-out`;
 const sidebarAnimationStyle = `width ${animationDuration}s ease-in-out`;
 const folderListAnimationStyle = `width ${animationDuration}s ease-in-out`;
 
+const UserMenuToggle = React.forwardRef<
+  HTMLSpanElement,
+  { onClick: () => void }
+>(({ onClick }, ref) => (
+  <span className="btn" onClick={onClick} ref={ref}>
+    <HiMiniUserCircle />
+  </span>
+));
+
 export const AppLayout = ({
   editor,
   noteList,
   folderList,
   topbar,
+  userDisplayName,
+  onLogout,
+  onSettingClick,
 }: {
   editor: React.ReactNode;
   noteList: React.ReactNode;
   folderList: React.ReactNode;
   topbar: React.ReactNode;
+  userDisplayName: string;
+  onLogout: () => void;
+  onSettingClick: () => void;
 }) => {
   const [widthOpacity, setWidthOpacity] = useState(0);
 
@@ -190,7 +207,7 @@ export const AppLayout = ({
       >
         <div className="h-100 d-flex flex-row position-relative">
           <div
-            className="h-100 bg-secondary-subtle overflow-hidden position-relative"
+            className="h-100 overflow-auto bg-secondary-subtle overflow-hidden position-relative"
             ref={folderListDomRef}
             style={{
               width: showFolderList ? folderListWidth : 0,
@@ -206,7 +223,7 @@ export const AppLayout = ({
             {folderList}
           </div>
           <div
-            className="h-100"
+            className="h-100 overflow-auto"
             style={{
               width: sidebarWidth - (showFolderList ? folderListWidth : 0),
             }}
@@ -215,12 +232,22 @@ export const AppLayout = ({
             {noteList}
           </div>
           <div
-            className="topbar position-absolute top-0 start-0"
+            className="topbar position-absolute top-0 start-0 d-flex flex-row"
             style={{ padding: "8px" }}
           >
             <span className="btn" onClick={folderListToggle}>
               <BsLayoutSidebar />
             </span>
+            <Dropdown>
+              <Dropdown.Toggle as={UserMenuToggle} />
+
+              <Dropdown.Menu>
+                <Dropdown.Header>{userDisplayName}</Dropdown.Header>
+                <Dropdown.Divider />
+                <Dropdown.Item onClick={onSettingClick}>Setting</Dropdown.Item>
+                <Dropdown.Item onClick={onLogout}>Logout</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
         </div>
 

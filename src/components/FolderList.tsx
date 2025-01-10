@@ -1,17 +1,10 @@
 import "./FolderList.css";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { BsFolder2, BsThreeDots } from "react-icons/bs";
+import { BsFolder2, BsThreeDots, BsTrash } from "react-icons/bs";
 // import { formatDateTime } from "../utils";
 
 const defaultNoteTitle = "Untitled";
-
-const trashFolder = {
-  id: "trash",
-  name: "回收站",
-  folders: [],
-  notes: [],
-};
 
 const FolderNav = ({
   folder,
@@ -19,12 +12,18 @@ const FolderNav = ({
   onMenuClick,
   isActive,
   onFolderDeleteClick,
+  deleteable,
+  showCount,
+  navIcon,
 }: {
   folder: any;
   showMenu: boolean;
   onMenuClick: (id: string) => void;
   isActive: boolean;
   onFolderDeleteClick: (id: string) => void;
+  deleteable: boolean;
+  showCount: boolean;
+  navIcon?: React.ReactNode;
 }) => {
   return (
     <Link
@@ -36,7 +35,7 @@ const FolderNav = ({
       }`}
     >
       <div className="d-flex align-items-center">
-        <BsFolder2 className="me-1 folder-icon" />
+        {navIcon ?? <BsFolder2 className="me-1 folder-icon" />}
         <div className="title-row">
           {folder.name ? folder.name : defaultNoteTitle}{" "}
         </div>
@@ -49,9 +48,11 @@ const FolderNav = ({
           e.stopPropagation();
         }}
       >
-        <span className="badge">{folder.notes?.length ?? 0}</span>
+        {showCount && (
+          <span className="badge">{folder.notes?.length ?? 0}</span>
+        )}
         <button
-          className="btn btn-light menu-btn"
+          className={`btn btn-light menu-btn ${deleteable ? "" : "d-none"}`}
           onClick={(e) => {
             e.preventDefault();
             onMenuClick(folder.id);
@@ -87,10 +88,12 @@ export const FolderList = ({
   onNewFolderClick,
   onFolderDeleteClick,
   defaultFolder,
+  trashFolder,
 }: {
   activeId: string;
   folders: any[];
   defaultFolder: any;
+  trashFolder: any;
   onNewFolderClick: () => void;
   onFolderDeleteClick: (id: string) => void;
 }) => {
@@ -110,6 +113,8 @@ export const FolderList = ({
       style={{ overflow: "visible" }}
     >
       <FolderNav
+        deleteable={false}
+        showCount={true}
         onFolderDeleteClick={() => {}}
         folder={defaultFolder}
         isActive={defaultFolder.id === activeId}
@@ -128,6 +133,8 @@ export const FolderList = ({
           key={folder.id}
           folder={folder}
           isActive={folder.id === activeId}
+          deleteable={true}
+          showCount={true}
           showMenu={showMenuForFolder === folder.id}
           onMenuClick={() => {
             if (showMenuForFolder === folder.id) {
@@ -138,12 +145,16 @@ export const FolderList = ({
           }}
         />
       ))}
+
       <FolderNav
+        deleteable={false}
+        showCount={true}
         onFolderDeleteClick={() => {}}
         folder={trashFolder}
         isActive={trashFolder.id === activeId}
         showMenu={false}
         onMenuClick={() => {}}
+        navIcon={<BsTrash className="me-1 folder-icon" />}
       />
       <button
         className="btn btn-sm btn-light my-3"

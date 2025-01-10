@@ -13,22 +13,16 @@ import {
   initRootFolder,
   updateFolder,
   findFolderByNoteId,
+  restoreNote,
 } from "../supabase";
 import Spinner from "../components/Spinner";
 import {
-  getNotes,
+  getAllNotes,
   getRootFolder,
   findFolderById,
   addNoteToFolder,
-  getDeletedNotes,
 } from "../supabase";
 
-const trashFolder = {
-  id: "trash",
-  name: "回收站",
-  folders: [],
-  notes: [],
-};
 type Folder = {
   id: string;
   name: string;
@@ -38,6 +32,12 @@ type Folder = {
 const defaultFolder: Folder = {
   id: "default",
   name: "Notes",
+  folders: [],
+  notes: [],
+};
+const trashFolder: Folder = {
+  id: "trash",
+  name: "回收站",
   folders: [],
   notes: [],
 };
@@ -66,14 +66,16 @@ export const Note = ({ user }: { user: User }) => {
   const { folderId, noteId } = useParams();
 
   const [notes, setNotes] = useState<any[]>([]);
+  const [deletedNotes, setDeletedNotes] = useState<any[]>([]);
   const [rootFolder, setRootFolder] = useState<any>({
     root: { folders: [] },
   });
   const [initialized, setInitialized] = useState(false);
   const isDefaultFolder = defaultFolder.id === folderId;
-  const isTrashFolder = folderId === "trash";
+  const isTrashFolder = trashFolder.id === folderId;
   const defaultFolderNotes = findUncontainedNotes(rootFolder.root, notes);
   defaultFolder.notes = defaultFolderNotes.map((note) => note.id);
+  trashFolder.notes = deletedNotes.map((note) => note.id);
 
   const folder = isTrashFolder
     ? trashFolder
@@ -85,11 +87,21 @@ export const Note = ({ user }: { user: User }) => {
     if (isDefaultFolder) {
       return findUncontainedNotes(rootFolder.root, notes);
     }
+    if (isTrashFolder) {
+      return deletedNotes;
+    }
     const noteIds = folder?.notes ?? [];
     return noteIds.map((noteId: any) =>
       notes.find((note: any) => note.id === noteId)
     );
-  }, [isDefaultFolder, folder, notes, rootFolder.root]);
+  }, [
+    isDefaultFolder,
+    folder,
+    notes,
+    rootFolder.root,
+    deletedNotes,
+    isTrashFolder,
+  ]);
 
   const note = folderNotes.find((note: any) => note.id === noteId);
 
@@ -108,6 +120,7 @@ export const Note = ({ user }: { user: User }) => {
   }
   async function onDeleteNote() {
     if (!noteId) return;
+    const deletedNote = notes.find((note) => note.id === noteId);
     const restNotes = notes.filter((note) => note.id !== noteId);
 
     if (!isDefaultFolder) {
@@ -117,13 +130,14 @@ export const Note = ({ user }: { user: User }) => {
       }
       setRootFolder(rootFolder);
     }
-
+    setDeletedNotes([deletedNote, ...deletedNotes]);
     setNotes(restNotes);
     if (restNotes.length > 0) {
       navigate(`/folder/${folderId}/${restNotes[0].id}`);
     } else {
       navigate(`/folder/${folderId}/welcome`);
     }
+
     await deleteNote(noteId);
     if (!isDefaultFolder) {
       await updateFolder(rootFolder.user_id, rootFolder.root);
@@ -155,17 +169,18 @@ export const Note = ({ user }: { user: User }) => {
       return rootFolderRow;
     }
     async function fetchData() {
-      const [rootFolderRow, notes] = await Promise.all([
+      const [rootFolderRow, allNotes] = await Promise.all([
         getOrCreateRootFolder(),
-        isTrashFolder ? getDeletedNotes(userId) : getNotes(userId),
+        getAllNotes(userId),
       ]);
 
       setRootFolder(rootFolderRow);
-      setNotes(notes);
+      setNotes(allNotes.filter((note) => note.deleted_at === null));
+      setDeletedNotes(allNotes.filter((note) => note.deleted_at !== null));
       setInitialized(true);
     }
     fetchData();
-  }, [userId]);
+  }, [userId, isTrashFolder]);
 
   async function createFolder(name: string) {
     const newFolder = { id: crypto.randomUUID(), name };
@@ -177,16 +192,24 @@ export const Note = ({ user }: { user: User }) => {
     updateFolder(userId, newRoot.root);
   }
 
-  if (!initialized) return <Spinner />;
   async function onMoveNoteToFolder(targetFolderId: string) {
     if (!note?.id || !rootFolder?.root) return;
 
-    const targetFolder = targetFolderId === defaultFolder.id ? defaultFolder : 
-                        findFolderById(rootFolder.root, targetFolderId);
+    if (isTrashFolder) {
+      // restore note
+      note.deleted_at = null;
+      setNotes([...notes, note]);
+      setDeletedNotes(deletedNotes.filter((n) => n.id !== note.id));
+    }
+
+    const targetFolder =
+      targetFolderId === defaultFolder.id
+        ? defaultFolder
+        : findFolderById(rootFolder.root, targetFolderId);
     if (!targetFolder) return;
 
     // Remove note from current folder
-    if (!isDefaultFolder && folder?.notes) {
+    if (!isDefaultFolder && !isTrashFolder && folder?.notes) {
       folder.notes = folder.notes.filter((id: string) => id !== note.id);
     }
 
@@ -203,11 +226,16 @@ export const Note = ({ user }: { user: User }) => {
     navigate(`/folder/${targetFolderId}/${note.id}`);
 
     // Persist to Supabase
-    await updateFolder(userId, rootFolder.root);
+    if (isTrashFolder) {
+      // restore note
+      restoreNote(note.id);
+    }
+    updateFolder(userId, rootFolder.root);
   }
-
+  if (!initialized) return <Spinner />;
   return (
     <NoteApp
+      trashFolder={trashFolder}
       defaultFolder={defaultFolder}
       email={user.email ?? ""}
       onFolderDeleteClick={async (id: string) => {

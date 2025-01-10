@@ -73,22 +73,11 @@ export const initRootFolder = async (userId: string) => {
   }
   return data[0];
 };
-export const getNotes = async (userId: string) => {
+export const getAllNotes = async (userId: string) => {
   const { data } = await supabase
     .from("notes")
     .select()
-    .is("deleted_at", null)
     .order("updated_at", { ascending: false })
-    .eq("user_id", userId);
-  return data ?? [];
-};
-
-export const getDeletedNotes = async (userId: string) => {
-  const { data } = await supabase
-    .from("notes")
-    .select()
-    .not("deleted_at", "is", null)
-    .order("deleted_at", { ascending: false })
     .eq("user_id", userId);
   return data ?? [];
 };
@@ -150,6 +139,19 @@ export const deleteNote = async (id: string) => {
     .select();
   if (error) {
     console.error("Error deleting note:", error);
+    return null;
+  }
+  return data[0];
+};
+
+export const restoreNote = async (id: string) => {
+  const { data, error } = await supabase
+    .from("notes")
+    .update({ deleted_at: null })
+    .eq("id", id)
+    .select();
+  if (error) {
+    console.error("Error restoring note:", error);
     return null;
   }
   return data[0];
