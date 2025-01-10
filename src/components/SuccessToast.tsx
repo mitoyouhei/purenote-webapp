@@ -6,14 +6,16 @@ import { clearSuccessMessage } from "../slices/client";
 
 const SuccessToast = () => {
   const client = useSelector((state: any) => state.client);
-  if (!client.successMessage) return null;
   
   useEffect(() => {
+    if (!client.successMessage) return;
     const timer = setTimeout(() => {
       store.dispatch(clearSuccessMessage());
     }, 3000);
     return () => clearTimeout(timer);
   }, [client.successMessage]);
+
+  if (!client.successMessage) return null;
 
   return (
     <div
