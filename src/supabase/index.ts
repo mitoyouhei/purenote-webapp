@@ -1,11 +1,11 @@
 import supabase from "./supabase";
 import { handleSupabaseOperation } from "./utils";
-import { Note, NoteResponse, Folder, FolderResponse } from "./types";
+import { Note, NoteResponse, FolderData, RootFolder, FolderResponse } from "./types";
 
 export { supabase };
 
 export function addNoteToFolder(
-  folder: Folder,
+  folder: FolderData,
   targetFolderId: string,
   noteId: string
 ): void {
@@ -19,7 +19,7 @@ export function addNoteToFolder(
   }
 }
 
-export function findFolderById(folder: Folder, folderId: string): Folder | null {
+export function findFolderById(folder: FolderData, folderId: string): FolderData | null {
   if (folder.id === folderId) {
     return folder;
   }
@@ -35,7 +35,7 @@ export function findFolderById(folder: Folder, folderId: string): Folder | null 
   return null;
 }
 
-export function findFolderByNoteId(folder: Folder, noteId: string): Folder | null {
+export function findFolderByNoteId(folder: FolderData, noteId: string): FolderData | null {
   if (folder.notes?.includes(noteId)) {
     return folder;
   }
@@ -68,7 +68,7 @@ export const createNote = async (userId: string): Promise<NoteResponse> => {
   };
 };
 export const initRootFolder = async (userId: string): Promise<FolderResponse> => {
-  const response = await handleSupabaseOperation<Folder>("initRootFolder", async () => {
+  const response = await handleSupabaseOperation<RootFolder>("initRootFolder", async () => {
     const result = await supabase
       .from("folders")
       .upsert([{ 
@@ -111,7 +111,7 @@ export const getNotes = async (userId: string): Promise<Note[]> => {
 };
 
 export const getRootFolder = async (userId: string): Promise<FolderResponse> => {
-  const response = await handleSupabaseOperation<Folder>("getRootFolder", async () => {
+  const response = await handleSupabaseOperation<RootFolder>("getRootFolder", async () => {
     return await supabase
       .from("folders")
       .select()
@@ -125,8 +125,8 @@ export const getRootFolder = async (userId: string): Promise<FolderResponse> => 
   };
 };
 
-export const updateFolder = async (userId: string, root: Folder): Promise<FolderResponse> => {
-  const response = await handleSupabaseOperation<Folder>("updateFolder", async () => {
+export const updateFolder = async (userId: string, root: RootFolder): Promise<FolderResponse> => {
+  const response = await handleSupabaseOperation<RootFolder>("updateFolder", async () => {
     return await supabase
       .from("folders")
       .update({ root })

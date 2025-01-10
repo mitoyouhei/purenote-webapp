@@ -23,23 +23,18 @@ import {
   addNoteToFolder,
 } from "../supabase";
 // Use the imported Folder type from supabase/types
-import type { Folder } from "../supabase/types";
-const defaultFolder: Folder = {
+import type { RootFolder, FolderData } from "../supabase/types";
+const defaultFolder: FolderData = {
   id: "default",
   name: "Notes",
-  folders: [],
-  notes: [],
-  user_id: "",
-  deleted_at: null,
-  root: { folders: [] },
-  created_at: null,
-  updated_at: null
+  folders: null,
+  notes: []
 };
 
-function findUncontainedNotes(folder: Folder, notesList: NoteType[]) {
+function findUncontainedNotes(folder: FolderData, notesList: NoteType[]) {
   const containedNoteIds = new Set();
 
-  function collectNotes(folder: Folder) {
+  function collectNotes(folder: FolderData) {
     if (folder.notes) {
       folder.notes.forEach((noteId: string) => containedNoteIds.add(noteId));
     }
@@ -60,30 +55,34 @@ export const Note = ({ user }: { user: User }) => {
   const { folderId, noteId } = useParams();
 
   const [notes, setNotes] = useState<NoteType[]>([]);
-  const [rootFolder, setRootFolder] = useState<Folder>({
+  const [rootFolder, setRootFolder] = useState<RootFolder>({
     id: "",
-    name: "Root",
-    folders: [],
-    notes: [],
     user_id: userId,
     deleted_at: null,
-    root: { folders: [] },
+    root: {
+      folders: [{
+        id: crypto.randomUUID(),
+        name: "Root",
+        folders: null,
+        notes: []
+      }]
+    },
     created_at: null,
     updated_at: null
   });
   const [initialized, setInitialized] = useState(false);
   const isDefaultFolder = defaultFolder.id === folderId;
-  const defaultFolderNotes = rootFolder.root ? findUncontainedNotes(rootFolder.root, notes) : [];
+  const defaultFolderNotes = rootFolder.root?.folders[0] ? findUncontainedNotes(rootFolder.root.folders[0], notes) : [];
   defaultFolder.notes = defaultFolderNotes.map((note) => note.id);
 
   const folder = isDefaultFolder || !folderId
     ? defaultFolder
-    : (rootFolder.root ? findFolderById(rootFolder.root, folderId) : null);
+    : (rootFolder.root?.folders[0] ? findFolderById(rootFolder.root.folders[0], folderId) : null);
 
   const folderNotes = useMemo(() => {
     if (!notes) return [];
     if (isDefaultFolder) {
-      return rootFolder.root ? findUncontainedNotes(rootFolder.root, notes) : [];
+      return rootFolder.root?.folders[0] ? findUncontainedNotes(rootFolder.root.folders[0], notes) : [];
     }
     const noteIds = folder?.notes ?? [];
     return noteIds.map((noteId: string) =>
@@ -107,8 +106,8 @@ export const Note = ({ user }: { user: User }) => {
     
     const newNote = response.data;
     if (!isDefaultFolder && rootFolder?.root) {
-      addNoteToFolder(rootFolder.root, folderId!, newNote.id);
-      const updateResponse = await updateFolder(rootFolder.user_id, rootFolder.root);
+      addNoteToFolder(rootFolder.root.folders[0], folderId!, newNote.id);
+      const updateResponse = await updateFolder(rootFolder.user_id, rootFolder);
       if (updateResponse.error) {
         console.error('Failed to update folder:', updateResponse.error);
       } else if (updateResponse.data) {
@@ -131,10 +130,10 @@ export const Note = ({ user }: { user: User }) => {
     const restNotes = notes.filter((note) => note.id !== noteId);
 
     if (!isDefaultFolder) {
-      const folder = findFolderByNoteId(rootFolder.root, noteId);
+      const folder = rootFolder.root?.folders[0] ? findFolderByNoteId(rootFolder.root.folders[0], noteId) : null;
       if (folder && folder.notes) {
         folder.notes = folder.notes.filter((id: string) => id !== noteId);
-        const updateResponse = await updateFolder(rootFolder.user_id, rootFolder.root);
+        const updateResponse = await updateFolder(rootFolder.user_id, rootFolder);
         if (updateResponse.error) {
           console.error('Failed to update folder:', updateResponse.error);
         } else if (updateResponse.data) {
@@ -168,7 +167,7 @@ export const Note = ({ user }: { user: User }) => {
   }, [folder, note, folderNotes, folderId, navigate]);
 
   useEffect(() => {
-    async function getOrCreateRootFolder(): Promise<Folder | null> {
+    async function getOrCreateRootFolder(): Promise<RootFolder | null> {
       const rootFolderResponse = await getRootFolder(userId);
       if (!rootFolderResponse?.data) {
         const initResponse = await initRootFolder(userId);
@@ -201,18 +200,13 @@ export const Note = ({ user }: { user: User }) => {
   }, [userId]);
 
   async function createFolder(name: string) {
-    const newFolder: Folder = {
+    const newFolder: FolderData = {
       id: crypto.randomUUID(),
       name,
-      folders: [],
-      notes: [],
-      user_id: userId,
-      deleted_at: null,
-      root: null,
-      created_at: null,
-      updated_at: null
+      folders: null,
+      notes: []
     };
-    const newRoot: Folder = {
+    const newRoot: RootFolder = {
       ...rootFolder,
       root: { folders: [...(rootFolder.root?.folders ?? []), newFolder] }
     };

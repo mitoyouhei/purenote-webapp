@@ -15,20 +15,26 @@ export interface Note {
   user_id: string;
 }
 
-export interface Folder {
+export interface FolderData {
   id: string;
+  name: string;
+  folders: FolderData[] | null;
   notes: string[] | null;
-  folders: Folder[] | null;
+}
+
+export interface RootFolder {
+  id: string;
   user_id: string;
   deleted_at: Date | null;
-  root: any;
+  root: {
+    folders: FolderData[];
+  };
   created_at: string | null;
   updated_at: string | null;
-  name: string;
 }
 
 export type NoteResponse = SupabaseResponse<Note>;
-export type FolderResponse = SupabaseResponse<Folder>;
+export type FolderResponse = SupabaseResponse<RootFolder>;
 
 export class SupabaseError extends Error {
   public readonly operation: string;

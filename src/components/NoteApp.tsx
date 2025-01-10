@@ -8,7 +8,7 @@ import Setting from "./Setting";
 import { FolderList } from "./FolderList";
 import { NewFolderForm } from "./NewFolderForm";
 import type { Note as NoteType } from "../supabase/types";
-import type { Folder } from "../supabase/types";
+import type { FolderData } from "../supabase/types";
 
 export const NoteApp = ({
   note,
@@ -28,20 +28,20 @@ export const NoteApp = ({
   onFolderDeleteClick,
 }: {
   note: NoteType | null;
-  folder: Folder | null;
+  folder: FolderData | null;
   email: string;
   userDisplayName: string;
   onLogout: () => void;
   onAddNote: () => Promise<void>;
   onNoteChange: (content: string) => Promise<void>;
   notes: NoteType[];
-  folders: Folder[];
+  folders: FolderData[];
   updateNoteTitle: (title: string) => Promise<void>;
   onDeleteNote: () => Promise<void>;
   resetPassword: (password: string) => Promise<void>;
   createFolder: (name: string) => Promise<void>;
   onFolderDeleteClick: (id: string) => void;
-  defaultFolder: Folder;
+  defaultFolder: FolderData;
 }) => {
   const disableSidebar = window.innerWidth < 768; // follow bootstrap breadpoints Medium
   const [showSetting, setShowSetting] = useState(false);
@@ -61,7 +61,7 @@ export const NoteApp = ({
       resetPassword={resetPassword}
     />
   ) : null;
-  const editor = note && note.id ? (
+  const editor = note ? (
     <Note
       showFolderListNav={disableSidebar}
       id={note.id}
