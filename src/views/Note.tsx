@@ -171,7 +171,7 @@ export const Note = ({ user }: { user: User }) => {
     if (!note?.id || !rootFolder?.root) return;
 
     const targetFolder = targetFolderId === defaultFolder.id ? defaultFolder : 
-                        findFolderById(rootFolder.root.folders, targetFolderId);
+                        findFolderById(rootFolder.root, targetFolderId);
     if (!targetFolder) return;
 
     // Remove note from current folder
@@ -188,13 +188,13 @@ export const Note = ({ user }: { user: User }) => {
     // Update state immediately
     setRootFolder({ ...rootFolder });
 
+    // Update URL to reflect new location
+    navigate(`/folder/${targetFolderId}/${note.id}`);
+
     // Persist to Supabase
     if (!isDefaultFolder) {
       await updateFolder(userId, rootFolder.root);
     }
-
-    // Update URL to reflect new location
-    navigate(`/folder/${targetFolderId}/${note.id}`);
   }
 
   return (
