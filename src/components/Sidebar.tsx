@@ -5,6 +5,7 @@ import { extractText, formatDateTime } from "../utils";
 import React, { useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import Setting from "./Setting";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 const defaultNoteTitle = "Untitled";
 
@@ -43,7 +44,7 @@ export const Sidebar = ({
   onAddNote,
   onDeleteNote,
   onLogout,
-  items,
+  items: initialItems,
   resetPassword,
   email,
 }: {
@@ -58,6 +59,7 @@ export const Sidebar = ({
 }) => {
   const [showSetting, setShowSetting] = useState(false);
   const [addingNote, setAddingNote] = useState(false);
+  const [items, setItems] = useState(initialItems);
 
   return (
     <>
@@ -117,14 +119,49 @@ export const Sidebar = ({
           </div>
         </div>
       </nav>
-      <div
-        className="notes-list list-group px-2"
-        style={{ overflow: "visible" }}
+      <DragDropContext
+        onDragEnd={(result) => {
+          if (!result.destination) return;
+          
+          // Reorder items array
+          const reorderedItems = [...items];
+          const [movedItem] = reorderedItems.splice(result.source.index, 1);
+          reorderedItems.splice(result.destination.index, 0, movedItem);
+          
+          // Update local state only - no persistence needed as per requirements
+          setItems(reorderedItems);
+        }}
       >
-        {items.map((item) => (
-          <NavItem key={item.id} item={item} isActive={item.id === id} />
-        ))}
-      </div>
+        <Droppable droppableId="notesList">
+          {(provided) => (
+            <div
+              className="notes-list list-group px-2"
+              style={{ overflow: "visible" }}
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {items.map((item, index) => (
+                <Draggable key={item.id} draggableId={item.id} index={index}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      style={{
+                        ...provided.draggableProps.style,
+                        opacity: snapshot.isDragging ? 0.5 : 1,
+                      }}
+                    >
+                      <NavItem item={item} isActive={item.id === id} />
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </>
   );
 };
