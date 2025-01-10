@@ -20,6 +20,9 @@ export const Topbar = ({
   onDeleteNote,
   onLogout,
   onSettingClick,
+  folders,
+  defaultFolder,
+  onMoveNoteToFolder,
 }: {
   activeId: string;
   userDisplayName: string;

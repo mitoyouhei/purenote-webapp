@@ -24,23 +24,7 @@ export const NoteApp = ({
   createFolder,
   defaultFolder,
   onFolderDeleteClick,
-}: {
-  note: any;
-  folder: any;
-  email: string;
-  userDisplayName: string;
-  onLogout: () => void;
-  onAddNote: () => Promise<void>;
-  onNoteChange: (content: string) => Promise<void>;
-  notes: any[];
-  folders: any[];
-  updateNoteTitle: (title: string) => Promise<void>;
-  onDeleteNote: () => Promise<void>;
-  resetPassword: (password: string) => Promise<void>;
-  createFolder: (name: string) => Promise<void>;
-  onFolderDeleteClick: (id: string) => void;
-  defaultFolder: any;
-  onMoveNoteToFolder?: (folderId: string) => void;
+  onMoveNoteToFolder,
 }: {
   note: any;
   folder: any;
