@@ -1,9 +1,13 @@
-import { PostgrestError } from '@supabase/supabase-js';
+import { PostgrestError, PostgrestSingleResponse, PostgrestResponse } from '@supabase/supabase-js';
 
-export interface SupabaseResponse<T> {
-  data: T | null;  // T is either a single type or array type based on IsArray generic
-  error: string | null;
-}
+export type SupabaseResponse<T> = PostgrestResponse<T>;
+export type SupabaseSingleResponse<T> = {
+  data: T | null;
+  error: PostgrestError | null;
+  count: number | null;
+  status: number;
+  statusText: string;
+};
 
 export interface Note {
   id: string;
@@ -33,8 +37,9 @@ export interface RootFolder {
   updated_at: string | null;
 }
 
-export type NoteResponse = SupabaseResponse<Note>;
-export type FolderResponse = SupabaseResponse<RootFolder>;
+export type NoteResponse = SupabaseSingleResponse<Note>;
+export type FolderResponse = SupabaseSingleResponse<RootFolder>;
+export type NotesResponse = SupabaseResponse<Note[]>;
 
 export class SupabaseError extends Error {
   public readonly operation: string;

@@ -64,7 +64,10 @@ export const createNote = async (userId: string): Promise<NoteResponse> => {
   });
   return {
     data: Array.isArray(response.data) && response.data.length > 0 ? response.data[0] : null,
-    error: response.error
+    error: response.error,
+    count: response.count,
+    status: response.status,
+    statusText: response.statusText
   };
 };
 export const initRootFolder = async (userId: string): Promise<FolderResponse> => {
@@ -93,7 +96,10 @@ export const initRootFolder = async (userId: string): Promise<FolderResponse> =>
   });
   return {
     data: Array.isArray(response.data) && response.data.length > 0 ? response.data[0] : null,
-    error: response.error
+    error: response.error,
+    count: response.count,
+    status: response.status,
+    statusText: response.statusText
   };
 };
 
@@ -121,7 +127,10 @@ export const getRootFolder = async (userId: string): Promise<FolderResponse> => 
   });
   return {
     data: Array.isArray(response.data) && response.data.length > 0 ? response.data[0] : null,
-    error: response.error
+    error: response.error,
+    count: response.count,
+    status: response.status,
+    statusText: response.statusText
   };
 };
 
@@ -135,7 +144,10 @@ export const updateFolder = async (userId: string, root: RootFolder): Promise<Fo
   });
   return {
     data: Array.isArray(response.data) && response.data.length > 0 ? response.data[0] : null,
-    error: response.error
+    error: response.error,
+    count: response.count,
+    status: response.status,
+    statusText: response.statusText
   };
 };
 
@@ -143,27 +155,48 @@ export const updateNoteTitle = async (
   id: string,
   title: string
 ): Promise<NoteResponse> => {
-  return await handleSupabaseOperation<Note>("updateNoteTitle", async () =>
+  const response = await handleSupabaseOperation<Note>("updateNoteTitle", async () =>
     await supabase.from("notes").update({ title }).eq("id", id).select()
   );
+  return {
+    data: Array.isArray(response.data) && response.data.length > 0 ? response.data[0] : null,
+    error: response.error,
+    count: response.count,
+    status: response.status,
+    statusText: response.statusText
+  };
 };
 
 export const updateNoteContent = async (
   id: string,
   content: string
 ): Promise<NoteResponse> => {
-  return await handleSupabaseOperation<Note>("updateNoteContent", async () =>
+  const response = await handleSupabaseOperation<Note>("updateNoteContent", async () =>
     await supabase.from("notes").update({ content }).eq("id", id).select()
   );
+  return {
+    data: Array.isArray(response.data) && response.data.length > 0 ? response.data[0] : null,
+    error: response.error,
+    count: response.count,
+    status: response.status,
+    statusText: response.statusText
+  };
 };
 
 export const deleteNote = async (id: string): Promise<NoteResponse> => {
-  return await handleSupabaseOperation<Note>("deleteNote", async () =>
+  const response = await handleSupabaseOperation<Note>("deleteNote", async () =>
     await supabase
       .from("notes")
       .update({ deleted_at: new Date() })
       .eq("id", id)
       .select()
   );
+  return {
+    data: Array.isArray(response.data) && response.data.length > 0 ? response.data[0] : null,
+    error: response.error,
+    count: response.count,
+    status: response.status,
+    statusText: response.statusText
+  };
 };
 

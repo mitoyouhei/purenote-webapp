@@ -2,11 +2,10 @@ import "./FolderList.css";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BsFolder2, BsThreeDots } from "react-icons/bs";
+import { FolderData } from "../supabase/types";
 // import { formatDateTime } from "../utils";
 
 const defaultNoteTitle = "Untitled";
-
-import { FolderData } from "../supabase/types";
 
 const FolderNav = ({
   folder,

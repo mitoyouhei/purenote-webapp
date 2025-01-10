@@ -72,8 +72,8 @@ export const Note = ({ user }: { user: User }) => {
   });
   const [initialized, setInitialized] = useState(false);
   const isDefaultFolder = defaultFolder.id === folderId;
-  const allFolders = rootFolder.root?.folders ?? [];
-  const defaultFolderNotes = findUncontainedNotes(allFolders, notes);
+  const allFolders = useMemo(() => rootFolder.root?.folders ?? [], [rootFolder.root?.folders]);
+  const defaultFolderNotes = useMemo(() => findUncontainedNotes(allFolders, notes), [allFolders, notes]);
   defaultFolder.notes = defaultFolderNotes.map((note) => note.id);
 
   const folder = isDefaultFolder || !folderId
@@ -94,7 +94,8 @@ export const Note = ({ user }: { user: User }) => {
   const note: NoteType | null = folderNotes.find((note: NoteType) => note.id === noteId) ?? null;
 
   async function onAddNote() {
-    if (!folderId) {
+    const currentFolderId = folderId;
+    if (!currentFolderId) {
       console.error("folderId is required for adding a note");
       return;
     }
@@ -108,7 +109,7 @@ export const Note = ({ user }: { user: User }) => {
     const newNote = response.data;
     if (!isDefaultFolder && rootFolder?.root?.folders) {
       const allFolders = rootFolder.root.folders;
-      addNoteToFolder(allFolders, folderId!, newNote.id);
+      addNoteToFolder(allFolders, currentFolderId, newNote.id);
       const updateResponse = await updateFolder(rootFolder.user_id, rootFolder);
       if (updateResponse.error) {
         console.error('Failed to update folder:', updateResponse.error);
@@ -118,7 +119,7 @@ export const Note = ({ user }: { user: User }) => {
     }
     setNotes([newNote, ...notes]);
 
-    navigate(`/folder/${folderId}/${newNote.id}`);
+    navigate(`/folder/${currentFolderId}/${newNote.id}`);
   }
   async function onDeleteNote() {
     if (!noteId) return;
@@ -146,16 +147,22 @@ export const Note = ({ user }: { user: User }) => {
     }
 
     setNotes(restNotes);
+    const currentFolderId = folderId;
+    if (!currentFolderId) {
+      console.error("No folder ID available for navigation");
+      return;
+    }
     if (restNotes.length > 0) {
-      navigate(`/folder/${folderId}/${restNotes[0].id}`);
+      navigate(`/folder/${currentFolderId}/${restNotes[0].id}`);
     } else {
-      navigate(`/folder/${folderId}/welcome`);
+      navigate(`/folder/${currentFolderId}/welcome`);
     }
   }
 
   useEffect(() => {
-    if (!note && folderNotes.length > 0) {
-      navigate(`/folder/${folderId}/${folderNotes[0]?.id ?? 'welcome'}`);
+    const currentFolderId = folderId;
+    if (!note && folderNotes.length > 0 && currentFolderId) {
+      navigate(`/folder/${currentFolderId}/${folderNotes[0]?.id ?? 'welcome'}`);
     }
   }, [note, folderNotes, folderId, navigate]);
   useEffect(() => {
@@ -165,8 +172,9 @@ export const Note = ({ user }: { user: User }) => {
     }
   }, [folder, rootFolder, navigate]);
   useEffect(() => {
-    if (folder && folderNotes.length < 1) {
-      navigate(`/folder/${folderId}/welcome`);
+    const currentFolderId = folderId;
+    if (folder && folderNotes.length < 1 && currentFolderId) {
+      navigate(`/folder/${currentFolderId}/welcome`);
     }
   }, [folder, note, folderNotes, folderId, navigate]);
 
