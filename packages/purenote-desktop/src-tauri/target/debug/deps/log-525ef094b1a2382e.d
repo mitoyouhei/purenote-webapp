@@ -1,0 +1,13 @@
+/home/ubuntu/repos/purenote-desktop/src-tauri/target/debug/deps/liblog-525ef094b1a2382e.rmeta: /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/lib.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/macros.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/serde.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/kv/mod.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/kv/error.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/kv/key.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/kv/source.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/kv/value.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/__private_api.rs
+
+/home/ubuntu/repos/purenote-desktop/src-tauri/target/debug/deps/log-525ef094b1a2382e.d: /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/lib.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/macros.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/serde.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/kv/mod.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/kv/error.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/kv/key.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/kv/source.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/kv/value.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/__private_api.rs
+
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/lib.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/macros.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/serde.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/kv/mod.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/kv/error.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/kv/key.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/kv/source.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/kv/value.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.24/src/__private_api.rs:

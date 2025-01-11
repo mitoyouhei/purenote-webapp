@@ -1,0 +1,11 @@
+/home/ubuntu/repos/purenote-desktop/src-tauri/target/debug/deps/libfdeflate-2336f93835048c71.rmeta: /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/lib.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/compress.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/decompress.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/huffman.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/tables.rs
+
+/home/ubuntu/repos/purenote-desktop/src-tauri/target/debug/deps/libfdeflate-2336f93835048c71.rlib: /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/lib.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/compress.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/decompress.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/huffman.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/tables.rs
+
+/home/ubuntu/repos/purenote-desktop/src-tauri/target/debug/deps/fdeflate-2336f93835048c71.d: /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/lib.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/compress.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/decompress.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/huffman.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/tables.rs
+
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/lib.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/compress.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/decompress.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/huffman.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/tables.rs:
