@@ -14,8 +14,6 @@ const FolderNav = ({
   isActive,
   onFolderDeleteClick,
   onFolderRenameClick,
-  editingFolderId,
-  setEditingFolderId,
   deleteable,
   showCount,
   navIcon,
@@ -24,14 +22,13 @@ const FolderNav = ({
   showMenu: boolean;
   onMenuClick: (id: string) => void;
   isActive: boolean;
-  editingFolderId: string | null;
-  setEditingFolderId: (id: string | null) => void;
   onFolderDeleteClick: (id: string) => void;
   onFolderRenameClick?: (id: string, newName: string) => void;
   deleteable: boolean;
   showCount: boolean;
   navIcon?: React.ReactNode;
 }) => {
+  const [editing, setEditing] = useState(false);
   return (
     <Link
       className={`d-flex align-items-center justify-content-between list-group-item list-group-item-action rounded-1 ${
@@ -43,20 +40,22 @@ const FolderNav = ({
     >
       <div className="d-flex align-items-center">
         {navIcon ?? <BsFolder2 className="me-1 folder-icon" />}
-        {editingFolderId === folder.id ? (
-          <RenameFolderInput
-            initialValue={folder.name || defaultNoteTitle}
-            onConfirm={(newName) => {
-              setEditingFolderId(null);
-              onFolderRenameClick?.(folder.id, newName);
-            }}
-            onCancel={() => setEditingFolderId(null)}
-          />
-        ) : (
-          <div className="title-row">
-            {folder.name ? folder.name : defaultNoteTitle}{" "}
-          </div>
-        )}
+        <div className="title-row">
+          {editing ? (
+            <RenameFolderInput
+              initialValue={folder.name || defaultNoteTitle}
+              onConfirm={(newName) => {
+                setEditing(false);
+                onFolderRenameClick?.(folder.id, newName);
+              }}
+              onCancel={() => setEditing(false)}
+            />
+          ) : folder.name ? (
+            folder.name
+          ) : (
+            defaultNoteTitle
+          )}
+        </div>
       </div>
 
       <div
@@ -90,7 +89,7 @@ const FolderNav = ({
                 className="list-group-item"
                 onClick={(e) => {
                   e.preventDefault();
-                  setEditingFolderId(folder.id);
+                  setEditing(true);
                 }}
               >
                 Rename
@@ -132,7 +131,6 @@ export const FolderList = ({
   const [showMenuForFolder, setShowMenuForFolder] = useState<string | null>(
     null
   );
-  const [editingFolderId, setEditingFolderId] = useState<string | null>(null);
   const clearMenu = () => {
     setShowMenuForFolder(null);
   };
@@ -150,8 +148,6 @@ export const FolderList = ({
       <FolderNav
         deleteable={false}
         showCount={true}
-        editingFolderId={editingFolderId}
-        setEditingFolderId={setEditingFolderId}
         onFolderDeleteClick={() => {}}
         onFolderRenameClick={onFolderRenameClick}
         folder={defaultFolder}
@@ -167,8 +163,6 @@ export const FolderList = ({
       />
       {folders.map((folder) => (
         <FolderNav
-          editingFolderId={editingFolderId}
-          setEditingFolderId={setEditingFolderId}
           onFolderDeleteClick={onFolderDeleteClick}
           onFolderRenameClick={onFolderRenameClick}
           key={folder.id}
@@ -188,8 +182,6 @@ export const FolderList = ({
       ))}
 
       <FolderNav
-        editingFolderId={editingFolderId}
-        setEditingFolderId={setEditingFolderId}
         deleteable={false}
         showCount={true}
         onFolderDeleteClick={() => {}}

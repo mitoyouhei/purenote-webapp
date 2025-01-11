@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { BsCheck, BsX } from "react-icons/bs";
 
 const RenameFolderInput = ({
   initialValue,
@@ -42,13 +43,10 @@ const RenameFolderInput = ({
           className="btn btn-sm btn-success"
           onClick={() => onConfirm(name)}
         >
-          确认
+          <BsCheck />
         </button>
-        <button
-          className="btn btn-sm btn-light"
-          onClick={onCancel}
-        >
-          取消
+        <button className="btn btn-sm btn-light" onClick={onCancel}>
+          <BsX />
         </button>
       </div>
     </div>
