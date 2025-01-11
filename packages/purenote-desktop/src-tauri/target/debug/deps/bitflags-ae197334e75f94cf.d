@@ -1,0 +1,12 @@
+/home/ubuntu/repos/purenote-desktop/src-tauri/target/debug/deps/libbitflags-ae197334e75f94cf.rmeta: /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/lib.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/iter.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/parser.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/traits.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/public.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/internal.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/external.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/external/serde.rs
+
+/home/ubuntu/repos/purenote-desktop/src-tauri/target/debug/deps/bitflags-ae197334e75f94cf.d: /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/lib.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/iter.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/parser.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/traits.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/public.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/internal.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/external.rs /home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/external/serde.rs
+
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/lib.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/iter.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/parser.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/traits.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/public.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/internal.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/external.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitflags-2.7.0/src/external/serde.rs:
