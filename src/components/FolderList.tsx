@@ -14,6 +14,8 @@ const FolderNav = ({
   isActive,
   onFolderDeleteClick,
   onFolderRenameClick,
+  editingFolderId,
+  setEditingFolderId,
   deleteable,
   showCount,
   navIcon,
@@ -22,6 +24,8 @@ const FolderNav = ({
   showMenu: boolean;
   onMenuClick: (id: string) => void;
   isActive: boolean;
+  editingFolderId: string | null;
+  setEditingFolderId: (id: string | null) => void;
   onFolderDeleteClick: (id: string) => void;
   onFolderRenameClick?: (id: string, newName: string) => void;
   deleteable: boolean;
@@ -82,28 +86,30 @@ const FolderNav = ({
         >
           <div className="card" style={{ backgroundColor: "#000" }}>
             <ul className="list-group list-group-flush">
-              {deleteable && folder.id !== 'default' && folder.id !== 'trash' && (
-                <>
-                  <li
-                    className="list-group-item"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setEditingFolderId(folder.id);
-                    }}
-                  >
-                    Rename
-                  </li>
-                  <li
-                    className="list-group-item"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onFolderDeleteClick(folder.id);
-                    }}
-                  >
-                    Delete
-                  </li>
-                </>
-              )}
+              {deleteable &&
+                folder.id !== "default" &&
+                folder.id !== "trash" && (
+                  <>
+                    <li
+                      className="list-group-item"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setEditingFolderId(folder.id);
+                      }}
+                    >
+                      Rename
+                    </li>
+                    <li
+                      className="list-group-item"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onFolderDeleteClick(folder.id);
+                      }}
+                    >
+                      Delete
+                    </li>
+                  </>
+                )}
             </ul>
           </div>
         </div>
@@ -129,7 +135,9 @@ export const FolderList = ({
   onFolderDeleteClick: (id: string) => void;
   onFolderRenameClick?: (id: string, newName: string) => void;
 }) => {
-  const [showMenuForFolder, setShowMenuForFolder] = useState<string | null>(null);
+  const [showMenuForFolder, setShowMenuForFolder] = useState<string | null>(
+    null
+  );
   const [editingFolderId, setEditingFolderId] = useState<string | null>(null);
   const clearMenu = () => {
     setShowMenuForFolder(null);
@@ -148,6 +156,8 @@ export const FolderList = ({
       <FolderNav
         deleteable={false}
         showCount={true}
+        editingFolderId={editingFolderId}
+        setEditingFolderId={setEditingFolderId}
         onFolderDeleteClick={() => {}}
         onFolderRenameClick={onFolderRenameClick}
         folder={defaultFolder}
@@ -163,6 +173,8 @@ export const FolderList = ({
       />
       {folders.map((folder) => (
         <FolderNav
+          editingFolderId={editingFolderId}
+          setEditingFolderId={setEditingFolderId}
           onFolderDeleteClick={onFolderDeleteClick}
           onFolderRenameClick={onFolderRenameClick}
           key={folder.id}
@@ -182,6 +194,8 @@ export const FolderList = ({
       ))}
 
       <FolderNav
+        editingFolderId={editingFolderId}
+        setEditingFolderId={setEditingFolderId}
         deleteable={false}
         showCount={true}
         onFolderDeleteClick={() => {}}
