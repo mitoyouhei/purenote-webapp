@@ -1,0 +1,72 @@
+.folder-list>.list-group-item>small,
+.folder-list>.list-group-item .title-row {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.folder-list>.list-group-item {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.5rem;
+    margin: 0.2rem 0;
+    background-color: transparent;
+}
+.folder-list>.list-group-item.active {
+    margin: 0.2rem 0;
+    background-color: rgb(255 196 75);
+}
+
+.folder-list>.list-group-item .badge {
+    color: #7b7b7b;
+    font-size: 0.7rem;
+    font-weight: normal;
+}
+
+.folder-list>.list-group-item.active .badge {
+    color: #fff;
+}
+
+.folder-list>.list-group-item {
+    border: none;
+}
+
+.folder-list>.list-group-item .folder-icon {
+    color: rgb(255 148 0);
+    font-size: 1rem;
+    font-weight: bolder;
+}
+.folder-list>.list-group-item.active .folder-icon {
+    color: white;
+}
+
+
+.folder-list>.list-group-item .menu-btn {
+    font-size: 0.6rem;
+    padding: 0.2rem;
+    opacity: 0;
+    line-height: 0.5rem;
+    border-radius: 2rem;
+    background-color: gray;
+    color: white;
+    border: none;
+}
+
+.folder-list>.list-group-item:hover .menu-btn {
+    opacity: 0.4;
+}
+
+.folder-list>.list-group-item .menu-btn:hover {
+    opacity: 1;
+}
+
+.folder-list>.list-group-item .menu-dropdown {
+    display: none;
+}
+
+.folder-list>.list-group-item .menu-dropdown.show {
+    display: block;
+}
+
+.folder-list>.list-group-item .menu-dropdown .list-group-item {
+    white-space: nowrap;
+}

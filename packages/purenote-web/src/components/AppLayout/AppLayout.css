@@ -1,0 +1,10 @@
+.resize-dragger {
+    width: 10px;
+    cursor: ew-resize;
+    background-color: transparent;
+    opacity: 1;
+}
+
+.resize-dragger:hover {
+    opacity: 1;
+}
