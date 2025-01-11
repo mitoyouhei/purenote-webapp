@@ -26,6 +26,7 @@ export const NoteApp = ({
   isTrashFolder,
   trashFolder,
   onFolderDeleteClick,
+  onFolderRenameClick,
   onMoveNoteToFolder,
 }: {
   note: any;
@@ -42,6 +43,7 @@ export const NoteApp = ({
   resetPassword: (password: string) => Promise<void>;
   createFolder: (name: string) => Promise<void>;
   onFolderDeleteClick: (id: string) => void;
+  onFolderRenameClick?: (id: string, newName: string) => Promise<void>;
   defaultFolder: any;
   trashFolder: any;
   isTrashFolder: boolean;
@@ -112,6 +114,7 @@ export const NoteApp = ({
             folders={folders}
             onNewFolderClick={() => setShowNewFolderForm(true)}
             onFolderDeleteClick={onFolderDeleteClick}
+            onFolderRenameClick={onFolderRenameClick}
           />
         }
       />
