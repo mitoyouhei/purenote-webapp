@@ -1,0 +1,35 @@
+{
+  "name": "purenote-core",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Shared core functionality for Purenote web and desktop applications",
+  "devDependencies": {
+    "@reduxjs/toolkit": "^2.5.0",
+    "@supabase/supabase-js": "^2.47.12",
+    "@types/react": "^19.0.4",
+    "@types/react-dom": "^19.0.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-redux": "^9.2.0",
+    "typescript": "^5.7.3"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}
