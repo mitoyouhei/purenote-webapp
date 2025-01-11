@@ -86,30 +86,24 @@ const FolderNav = ({
         >
           <div className="card" style={{ backgroundColor: "#000" }}>
             <ul className="list-group list-group-flush">
-              {deleteable &&
-                folder.id !== "default" &&
-                folder.id !== "trash" && (
-                  <>
-                    <li
-                      className="list-group-item"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setEditingFolderId(folder.id);
-                      }}
-                    >
-                      Rename
-                    </li>
-                    <li
-                      className="list-group-item"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        onFolderDeleteClick(folder.id);
-                      }}
-                    >
-                      Delete
-                    </li>
-                  </>
-                )}
+              <li
+                className="list-group-item"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setEditingFolderId(folder.id);
+                }}
+              >
+                Rename
+              </li>
+              <li
+                className="list-group-item"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onFolderDeleteClick(folder.id);
+                }}
+              >
+                Delete
+              </li>
             </ul>
           </div>
         </div>
