@@ -7,14 +7,19 @@
   font-weight: 600;
   color: #242424;
   margin-bottom: 2.5rem;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
 }
 
 .cta-buttons {
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  gap: 1.5rem;
+}
+
+.cta-buttons .btn {
+  min-width: 160px;
+  padding: 0.875rem 2rem;
 }
 
 @media (max-width: 768px) {
