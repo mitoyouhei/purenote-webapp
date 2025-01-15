@@ -1,0 +1,23 @@
+.benefit-item {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.benefit-icon {
+  font-size: 2.5rem;
+  color: #0078D4;
+  margin-bottom: 1.5rem;
+}
+
+.benefit-item h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.benefit-item p {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+}
