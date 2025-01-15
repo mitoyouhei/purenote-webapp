@@ -1,0 +1,32 @@
+.landing-navbar {
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 1rem 0;
+}
+
+.microsoft-logo {
+  height: 24px;
+  width: auto;
+}
+
+.river-text {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #000;
+}
+
+.divider {
+  color: #666;
+}
+
+.search-container {
+  max-width: 600px;
+  width: 100%;
+}
+
+@media (max-width: 992px) {
+  .search-container {
+    max-width: 100%;
+    margin: 1rem 0;
+  }
+}

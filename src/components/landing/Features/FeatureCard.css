@@ -1,0 +1,38 @@
+.feature-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease-in-out;
+  height: 100%;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+}
+
+.feature-image-container {
+  padding: 1.5rem;
+  background-color: #F5F5F5;
+  border-radius: 12px 12px 0 0;
+}
+
+.feature-card .card-img-top {
+  height: 160px;
+  object-fit: contain;
+}
+
+.feature-card .card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.feature-card .card-text {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.feature-card .card-body {
+  padding: 1.5rem;
+}

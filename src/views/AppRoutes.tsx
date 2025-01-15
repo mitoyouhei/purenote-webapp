@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 
 import PublicLayout from "../components/PublicLayout";
+import { LandingPage } from "../components/landing";
 
 import { Register } from "./Register";
 import { Login } from "./Login";
@@ -57,9 +58,7 @@ const AppRoutes = () => {
             user ? (
               <Navigate to="/folder/default/welcome" />
             ) : (
-              <PublicLayout>
-                <Home />
-              </PublicLayout>
+              <LandingPage />
             )
           }
         />

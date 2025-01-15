@@ -1,0 +1,25 @@
+.custom-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.custom-button.primary {
+  background-color: #0078D4;
+  border: none;
+}
+
+.custom-button.primary:hover {
+  background-color: #106EBE;
+}
+
+.custom-button.secondary {
+  background-color: white;
+  border: 1px solid #0078D4;
+  color: #0078D4;
+}
+
+.custom-button.secondary:hover {
+  background-color: #F5F5F5;
+}

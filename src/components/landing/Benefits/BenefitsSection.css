@@ -1,0 +1,30 @@
+.benefits-section {
+  padding: 5rem 0;
+}
+
+.benefits-section h2 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.benefits-description {
+  color: #666;
+  font-size: 1.25rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .benefits-section {
+    padding: 3rem 0;
+  }
+  
+  .benefits-section h2 {
+    font-size: 2rem;
+  }
+  
+  .benefits-description {
+    font-size: 1.125rem;
+  }
+}

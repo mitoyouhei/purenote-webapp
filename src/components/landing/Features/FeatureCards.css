@@ -1,0 +1,9 @@
+.feature-cards-section {
+  padding: 5rem 0;
+}
+
+@media (max-width: 768px) {
+  .feature-cards-section {
+    padding: 3rem 0;
+  }
+}
