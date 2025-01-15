@@ -1,0 +1,38 @@
+.call-to-action {
+  padding: 5rem 0;
+}
+
+.call-to-action h2 {
+  font-size: 2.75rem;
+  font-weight: 600;
+  color: #242424;
+  margin-bottom: 2.5rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .call-to-action {
+    padding: 3rem 0;
+  }
+
+  .call-to-action h2 {
+    font-size: 2rem;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cta-buttons .btn {
+    width: 100%;
+    max-width: 300px;
+  }
+}
