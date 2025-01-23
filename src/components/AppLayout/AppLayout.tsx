@@ -3,6 +3,8 @@ import { BsLayoutSidebar } from "react-icons/bs";
 import { useLocalStorageState } from "../../hooks/useLocalStorageState";
 import { Dropdown } from "react-bootstrap";
 import { HiMiniUserCircle } from "react-icons/hi2";
+import { MdFeedback } from "react-icons/md";
+import "../Flyout/Flyout";
 
 function minNoteListWidth() {
   return 250;
@@ -43,6 +45,7 @@ export const AppLayout = ({
   onSettingClick: () => void;
 }) => {
   const [widthOpacity, setWidthOpacity] = useState(0);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   const editorDomRef = useRef<HTMLDivElement>(null);
   const sidebarDomRef = useRef<HTMLDivElement>(null);
@@ -238,6 +241,9 @@ export const AppLayout = ({
             <span className="btn" onClick={folderListToggle}>
               <BsLayoutSidebar />
             </span>
+            <span className="btn" onClick={() => setShowFeedback(true)}>
+              <MdFeedback />
+            </span>
             <Dropdown>
               <Dropdown.Toggle as={UserMenuToggle} />
 
@@ -262,6 +268,17 @@ export const AppLayout = ({
           onMouseDown={handleMouseDown}
         />
       </div>
+
+      <app-flyout
+        open={showFeedback}
+        onclose={() => setShowFeedback(false)}
+      >
+        <div>
+          <h3>How can we help you?</h3>
+          <p>We're always looking to improve our service. Please share your feedback with us.</p>
+          <p>Please let us know if you have any suggestions or encounter any issues.</p>
+        </div>
+      </app-flyout>
     </div>
   );
 };
