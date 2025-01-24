@@ -176,16 +176,6 @@ class HelpFeedbackElement extends HTMLElement {
   }
 }
 
-// Self-register the component and export it
-if (typeof window !== 'undefined') {
-  if (!customElements.get('help-feedback-element')) {
-    try {
-      customElements.define('help-feedback-element', HelpFeedbackElement);
-      console.log('Successfully registered help-feedback-element Web Component');
-    } catch (error) {
-      console.error('Failed to register help-feedback-element:', error);
-    }
-  }
-}
-
+// Export the class only, registration is handled in index.tsx
+console.log('HelpFeedbackElement class loaded');
 export { HelpFeedbackElement };
