@@ -55,7 +55,9 @@ export default function HelpFeedbackWrapper() {
 
   return (
     <div className="help-feedback-wrapper" style={{ minHeight: '100vh', padding: '20px' }}>
-      <help-feedback-element></help-feedback-element>
+      <div style={{ maxWidth: '800px', margin: '0 auto', position: 'relative' }}>
+        <help-feedback-element style={{ display: 'block', width: '100%' }}></help-feedback-element>
+      </div>
     </div>
   );
 }
