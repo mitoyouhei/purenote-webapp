@@ -127,7 +127,7 @@ const TEMPLATE_HTML = `
 `;
 
 class HelpFeedbackElement extends HTMLElement {
-  private shadow: ShadowRoot;
+  private shadow!: ShadowRoot;
 
   constructor() {
     super();
