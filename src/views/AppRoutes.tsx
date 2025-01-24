@@ -19,6 +19,7 @@ import { NotFound } from "./NotFound";
 import { Notebooks } from "./Notebooks";
 import { RootState } from "../store";
 import { EmailVerification } from "./EmailVerification";
+import HelpFeedbackWrapper from "./HelpFeedbackWrapper";
 
 
 const AppRoutes = () => {
@@ -79,6 +80,14 @@ const AppRoutes = () => {
         <Route
           path="/notebooks"
           element={user ? <Notebooks /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/help"
+          element={
+            <PublicLayout>
+              <HelpFeedbackWrapper />
+            </PublicLayout>
+          }
         />
         <Route
           path="*"
