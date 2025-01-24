@@ -6,9 +6,16 @@ import App from './views/App';
 import { HelpFeedbackElement } from './webcomponents/HelpFeedbackElement';
 
 // Register Web Component before React renders
-console.log('Registering help-feedback-element Web Component');
-if (!customElements.get('help-feedback-element')) {
-  customElements.define('help-feedback-element', HelpFeedbackElement);
+try {
+  if (!customElements.get('help-feedback-element')) {
+    console.log('Attempting to register help-feedback-element Web Component');
+    customElements.define('help-feedback-element', HelpFeedbackElement);
+    console.log('Successfully registered help-feedback-element Web Component');
+  } else {
+    console.log('help-feedback-element Web Component already registered');
+  }
+} catch (error) {
+  console.error('Failed to register help-feedback-element:', error);
 }
 
 // Create root and render app

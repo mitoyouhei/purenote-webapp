@@ -10,11 +10,13 @@ declare global {
 }
 
 export default function HelpFeedbackWrapper() {
-  // Register the Web Component when the wrapper mounts
+  // Debug mounting of wrapper
   useEffect(() => {
-    if (!customElements.get('help-feedback-element')) {
-      console.log('Registering help-feedback-element Web Component from wrapper');
-      customElements.define('help-feedback-element', HelpFeedbackElement);
+    console.log('HelpFeedbackWrapper mounted');
+    const element = document.querySelector('help-feedback-element');
+    console.log('Found help-feedback-element in wrapper:', element);
+    if (element) {
+      console.log('Element styles:', window.getComputedStyle(element));
     }
   }, []);
   const handleFeedbackRequested = (event: Event) => {
