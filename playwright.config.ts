@@ -31,26 +31,33 @@ export default defineConfig({
     trace: "on-first-retry",
     
     /* Use new headless mode */
-    launchOptions: {
-      args: ['--headless=new']
-    }
+    headless: true
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: { 
+        ...devices["Desktop Chrome"],
+        headless: true
+      },
     },
 
     {
       name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
+      use: { 
+        ...devices["Desktop Firefox"],
+        headless: true
+      },
     },
 
     {
       name: "webkit",
-      use: { ...devices["Desktop Safari"] },
+      use: { 
+        ...devices["Desktop Safari"],
+        headless: true
+      },
     },
 
     /* Test against mobile viewports. */
@@ -69,9 +76,7 @@ export default defineConfig({
       use: { 
         ...devices["Desktop Edge"], 
         channel: "msedge",
-        launchOptions: {
-          args: ['--headless=new']
-        }
+        headless: true
       },
     },
     {
@@ -79,9 +84,7 @@ export default defineConfig({
       use: { 
         ...devices["Desktop Chrome"], 
         channel: "chrome",
-        launchOptions: {
-          args: ['--headless=new']
-        }
+        headless: true
       },
     },
   ],
