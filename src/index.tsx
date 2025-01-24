@@ -1,16 +1,31 @@
-// Register Web Component before anything else
+// Load and register Web Component immediately
 import { HelpFeedbackElement } from './webcomponents/HelpFeedbackElement';
 
-// Ensure Web Component is registered before React
-console.log('Attempting to register Web Component in index.tsx');
-if (!customElements.get('help-feedback-element')) {
-  try {
-    customElements.define('help-feedback-element', HelpFeedbackElement);
-    console.log('Successfully registered Web Component in index.tsx');
-  } catch (error) {
-    console.error('Failed to register Web Component:', error);
+// Force synchronous registration before any other imports
+(function() {
+  console.log('Forcing immediate Web Component registration');
+  if (typeof customElements !== 'undefined' && !customElements.get('help-feedback-element')) {
+    try {
+      customElements.define('help-feedback-element', HelpFeedbackElement);
+      console.log('Successfully registered help-feedback-element synchronously');
+    } catch (error) {
+      console.error('Failed to register help-feedback-element:', error);
+      // Retry once after a short delay
+      setTimeout(() => {
+        try {
+          if (!customElements.get('help-feedback-element')) {
+            customElements.define('help-feedback-element', HelpFeedbackElement);
+            console.log('Successfully registered help-feedback-element after delay');
+          }
+        } catch (retryError) {
+          console.error('Failed to register help-feedback-element after retry:', retryError);
+        }
+      }, 0);
+    }
+  } else {
+    console.log('help-feedback-element already registered or customElements not available');
   }
-}
+})();
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
