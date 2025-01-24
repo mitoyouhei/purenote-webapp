@@ -1,23 +1,23 @@
-// Load and register Web Component
-import { HelpFeedbackElement } from './webcomponents/HelpFeedbackElement';
-
-// Ensure customElements is available and register the component
-if (typeof window !== 'undefined' && window.customElements) {
-  window.customElements.whenDefined('help-feedback-element').then(() => {
-    console.log('help-feedback-element is defined and ready');
-  });
-
-  if (!window.customElements.get('help-feedback-element')) {
-    window.customElements.define('help-feedback-element', HelpFeedbackElement);
-    console.log('Registered help-feedback-element');
-  }
-}
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { store } from './store';
 import App from './views/App';
+import { HelpFeedbackElement } from './webcomponents/HelpFeedbackElement';
+
+// Register Web Component before React renders
+if (typeof window !== 'undefined' && window.customElements) {
+  try {
+    if (!window.customElements.get('help-feedback-element')) {
+      window.customElements.define('help-feedback-element', HelpFeedbackElement);
+      console.log('Successfully registered help-feedback-element');
+    } else {
+      console.log('help-feedback-element already registered');
+    }
+  } catch (error) {
+    console.error('Failed to register help-feedback-element:', error);
+  }
+}
 
 // Create root and render app
 const root = ReactDOM.createRoot(

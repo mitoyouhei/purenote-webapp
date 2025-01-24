@@ -159,6 +159,13 @@ class HelpFeedbackElement extends HTMLElement {
         throw new Error('Shadow root is not connected');
       }
       
+      // Add a test div first to verify shadow DOM is working
+      const testDiv = document.createElement('div');
+      testDiv.textContent = 'Shadow DOM Test Content';
+      testDiv.style.color = 'blue';
+      this.shadow.appendChild(testDiv);
+      
+      // Then append the actual content
       this.shadow.appendChild(content);
       console.log('Content appended to shadow root');
       
@@ -225,5 +232,4 @@ class HelpFeedbackElement extends HTMLElement {
 }
 
 // Export the class only, registration is handled in index.tsx
-console.log('HelpFeedbackElement class loaded');
 export { HelpFeedbackElement };
