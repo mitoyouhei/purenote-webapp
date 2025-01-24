@@ -138,37 +138,31 @@ class HelpFeedbackElement extends HTMLElement {
       this.shadow = this.attachShadow({ mode: "open" });
       console.log('[DEBUG] Shadow root attached');
 
-      // Create temporary div to parse HTML
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = TEMPLATE_HTML.trim();
-      console.log('[DEBUG] Template HTML parsed into temporary div');
+      // Set innerHTML directly and force a reflow
+      this.shadow.innerHTML = TEMPLATE_HTML;
+      void this.shadow.offsetHeight; // Force reflow
+      console.log('[DEBUG] Template HTML set directly to shadow root');
 
-      // Verify structure
-      if (!tempDiv.querySelector('.help-feedback-container')) {
-        console.error('[ERROR] Container not found in parsed HTML');
-        throw new Error('Invalid template structure');
+      // Log the actual content
+      const container = this.shadow.querySelector('.help-feedback-container');
+      console.log('[DEBUG] Container found:', !!container);
+      if (container) {
+        console.log('[DEBUG] Container HTML length:', container.innerHTML.length);
+        console.log('[DEBUG] Container children count:', container.children.length);
+        console.log('[DEBUG] First child tag:', container.firstElementChild?.tagName);
+      } else {
+        throw new Error('Container not found in shadow DOM');
       }
 
-      // Create and verify template
-      const template = document.createElement('template');
-      template.innerHTML = tempDiv.innerHTML;
-      console.log('[DEBUG] Template created with content length:', template.innerHTML.length);
-
-      // Clone and append template content
-      const content = template.content.cloneNode(true);
-      this.shadow.appendChild(content);
-      console.log('[DEBUG] Content appended to shadow root');
-
-      // Setup initial styles
-      this.style.display = 'block';
-      this.style.width = '100%';
-      
-      // Verify shadow DOM content
-      const shadowContainer = this.shadow.querySelector('.help-feedback-container');
-      if (!shadowContainer) {
-        throw new Error('Container not found in shadow DOM after initialization');
-      }
-      console.log('[DEBUG] Shadow DOM verified with container:', shadowContainer.children.length, 'children');
+      // Force styles
+      requestAnimationFrame(() => {
+        this.style.display = 'block';
+        this.style.width = '100%';
+        if (container) {
+          container.style.display = 'block';
+          container.style.visibility = 'visible';
+        }
+      });
     } catch (error) {
       console.error('[ERROR] Failed to initialize component:', error);
       this.shadow.innerHTML = `
