@@ -128,47 +128,33 @@ const TEMPLATE_HTML = `
 
 class HelpFeedbackElement extends HTMLElement {
   private shadow: ShadowRoot;
-  private initialized: boolean = false;
 
   constructor() {
     super();
     console.log('[DEBUG] HelpFeedbackElement constructor called');
     this.shadow = this.attachShadow({ mode: "open" });
+    
+    // Create a temporary div to parse the template
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = TEMPLATE_HTML;
+    console.log('[DEBUG] Template parsed into temp div:', tempDiv.innerHTML.substring(0, 100) + '...');
+    
+    // Append each child individually
+    while (tempDiv.firstChild) {
+      this.shadow.appendChild(tempDiv.firstChild);
+      console.log('[DEBUG] Appended child to shadow root');
+    }
   }
 
   connectedCallback() {
-    if (this.initialized) return;
-    this.initialized = true;
-    
     console.log('[DEBUG] HelpFeedbackElement connected');
-    
-    try {
-      // Create template element
-      const template = document.createElement('template');
-      template.innerHTML = TEMPLATE_HTML;
-      
-      if (!template.content.firstElementChild) {
-        throw new Error('Template content is empty');
-      }
-      
-      // Clone and append template content
-      const content = template.content.cloneNode(true);
-      this.shadow.appendChild(content);
-      
-      // Setup event listeners
+    // Force a reflow
+    this.style.display = 'block';
+    // Setup event listeners after a short delay
+    setTimeout(() => {
       this.setupEventListeners();
-      
-      console.log('[DEBUG] HelpFeedbackElement initialized successfully');
-    } catch (error: unknown) {
-      console.error('[ERROR] Failed to initialize HelpFeedbackElement:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      this.shadow.innerHTML = `
-        <div style="color: red; padding: 20px;">
-          Error loading help content: ${errorMessage}
-          <br>Please refresh the page.
-        </div>
-      `;
-    }
+      console.log('[DEBUG] Event listeners set up');
+    }, 0);
   }
 
   private setupEventListeners() {
