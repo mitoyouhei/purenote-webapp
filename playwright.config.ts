@@ -30,8 +30,8 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
     
-    /* Use headless mode */
-    headless: true
+    /* Use new headless mode */
+    headless: "new"
   },
 
   /* Configure projects for major browsers */
@@ -40,7 +40,7 @@ export default defineConfig({
       name: "chromium",
       use: { 
         ...devices["Desktop Chrome"],
-        headless: true
+        headless: "new"
       },
     },
 
@@ -48,7 +48,7 @@ export default defineConfig({
       name: "firefox",
       use: { 
         ...devices["Desktop Firefox"],
-        headless: true
+        headless: "new"
       },
     },
 
@@ -56,7 +56,7 @@ export default defineConfig({
       name: "webkit",
       use: { 
         ...devices["Desktop Safari"],
-        headless: true
+        headless: "new"
       },
     },
 
@@ -76,7 +76,7 @@ export default defineConfig({
       use: { 
         ...devices["Desktop Edge"], 
         channel: "msedge",
-        headless: true
+        headless: "new"
       },
     },
     {
@@ -84,7 +84,7 @@ export default defineConfig({
       use: { 
         ...devices["Desktop Chrome"], 
         channel: "chrome",
-        headless: true
+        headless: "new"
       },
     },
   ],
