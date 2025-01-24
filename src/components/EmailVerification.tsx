@@ -1,16 +1,10 @@
-// src/components/Register.js
 import React from "react";
+import { AuthContainer } from "./AuthContainer";
 
 export const EmailVerification = () => {
   return (
-    <div
-      className="container my-5"
-      style={{
-        maxWidth: "500px",
-      }}
-    >
-      <h1>Email Verification</h1>
+    <AuthContainer title="Email Verification">
       <p>Please check your email for a verification link.</p>
-    </div>
+    </AuthContainer>
   );
 };
