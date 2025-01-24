@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { HelpFeedbackElement } from '../webcomponents/HelpFeedbackElement';
 
 declare global {
@@ -10,45 +11,51 @@ declare global {
 }
 
 export default function HelpFeedbackWrapper() {
+  const [isComponentReady, setIsComponentReady] = useState(false);
+
   useEffect(() => {
-    console.log('HelpFeedbackWrapper mounted');
-    const element = document.querySelector('help-feedback-element');
-    if (element) {
-      // Force a re-render by temporarily detaching and reattaching
-      const parent = element.parentNode;
-      const next = element.nextSibling;
-      parent?.removeChild(element);
-      requestAnimationFrame(() => {
-        if (next) {
-          parent?.insertBefore(element, next);
-        } else {
-          parent?.appendChild(element);
-        }
-      });
-    }
+    // Check if Web Component is registered
+    const checkComponentRegistration = () => {
+      if (customElements.get('help-feedback-element')) {
+        console.log('[DEBUG] Web Component is registered');
+        setIsComponentReady(true);
+      } else {
+        console.log('[DEBUG] Web Component not registered yet, retrying...');
+        setTimeout(checkComponentRegistration, 100);
+      }
+    };
+
+    checkComponentRegistration();
   }, []);
+
   const handleFeedbackRequested = (event: Event) => {
-    // Handle the feedback-requested custom event
-    console.log('Feedback requested');
+    console.log('[DEBUG] Feedback requested');
     // TODO: Implement feedback form or modal
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (!isComponentReady) return;
+
     const element = document.querySelector('help-feedback-element');
     if (element) {
       element.addEventListener('feedback-requested', handleFeedbackRequested);
+      console.log('[DEBUG] Event listener added');
     }
+
     return () => {
       if (element) {
         element.removeEventListener('feedback-requested', handleFeedbackRequested);
       }
     };
-  }, []);
+  }, [isComponentReady]);
 
-  console.log('Rendering HelpFeedbackWrapper');
+  if (!isComponentReady) {
+    return <div>Loading Help & Feedback...</div>;
+  }
+
   return (
-    <div className="help-feedback-wrapper" style={{ minHeight: '100vh', padding: '20px', position: 'relative', zIndex: 1 }}>
-      <help-feedback-element style={{ display: 'block', visibility: 'visible' }}></help-feedback-element>
+    <div className="help-feedback-wrapper" style={{ minHeight: '100vh', padding: '20px' }}>
+      <help-feedback-element></help-feedback-element>
     </div>
   );
 }
