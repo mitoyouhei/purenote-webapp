@@ -31,7 +31,10 @@ export default defineConfig({
     trace: "on-first-retry",
     
     /* Use new headless mode */
-    headless: "new"
+    headless: "new",
+    launchOptions: {
+      args: ['--headless=new']
+    }
   },
 
   /* Configure projects for major browsers */
@@ -40,7 +43,10 @@ export default defineConfig({
       name: "chromium",
       use: { 
         ...devices["Desktop Chrome"],
-        headless: "new"
+        headless: "new",
+        launchOptions: {
+          args: ['--headless=new']
+        }
       },
     },
 
@@ -48,7 +54,10 @@ export default defineConfig({
       name: "firefox",
       use: { 
         ...devices["Desktop Firefox"],
-        headless: "new"
+        headless: "new",
+        launchOptions: {
+          args: ['--headless=new']
+        }
       },
     },
 
@@ -56,7 +65,10 @@ export default defineConfig({
       name: "webkit",
       use: { 
         ...devices["Desktop Safari"],
-        headless: "new"
+        headless: "new",
+        launchOptions: {
+          args: ['--headless=new']
+        }
       },
     },
 
@@ -76,7 +88,10 @@ export default defineConfig({
       use: { 
         ...devices["Desktop Edge"], 
         channel: "msedge",
-        headless: "new"
+        headless: "new",
+        launchOptions: {
+          args: ['--headless=new']
+        }
       },
     },
     {
@@ -84,7 +99,10 @@ export default defineConfig({
       use: { 
         ...devices["Desktop Chrome"], 
         channel: "chrome",
-        headless: "new"
+        headless: "new",
+        launchOptions: {
+          args: ['--headless=new']
+        }
       },
     },
   ],
