@@ -1,5 +1,7 @@
-const template = document.createElement("template");
-template.innerHTML = `
+// Create template in a function to ensure DOM is available
+function createTemplate() {
+  const template = document.createElement("template");
+  template.innerHTML = `
   <style>
     :host {
       display: block;
@@ -126,6 +128,8 @@ template.innerHTML = `
     </section>
   </div>
 `;
+  return template;
+}
 
 class HelpFeedbackElement extends HTMLElement {
   private shadow: ShadowRoot;
@@ -133,6 +137,8 @@ class HelpFeedbackElement extends HTMLElement {
   constructor() {
     super();
     this.shadow = this.attachShadow({ mode: "open" });
+    // Get a fresh template instance
+    const template = createTemplate();
     this.shadow.appendChild(template.content.cloneNode(true));
     this.setupEventListeners();
   }

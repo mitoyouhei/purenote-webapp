@@ -1,31 +1,19 @@
 // Load and register Web Component immediately
 import { HelpFeedbackElement } from './webcomponents/HelpFeedbackElement';
 
-// Force synchronous registration before any other imports
-(function() {
-  console.log('Forcing immediate Web Component registration');
-  if (typeof customElements !== 'undefined' && !customElements.get('help-feedback-element')) {
-    try {
-      customElements.define('help-feedback-element', HelpFeedbackElement);
-      console.log('Successfully registered help-feedback-element synchronously');
-    } catch (error) {
-      console.error('Failed to register help-feedback-element:', error);
-      // Retry once after a short delay
-      setTimeout(() => {
-        try {
-          if (!customElements.get('help-feedback-element')) {
-            customElements.define('help-feedback-element', HelpFeedbackElement);
-            console.log('Successfully registered help-feedback-element after delay');
-          }
-        } catch (retryError) {
-          console.error('Failed to register help-feedback-element after retry:', retryError);
-        }
-      }, 0);
+// Register Web Component when DOM is ready
+if (typeof window !== 'undefined') {
+  window.addEventListener('DOMContentLoaded', () => {
+    if (!customElements.get('help-feedback-element')) {
+      try {
+        customElements.define('help-feedback-element', HelpFeedbackElement);
+        console.log('Successfully registered help-feedback-element');
+      } catch (error) {
+        console.error('Failed to register help-feedback-element:', error);
+      }
     }
-  } else {
-    console.log('help-feedback-element already registered or customElements not available');
-  }
-})();
+  });
+}
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
