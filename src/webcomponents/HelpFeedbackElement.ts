@@ -1,7 +1,4 @@
-// Create template in a function to ensure DOM is available
-function createTemplate() {
-  const template = document.createElement("template");
-  template.innerHTML = `
+const TEMPLATE_HTML = `
   <style>
     :host {
       display: block;
@@ -128,8 +125,6 @@ function createTemplate() {
     </section>
   </div>
 `;
-  return template;
-}
 
 class HelpFeedbackElement extends HTMLElement {
   private shadow: ShadowRoot;
@@ -137,10 +132,17 @@ class HelpFeedbackElement extends HTMLElement {
   constructor() {
     super();
     this.shadow = this.attachShadow({ mode: "open" });
-    // Get a fresh template instance
-    const template = createTemplate();
+    
+    // Create template and append content
+    const template = document.createElement('template');
+    template.innerHTML = TEMPLATE_HTML;
     this.shadow.appendChild(template.content.cloneNode(true));
-    this.setupEventListeners();
+
+    // Force a layout recalculation
+    requestAnimationFrame(() => {
+      this.setupEventListeners();
+      this.style.display = 'block';
+    });
   }
 
   private setupEventListeners() {

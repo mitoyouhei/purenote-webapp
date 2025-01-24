@@ -13,11 +13,18 @@ export default function HelpFeedbackWrapper() {
   useEffect(() => {
     console.log('HelpFeedbackWrapper mounted');
     const element = document.querySelector('help-feedback-element');
-    console.log('Found help-feedback-element in wrapper:', element);
     if (element) {
-      console.log('Element styles:', window.getComputedStyle(element));
-      // Force a re-render of the component
-      element.innerHTML = element.innerHTML;
+      // Force a re-render by temporarily detaching and reattaching
+      const parent = element.parentNode;
+      const next = element.nextSibling;
+      parent?.removeChild(element);
+      requestAnimationFrame(() => {
+        if (next) {
+          parent?.insertBefore(element, next);
+        } else {
+          parent?.appendChild(element);
+        }
+      });
     }
   }, []);
   const handleFeedbackRequested = (event: Event) => {
