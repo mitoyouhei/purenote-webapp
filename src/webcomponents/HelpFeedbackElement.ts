@@ -140,29 +140,48 @@ class HelpFeedbackElement extends HTMLElement {
     try {
       // Create and populate template
       const template = document.createElement('template');
+      console.log('Template HTML length:', TEMPLATE_HTML.length);
       template.innerHTML = TEMPLATE_HTML;
+      console.log('Template created with content:', template.content);
       
       if (!template.content.firstElementChild) {
+        console.error('Template content is empty after setting innerHTML');
         throw new Error('Template content is empty');
       }
       
       // Clone and append template content
       const content = template.content.cloneNode(true);
+      console.log('Content cloned:', content);
+      
+      // Verify shadow root is still valid
+      if (!this.shadow.isConnected) {
+        console.error('Shadow root is not connected');
+        throw new Error('Shadow root is not connected');
+      }
+      
       this.shadow.appendChild(content);
       console.log('Content appended to shadow root');
       
       // Force layout recalculation and setup
       this.style.display = 'block';
+      this.style.visibility = 'visible';
       
       // Setup event listeners after a short delay to ensure DOM is ready
       setTimeout(() => {
+        console.log('Setting up event listeners');
         this.setupEventListeners();
+        const questions = this.shadow.querySelectorAll('.faq-question');
+        console.log('Found FAQ questions:', questions.length);
         console.log('Event listeners set up');
       }, 0);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error in HelpFeedbackElement constructor:', error);
-      // Fallback content
-      this.shadow.innerHTML = '<div>Error loading help content. Please try refreshing the page.</div>';
+      // Fallback content with error details
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      this.shadow.innerHTML = `<div style="color: red; padding: 20px;">
+        Error loading help content: ${errorMessage}
+        <br>Please try refreshing the page.
+      </div>`;
     }
   }
 
