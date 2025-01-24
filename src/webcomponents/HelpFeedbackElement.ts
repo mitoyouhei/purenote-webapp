@@ -138,30 +138,44 @@ class HelpFeedbackElement extends HTMLElement {
       this.shadow = this.attachShadow({ mode: "open" });
       console.log('[DEBUG] Shadow root attached');
 
-      // Create template element
-      const template = document.createElement('template');
-      template.innerHTML = TEMPLATE_HTML;
-      console.log('[DEBUG] Template created with HTML length:', TEMPLATE_HTML.length);
+      // Create temporary div to parse HTML
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = TEMPLATE_HTML.trim();
+      console.log('[DEBUG] Template HTML parsed into temporary div');
 
-      // Verify template content
-      if (!template.content.firstElementChild) {
-        throw new Error('Template content is empty');
+      // Verify structure
+      if (!tempDiv.querySelector('.help-feedback-container')) {
+        console.error('[ERROR] Container not found in parsed HTML');
+        throw new Error('Invalid template structure');
       }
-      console.log('[DEBUG] Template content verified');
+
+      // Create and verify template
+      const template = document.createElement('template');
+      template.innerHTML = tempDiv.innerHTML;
+      console.log('[DEBUG] Template created with content length:', template.innerHTML.length);
 
       // Clone and append template content
       const content = template.content.cloneNode(true);
       this.shadow.appendChild(content);
       console.log('[DEBUG] Content appended to shadow root');
 
-      // Force layout recalculation
+      // Setup initial styles
       this.style.display = 'block';
-      console.log('[DEBUG] Display style set to block');
+      this.style.width = '100%';
+      
+      // Verify shadow DOM content
+      const shadowContainer = this.shadow.querySelector('.help-feedback-container');
+      if (!shadowContainer) {
+        throw new Error('Container not found in shadow DOM after initialization');
+      }
+      console.log('[DEBUG] Shadow DOM verified with container:', shadowContainer.children.length, 'children');
     } catch (error) {
       console.error('[ERROR] Failed to initialize component:', error);
       this.shadow.innerHTML = `
-        <div style="color: red; padding: 20px;">
+        <div style="color: red; padding: 20px; border: 1px solid red;">
           Error initializing help component: ${error instanceof Error ? error.message : 'Unknown error'}
+          <br>
+          <small>Please check console for details.</small>
         </div>
       `;
     }
