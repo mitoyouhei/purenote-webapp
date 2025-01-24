@@ -29,6 +29,11 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
+    
+    /* Use the new headless mode */
+    launchOptions: {
+      headless: true
+    }
   },
 
   /* Configure projects for major browsers */
@@ -61,11 +66,23 @@ export default defineConfig({
     /* Test against branded browsers. */
     {
       name: "Microsoft Edge",
-      use: { ...devices["Desktop Edge"], channel: "msedge" },
+      use: { 
+        ...devices["Desktop Edge"], 
+        channel: "msedge",
+        launchOptions: {
+          args: ['--headless=new']
+        }
+      },
     },
     {
       name: "Google Chrome",
-      use: { ...devices["Desktop Chrome"], channel: "chrome" },
+      use: { 
+        ...devices["Desktop Chrome"], 
+        channel: "chrome",
+        launchOptions: {
+          args: ['--headless=new']
+        }
+      },
     },
   ],
 
