@@ -128,33 +128,53 @@ const TEMPLATE_HTML = `
 
 class HelpFeedbackElement extends HTMLElement {
   private shadow: ShadowRoot;
+  private static template: HTMLTemplateElement;
+
+  static {
+    try {
+      // Create and cache the template
+      this.template = document.createElement('template');
+      this.template.innerHTML = TEMPLATE_HTML;
+      console.log('[DEBUG] Static template created successfully');
+    } catch (error) {
+      console.error('[ERROR] Failed to create static template:', error);
+    }
+  }
 
   constructor() {
     super();
     console.log('[DEBUG] HelpFeedbackElement constructor called');
-    this.shadow = this.attachShadow({ mode: "open" });
     
-    // Create a temporary div to parse the template
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = TEMPLATE_HTML;
-    console.log('[DEBUG] Template parsed into temp div:', tempDiv.innerHTML.substring(0, 100) + '...');
-    
-    // Append each child individually
-    while (tempDiv.firstChild) {
-      this.shadow.appendChild(tempDiv.firstChild);
-      console.log('[DEBUG] Appended child to shadow root');
+    try {
+      this.shadow = this.attachShadow({ mode: "open" });
+      console.log('[DEBUG] Shadow root attached');
+
+      // Clone and append template content
+      const content = HelpFeedbackElement.template.content.cloneNode(true);
+      this.shadow.appendChild(content);
+      console.log('[DEBUG] Template content cloned and appended');
+      
+      // Verify content
+      const container = this.shadow.querySelector('.help-feedback-container');
+      if (!container) {
+        throw new Error('Container element not found in shadow DOM');
+      }
+      console.log('[DEBUG] Container element found:', container.children.length, 'children');
+    } catch (error) {
+      console.error('[ERROR] Failed to initialize component:', error);
+      this.shadow.innerHTML = 'Error initializing help component';
     }
   }
 
   connectedCallback() {
-    console.log('[DEBUG] HelpFeedbackElement connected');
-    // Force a reflow
-    this.style.display = 'block';
-    // Setup event listeners after a short delay
-    setTimeout(() => {
+    try {
+      console.log('[DEBUG] HelpFeedbackElement connected');
+      this.style.display = 'block';
       this.setupEventListeners();
       console.log('[DEBUG] Event listeners set up');
-    }, 0);
+    } catch (error) {
+      console.error('[ERROR] Failed in connectedCallback:', error);
+    }
   }
 
   private setupEventListeners() {
