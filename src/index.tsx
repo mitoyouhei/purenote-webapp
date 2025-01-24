@@ -3,9 +3,13 @@ import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { store } from './store';
 import App from './views/App';
+
+// Ensure Web Component is registered before React renders
 import './webcomponents/HelpFeedbackElement';
 
-const root = ReactDOM.createRoot(
+// Wait for custom elements to be defined
+customElements.whenDefined('help-feedback-element').then(() => {
+  const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
@@ -15,4 +19,5 @@ root.render(
       <App />
     </Provider>
   </React.StrictMode>
-);
+  );
+});
