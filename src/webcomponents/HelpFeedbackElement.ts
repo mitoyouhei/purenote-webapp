@@ -135,29 +135,35 @@ class HelpFeedbackElement extends HTMLElement {
     
     // Create shadow root
     this.shadow = this.attachShadow({ mode: "open" });
-    console.log('Shadow root created:', this.shadow);
+    console.log('Shadow root created');
     
-    // Create and populate template
-    const template = document.createElement('template');
-    template.innerHTML = TEMPLATE_HTML;
-    console.log('Template created with HTML:', template.innerHTML.substring(0, 50) + '...');
-    
-    // Clone and append template content
-    const content = template.content.cloneNode(true);
-    console.log('Content cloned:', content);
-    
-    // Append content to shadow root
-    this.shadow.appendChild(content);
-    console.log('Content appended to shadow root');
-    
-    // Setup event listeners after DOM is ready
-    requestAnimationFrame(() => {
-      console.log('Setting up event listeners');
-      this.setupEventListeners();
-      this.style.visibility = 'visible';
+    try {
+      // Create and populate template
+      const template = document.createElement('template');
+      template.innerHTML = TEMPLATE_HTML;
+      
+      if (!template.content.firstElementChild) {
+        throw new Error('Template content is empty');
+      }
+      
+      // Clone and append template content
+      const content = template.content.cloneNode(true);
+      this.shadow.appendChild(content);
+      console.log('Content appended to shadow root');
+      
+      // Force layout recalculation and setup
       this.style.display = 'block';
-      console.log('Component initialization complete');
-    });
+      
+      // Setup event listeners after a short delay to ensure DOM is ready
+      setTimeout(() => {
+        this.setupEventListeners();
+        console.log('Event listeners set up');
+      }, 0);
+    } catch (error) {
+      console.error('Error in HelpFeedbackElement constructor:', error);
+      // Fallback content
+      this.shadow.innerHTML = '<div>Error loading help content. Please try refreshing the page.</div>';
+    }
   }
 
   private setupEventListeners() {
