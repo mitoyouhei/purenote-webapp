@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { HelpFeedbackElement } from '../webcomponents/HelpFeedbackElement';
 
 declare global {
   namespace JSX {
@@ -9,6 +10,13 @@ declare global {
 }
 
 export default function HelpFeedbackWrapper() {
+  // Register the Web Component when the wrapper mounts
+  useEffect(() => {
+    if (!customElements.get('help-feedback-element')) {
+      console.log('Registering help-feedback-element Web Component from wrapper');
+      customElements.define('help-feedback-element', HelpFeedbackElement);
+    }
+  }, []);
   const handleFeedbackRequested = (event: Event) => {
     // Handle the feedback-requested custom event
     console.log('Feedback requested');

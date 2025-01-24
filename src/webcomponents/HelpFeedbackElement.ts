@@ -127,7 +127,7 @@ template.innerHTML = `
   </div>
 `;
 
-export class HelpFeedbackElement extends HTMLElement {
+class HelpFeedbackElement extends HTMLElement {
   private shadow: ShadowRoot;
 
   constructor() {
@@ -176,9 +176,5 @@ export class HelpFeedbackElement extends HTMLElement {
   }
 }
 
-// Register the custom element
-if (!customElements.get('help-feedback-element')) {
-  console.log('Registering help-feedback-element Web Component');
-  customElements.define("help-feedback-element", HelpFeedbackElement);
-  console.log('help-feedback-element Web Component registered successfully');
-}
+// Export the class only, don't register here
+export { HelpFeedbackElement };

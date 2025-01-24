@@ -4,15 +4,6 @@ import { Provider } from 'react-redux';
 import { store } from './store';
 import App from './views/App';
 
-// Import and immediately register the Web Component
-import { HelpFeedbackElement } from './webcomponents/HelpFeedbackElement';
-
-// Ensure the component is registered
-if (!customElements.get('help-feedback-element')) {
-  console.log('Registering help-feedback-element Web Component from index.tsx');
-  customElements.define('help-feedback-element', HelpFeedbackElement);
-}
-
 // Create root and render app
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
