@@ -27,9 +27,10 @@ export default function HelpFeedbackWrapper() {
     };
   }, []);
 
+  console.log('Rendering HelpFeedbackWrapper');
   return (
-    <div className="help-feedback-wrapper" style={{ minHeight: '100vh', padding: '20px' }}>
-      <help-feedback-element style={{ display: 'block' }}></help-feedback-element>
+    <div className="help-feedback-wrapper" style={{ minHeight: '100vh', padding: '20px', position: 'relative', zIndex: 1 }}>
+      <help-feedback-element style={{ display: 'block', visibility: 'visible' }}></help-feedback-element>
     </div>
   );
 }

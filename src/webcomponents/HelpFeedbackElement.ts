@@ -177,4 +177,8 @@ export class HelpFeedbackElement extends HTMLElement {
 }
 
 // Register the custom element
-customElements.define("help-feedback-element", HelpFeedbackElement);
+if (!customElements.get('help-feedback-element')) {
+  console.log('Registering help-feedback-element Web Component');
+  customElements.define("help-feedback-element", HelpFeedbackElement);
+  console.log('help-feedback-element Web Component registered successfully');
+}
