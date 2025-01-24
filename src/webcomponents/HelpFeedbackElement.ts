@@ -127,8 +127,8 @@ const TEMPLATE_HTML = `
 `;
 
 class HelpFeedbackElement extends HTMLElement {
-  private shadow: ShadowRoot;
-  private static template: HTMLTemplateElement;
+  private shadow!: ShadowRoot; // Using definite assignment assertion
+  private static template!: HTMLTemplateElement;
 
   static {
     try {
