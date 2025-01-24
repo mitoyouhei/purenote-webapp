@@ -1,4 +1,4 @@
-import './webcomponents/register';  // Register Web Component first
+import './webcomponents/HelpFeedbackElement';  // Import and register Web Component
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';

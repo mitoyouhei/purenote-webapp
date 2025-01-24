@@ -10,13 +10,14 @@ declare global {
 }
 
 export default function HelpFeedbackWrapper() {
-  // Debug mounting of wrapper
   useEffect(() => {
     console.log('HelpFeedbackWrapper mounted');
     const element = document.querySelector('help-feedback-element');
     console.log('Found help-feedback-element in wrapper:', element);
     if (element) {
       console.log('Element styles:', window.getComputedStyle(element));
+      // Force a re-render of the component
+      element.innerHTML = element.innerHTML;
     }
   }, []);
   const handleFeedbackRequested = (event: Event) => {
