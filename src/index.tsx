@@ -4,14 +4,22 @@ import { Provider } from 'react-redux';
 import { store } from './store';
 import App from './views/App';
 
-// Ensure Web Component is registered before React renders
-import './webcomponents/HelpFeedbackElement';
+// Import and immediately register the Web Component
+import { HelpFeedbackElement } from './webcomponents/HelpFeedbackElement';
 
-// Wait for custom elements to be defined
-customElements.whenDefined('help-feedback-element').then(() => {
-  const root = ReactDOM.createRoot(
+// Ensure the component is registered
+if (!customElements.get('help-feedback-element')) {
+  console.log('Registering help-feedback-element Web Component from index.tsx');
+  customElements.define('help-feedback-element', HelpFeedbackElement);
+}
+
+// Create root and render app
+const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+// Add debug log for React rendering
+console.log('Starting React render');
 
 root.render(
   <React.StrictMode>
@@ -19,5 +27,4 @@ root.render(
       <App />
     </Provider>
   </React.StrictMode>
-  );
-});
+);
