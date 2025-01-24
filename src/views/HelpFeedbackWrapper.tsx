@@ -28,8 +28,8 @@ export default function HelpFeedbackWrapper() {
   }, []);
 
   return (
-    <div className="help-feedback-wrapper">
-      <help-feedback-element></help-feedback-element>
+    <div className="help-feedback-wrapper" style={{ minHeight: '100vh', padding: '20px' }}>
+      <help-feedback-element style={{ display: 'block' }}></help-feedback-element>
     </div>
   );
 }
