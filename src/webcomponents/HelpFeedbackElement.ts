@@ -128,67 +128,46 @@ const TEMPLATE_HTML = `
 
 class HelpFeedbackElement extends HTMLElement {
   private shadow: ShadowRoot;
+  private initialized: boolean = false;
 
   constructor() {
     super();
-    console.log('HelpFeedbackElement constructor called');
-    
-    // Create shadow root
+    console.log('[DEBUG] HelpFeedbackElement constructor called');
     this.shadow = this.attachShadow({ mode: "open" });
-    console.log('Shadow root created');
+  }
+
+  connectedCallback() {
+    if (this.initialized) return;
+    this.initialized = true;
+    
+    console.log('[DEBUG] HelpFeedbackElement connected');
     
     try {
-      // Create and populate template
+      // Create template element
       const template = document.createElement('template');
-      console.log('Template HTML length:', TEMPLATE_HTML.length);
       template.innerHTML = TEMPLATE_HTML;
-      console.log('Template created with content:', template.content);
       
       if (!template.content.firstElementChild) {
-        console.error('Template content is empty after setting innerHTML');
         throw new Error('Template content is empty');
       }
       
       // Clone and append template content
       const content = template.content.cloneNode(true);
-      console.log('Content cloned:', content);
-      
-      // Verify shadow root is still valid
-      if (!this.shadow.isConnected) {
-        console.error('Shadow root is not connected');
-        throw new Error('Shadow root is not connected');
-      }
-      
-      // Add a test div first to verify shadow DOM is working
-      const testDiv = document.createElement('div');
-      testDiv.textContent = 'Shadow DOM Test Content';
-      testDiv.style.color = 'blue';
-      this.shadow.appendChild(testDiv);
-      
-      // Then append the actual content
       this.shadow.appendChild(content);
-      console.log('Content appended to shadow root');
       
-      // Force layout recalculation and setup
-      this.style.display = 'block';
-      this.style.visibility = 'visible';
+      // Setup event listeners
+      this.setupEventListeners();
       
-      // Setup event listeners after a short delay to ensure DOM is ready
-      setTimeout(() => {
-        console.log('Setting up event listeners');
-        this.setupEventListeners();
-        const questions = this.shadow.querySelectorAll('.faq-question');
-        console.log('Found FAQ questions:', questions.length);
-        console.log('Event listeners set up');
-      }, 0);
+      console.log('[DEBUG] HelpFeedbackElement initialized successfully');
     } catch (error: unknown) {
-      console.error('Error in HelpFeedbackElement constructor:', error);
-      // Fallback content with error details
+      console.error('[ERROR] Failed to initialize HelpFeedbackElement:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      this.shadow.innerHTML = `<div style="color: red; padding: 20px;">
-        Error loading help content: ${errorMessage}
-        <br>Please try refreshing the page.
-      </div>`;
+      this.shadow.innerHTML = `
+        <div style="color: red; padding: 20px;">
+          Error loading help content: ${errorMessage}
+          <br>Please refresh the page.
+        </div>
+      `;
     }
   }
 
