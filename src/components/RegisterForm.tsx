@@ -1,7 +1,5 @@
-// src/components/Register.js
 import React, { useEffect, useRef, useState } from "react";
-
-import Spinner from "./Spinner";
+import { AuthContainer } from "./AuthContainer";
 
 export const RegisterForm = ({
   error,
@@ -37,67 +35,49 @@ export const RegisterForm = ({
     setLoading(false);
   };
 
-  const errorMessage =
-    error && !passwordNotMatch ? (
-      <div className="alert alert-danger mt-2" role="alert">
-        {error}
-      </div>
-    ) : null;
-  const passwordNotMatchMessage = passwordNotMatch ? (
-    <div className="alert alert-danger mt-2" role="alert">
-      Password do not match
-    </div>
-  ) : null;
+  const displayError = passwordNotMatch ? "Passwords do not match" : error;
+
   return (
-    <div
-      className="container my-5"
-      style={{
-        maxWidth: "500px",
-      }}
-    >
-      <h1>Register</h1>
-      {loading ? (
-        <Spinner />
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="username">Email</label>
-            <input
-              ref={inputRef}
-              type="email"
-              className="form-control"
-              value={email}
-              name="email"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              className="form-control"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Confirm Password</label>
-            <input
-              type="password"
-              className="form-control"
-              name="confirmpassword"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-          </div>
-          <button type="submit" className="btn btn-primary mt-2">
-            Register
-          </button>
-          {errorMessage}
-          {passwordNotMatchMessage}
-        </form>
-      )}
-    </div>
+    <AuthContainer title="Register" loading={loading} error={displayError}>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="email">Email</label>
+          <input
+            ref={inputRef}
+            id="email"
+            type="email"
+            className="form-control"
+            value={email}
+            name="email"
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            className="form-control"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="confirmPassword">Confirm Password</label>
+          <input
+            id="confirmPassword"
+            type="password"
+            className="form-control"
+            name="confirmpassword"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+        </div>
+        <button type="submit" className="btn btn-primary mt-2">
+          Register
+        </button>
+      </form>
+    </AuthContainer>
   );
 };

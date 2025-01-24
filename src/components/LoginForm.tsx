@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import Spinner from "./Spinner";
+import { AuthContainer } from "./AuthContainer";
 
 export const LoginForm = ({
   loading,
@@ -20,55 +20,42 @@ export const LoginForm = ({
       inputRef.current.focus();
     }
   }, []);
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     onSubmit(email, password);
   }
 
-  const errorMessage = error ? (
-    <div className="alert alert-danger mt-2" role="alert">
-      {error}
-    </div>
-  ) : null;
   return (
-    <div
-      className="container my-5"
-      style={{
-        maxWidth: "500px",
-      }}
-    >
-      <h1>Login</h1>
-      {loading ? (
-        <Spinner />
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="username">Email</label>
-            <input
-              ref={inputRef}
-              type="email"
-              className="form-control"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              className="form-control"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <button type="submit" className="btn btn-primary mt-2">
-            Login
-          </button>
-          {errorMessage}
-        </form>
-      )}
-    </div>
+    <AuthContainer title="Login" loading={loading} error={error}>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="email">Email</label>
+          <input
+            ref={inputRef}
+            id="email"
+            type="email"
+            className="form-control"
+            name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            className="form-control"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <button type="submit" className="btn btn-primary mt-2">
+          Login
+        </button>
+      </form>
+    </AuthContainer>
   );
 };
