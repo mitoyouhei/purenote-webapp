@@ -131,17 +131,32 @@ class HelpFeedbackElement extends HTMLElement {
 
   constructor() {
     super();
-    this.shadow = this.attachShadow({ mode: "open" });
+    console.log('HelpFeedbackElement constructor called');
     
-    // Create template and append content
+    // Create shadow root
+    this.shadow = this.attachShadow({ mode: "open" });
+    console.log('Shadow root created:', this.shadow);
+    
+    // Create and populate template
     const template = document.createElement('template');
     template.innerHTML = TEMPLATE_HTML;
-    this.shadow.appendChild(template.content.cloneNode(true));
-
-    // Force a layout recalculation
+    console.log('Template created with HTML:', template.innerHTML.substring(0, 50) + '...');
+    
+    // Clone and append template content
+    const content = template.content.cloneNode(true);
+    console.log('Content cloned:', content);
+    
+    // Append content to shadow root
+    this.shadow.appendChild(content);
+    console.log('Content appended to shadow root');
+    
+    // Setup event listeners after DOM is ready
     requestAnimationFrame(() => {
+      console.log('Setting up event listeners');
       this.setupEventListeners();
+      this.style.visibility = 'visible';
       this.style.display = 'block';
+      console.log('Component initialization complete');
     });
   }
 
