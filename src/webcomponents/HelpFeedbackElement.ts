@@ -128,17 +128,19 @@ const TEMPLATE_HTML = `
 
 class HelpFeedbackElement extends HTMLElement {
   private shadow!: ShadowRoot; // Using definite assignment assertion
-  private static template!: HTMLTemplateElement;
+  private static template: HTMLTemplateElement = (() => {
+    const template = document.createElement('template');
+    template.innerHTML = TEMPLATE_HTML;
+    console.log('[DEBUG] Static template created successfully');
+    return template;
+  })();
 
-  static {
-    try {
-      // Create and cache the template
-      this.template = document.createElement('template');
-      this.template.innerHTML = TEMPLATE_HTML;
-      console.log('[DEBUG] Static template created successfully');
-    } catch (error) {
-      console.error('[ERROR] Failed to create static template:', error);
+  private static getTemplate(): HTMLTemplateElement {
+    if (!this.template) {
+      console.error('[ERROR] Template not initialized');
+      throw new Error('Template not initialized');
     }
+    return this.template;
   }
 
   constructor() {
@@ -150,7 +152,8 @@ class HelpFeedbackElement extends HTMLElement {
       console.log('[DEBUG] Shadow root attached');
 
       // Clone and append template content
-      const content = HelpFeedbackElement.template.content.cloneNode(true);
+      const template = HelpFeedbackElement.getTemplate();
+      const content = template.content.cloneNode(true);
       this.shadow.appendChild(content);
       console.log('[DEBUG] Template content cloned and appended');
       
