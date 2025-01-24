@@ -138,9 +138,10 @@ class HelpFeedbackElement extends HTMLElement {
       this.shadow = this.attachShadow({ mode: "open" });
       console.log('[DEBUG] Shadow root attached');
 
-      // Set innerHTML directly and force a reflow
+      // Set innerHTML directly
       this.shadow.innerHTML = TEMPLATE_HTML;
-      void this.shadow.offsetHeight; // Force reflow
+      // Force reflow by accessing client rect
+      void this.getBoundingClientRect();
       console.log('[DEBUG] Template HTML set directly to shadow root');
 
       // Log the actual content
