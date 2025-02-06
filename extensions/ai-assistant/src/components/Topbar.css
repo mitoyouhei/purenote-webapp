@@ -1,0 +1,13 @@
+.topbar .btn {
+    line-height: 12px;
+    color: #777;
+    padding: 0.3rem;
+    margin: 0 0.3rem;
+}
+
+.topbar .btn:hover:not([disabled]) {
+    background-color: #eee;
+}
+.topbar .dropdown-toggle::after {
+    vertical-align: .1em;
+}

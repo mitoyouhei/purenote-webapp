@@ -1,0 +1,47 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.input-title {
+    width: 100%;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content {
+    flex: 1;
+}
+
+.input-title,
+.input-title:hover,
+.input-title:focus,
+.input-title:focus-within,
+.input-title:focus-visible {
+    border: 0;
+    outline: 0;
+}
+
+.footer {
+    background-color: #f8f9fa;
+}
+
+.footer .social-icon {
+    font-size: 24px;
+    margin: 0 10px;
+    color: #495057;
+}
+
+body>.offcanvas .navbar-nav a {
+    margin: 10px;
+}

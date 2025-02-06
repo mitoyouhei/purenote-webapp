@@ -1,0 +1,32 @@
+.notes-list>.list-group-item.active {
+    background-color: rgb(255 216 137);
+    color: #000;
+}
+
+.notes-list>.list-group-item>small {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.7rem;
+}
+
+.notes-list.list-group>.list-group-item .title-row {
+    font-weight: 500;
+    font-size: 0.9rem;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.notes-list.list-group>.list-group-item.active-light {
+    color: #000;
+    background-color: #e9ecef;
+    /* Bootstrap 的 bg-light 颜色 */
+    border-color: #f8f9fa;
+}
+
+.notes-list>.list-group-item {
+    border: 0;
+}
